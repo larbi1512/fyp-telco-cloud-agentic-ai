@@ -1,0 +1,244 @@
+{
+  "experiment": "intent_translation_accuracy",
+  "version": "1.0",
+  "description": "Dataset of natural language prompts for evaluating LLM-based intent translation to 5G network topologies.",
+  "prompts": [
+    {
+      "id": "S01",
+      "prompt": "Deploy a basic 5G core network.",
+      "complexity": "simple",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 5,
+      "max_vnf_count": 8,
+      "notes": "Minimal viable 5G SA core per 3GPP TS 23.501. NRF is mandatory for service discovery."
+    },
+    {
+      "id": "S02",
+      "prompt": "Set up a 5G network for 100 users.",
+      "complexity": "simple",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 5,
+      "max_vnf_count": 8,
+      "notes": "Small-scale deployment; 100 UEs is well within single-instance capacity for all VNFs."
+    },
+    {
+      "id": "S03",
+      "prompt": "I need a simple standalone 5G core for testing purposes.",
+      "complexity": "simple",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 4,
+      "max_vnf_count": 8,
+      "notes": "Minimal test deployment. Could reasonably omit AUSF/UDM/UDR for unauthenticated test setups."
+    },
+    {
+      "id": "S04",
+      "prompt": "Deploy 5G with eMBB slicing.",
+      "complexity": "simple",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "nssf"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 5,
+      "max_vnf_count": 8,
+      "notes": "eMBB slice (SST=1) requires NSSF for slice selection. Standard core VNFs required."
+    },
+    {
+      "id": "S05",
+      "prompt": "Create a 5G network with internet access for mobile phones.",
+      "complexity": "simple",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 5,
+      "max_vnf_count": 8,
+      "notes": "Standard consumer 5G core with DNN=internet. Auth VNFs needed for SIM-based UEs."
+    },
+    {
+      "id": "S06",
+      "prompt": "Set up a minimal 5G SA core with NRF and AMF.",
+      "complexity": "simple",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 4,
+      "max_vnf_count": 8,
+      "notes": "User explicitly mentions NRF and AMF; SMF and UPF are minimum dependencies for data path."
+    },
+    {
+      "id": "M01",
+      "prompt": "Deploy a 5G core for 500 UEs with 2 Gbps throughput and eMBB slicing.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr", "nssf"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Medium-scale eMBB. All core VNFs needed; NSSF for slice management. Resources should scale for 500 UEs."
+    },
+    {
+      "id": "M02",
+      "prompt": "I need a 5G network that supports both eMBB and URLLC slices for 300 devices.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr", "nssf"],
+      "expected_slice_types": [1, 2],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Dual-slice deployment. NSSF is critical for inter-slice routing. SST=1 (eMBB) and SST=2 (URLLC)."
+    },
+    {
+      "id": "M03",
+      "prompt": "Deploy a 5G core with high availability, supporting 1000 subscribers and 5 Gbps aggregate throughput.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "HA implies higher resource allocation and possibly multiple replicas. 1000 UEs is medium scale."
+    },
+    {
+      "id": "M04",
+      "prompt": "Set up a 5G network for a university campus with 2000 students, supporting video streaming and web browsing.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr", "nssf"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Campus network. eMBB slice for video/web. 2000 UEs needs adequate AMF/UPF resources."
+    },
+    {
+      "id": "M05",
+      "prompt": "Deploy a 5G core for an IoT platform with 10000 sensors, prioritizing low power consumption and massive connectivity.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr", "nssf"],
+      "expected_slice_types": [3],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "mMTC use case (SST=3). Large number of devices but low throughput per device. NSSF to manage mMTC slice."
+    },
+    {
+      "id": "M06",
+      "prompt": "I want a 5G network for a warehouse with autonomous robots that need less than 10ms latency.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr", "nssf"],
+      "expected_slice_types": [2],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "URLLC use case (SST=2). Low latency critical. UPF must be edge-deployed for latency requirements."
+    },
+    {
+      "id": "M07",
+      "prompt": "Create a private 5G network for a manufacturing plant supporting quality inspection cameras and PLC controllers.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr", "nssf"],
+      "expected_slice_types": [1, 2],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Mixed use case: cameras need eMBB (high bandwidth), PLCs need URLLC (low latency). Dual slicing."
+    },
+    {
+      "id": "M08",
+      "prompt": "Deploy 5G for a sports stadium with 50000 spectators during live events, supporting AR and video replay.",
+      "complexity": "medium",
+      "expected_slice_types": [1],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Very high UE density. eMBB for AR/video. Massive capacity scaling needed. No expected_vnfs — LLM should decide based on scale."
+    },
+    {
+      "id": "M09",
+      "prompt": "Set up a 5G network for a fleet of 200 delivery drones requiring real-time telemetry and command links.",
+      "complexity": "medium",
+      "expected_slice_types": [2],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "URLLC for real-time control. Moderate device count but strict latency. No expected_vnfs — open for LLM interpretation."
+    },
+    {
+      "id": "M10",
+      "prompt": "I need a multi-tenant 5G core where three different enterprises can each have their own isolated network slice.",
+      "complexity": "medium",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf", "ausf", "udm", "udr", "nssf"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Multi-tenancy requires NSSF. Each tenant gets an isolated slice. Three eMBB slices with different SDs."
+    },
+    {
+      "id": "C01",
+      "prompt": "I need a network for a smart hospital with 500 IoT devices, low latency for surgical robots, high bandwidth for medical imaging, and reliable connectivity for patient monitoring systems.",
+      "complexity": "complex",
+      "expected_slice_types": [1, 2, 3],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Triple-slice: URLLC for surgical robots (SST=2), eMBB for imaging (SST=1), mMTC for IoT monitors (SST=3). No expected_vnfs — LLM must deduce network functions from clinical requirements."
+    },
+    {
+      "id": "C02",
+      "prompt": "Deploy a 5G network for a smart city covering traffic management, environmental sensors, emergency services communications, and public WiFi offloading.",
+      "complexity": "complex",
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Multi-domain smart city. Traffic = URLLC, sensors = mMTC, emergency = URLLC, WiFi = eMBB. Highly ambiguous — multiple valid topologies exist."
+    },
+    {
+      "id": "C03",
+      "prompt": "We're building a digital twin of our factory floor. We have 50 CNC machines, 200 environmental sensors, and 20 AGVs. The digital twin needs real-time sync with sub-5ms latency. Also need a dashboard for management.",
+      "complexity": "complex",
+      "expected_slice_types": [1, 2, 3],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Industry 4.0 digital twin. CNC/AGVs = URLLC, sensors = mMTC, dashboard = eMBB. Sub-5ms is aggressive SLA."
+    },
+    {
+      "id": "C04",
+      "prompt": "I need connectivity for a remote mining site. We have autonomous hauling trucks, worker safety wearables, drone surveillance, and a control room 50km away. No existing infrastructure.",
+      "complexity": "complex",
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Remote/harsh environment. Mixed URLLC (trucks, safety), mMTC (wearables), eMBB (drones/video). Greenfield implies full core needed."
+    },
+    {
+      "id": "C05",
+      "prompt": "Set up 5G for a concerts and festivals venue that operates seasonally. Peak capacity of 80000 people. Need to support mobile payments, live streaming, and artist backstage communications.",
+      "complexity": "complex",
+      "expected_slice_types": [1],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Extreme density, seasonal scaling. Payments need reliability, streaming needs bandwidth. Ambiguous whether URLLC is needed for payments."
+    },
+    {
+      "id": "C06",
+      "prompt": "Our port authority needs 5G for container tracking, crane automation, ship-to-shore communications, and customs inspection drones. We handle 5000 containers daily.",
+      "complexity": "complex",
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Smart port. Cranes = URLLC, tracking = mMTC, drones = eMBB/URLLC. Complex multi-use-case scenario."
+    },
+    {
+      "id": "C07",
+      "prompt": "Deploy a network for autonomous vehicle testing on a 10km test track. 50 vehicles, V2X communications, roadside sensors, and a central AI processing unit that needs to ingest 4K camera feeds from all vehicles simultaneously.",
+      "complexity": "complex",
+      "expected_slice_types": [1, 2],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "V2X = URLLC (critical safety), video = eMBB (high bandwidth). Very demanding SLA requirements."
+    },
+    {
+      "id": "C08",
+      "prompt": "We have a large agricultural estate. 1000 soil moisture sensors, 50 autonomous tractors, weather stations, and we want to enable precision agriculture with drone-based crop analysis.",
+      "complexity": "complex",
+      "expected_slice_types": [2, 3],
+      "min_vnf_count": 7,
+      "max_vnf_count": 10,
+      "notes": "Smart agriculture. Sensors = mMTC, tractors = URLLC, drones = eMBB. Coverage over large area is key challenge."
+    },
+    {
+      "id": "C09",
+      "prompt": "I just need fast internet for my office, maybe 20 people, nothing fancy.",
+      "complexity": "complex",
+      "expected_vnfs": ["nrf", "amf", "smf", "upf"],
+      "expected_slice_types": [1],
+      "min_vnf_count": 4,
+      "max_vnf_count": 8,
+      "notes": "Deliberately vague/casual language. Tests how well the LLM handles minimal, non-technical input. Should still produce a valid minimal core."
+    }
+  ]
+}

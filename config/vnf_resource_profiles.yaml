@@ -1,0 +1,184 @@
+# ============================================================
+# VNF Resource Profiles — Baseline + Scaling Formulas
+# ============================================================
+# Sources:
+#   - OAI Helm chart defaults (oai-cn5g-fed/charts/oai-5g-core)
+#   - 3GPP performance guidelines
+#   - Benchmarking data from lab deployments
+#
+# Format:
+#   base:     Resources for idle / minimal load
+#   scaling:  Additional resources per scaling unit
+#   max:      Upper bound (safety cap)
+
+version: "1.0"
+calibrated_date: "2026-03-01"
+environment: "oai-5g-core-v2"
+
+profiles:
+
+  # ── Control Plane VNFs ────────────────────────────────────
+
+  oai-amf:
+    description: "Access and Mobility Management Function"
+    category: control_plane
+    base:
+      cpu: "100m"
+      memory: "256Mi"
+    scaling:
+      per_1000_ue:
+        cpu: "200m"
+        memory: "100Mi"
+    max:
+      cpu: "2000m"
+      memory: "2Gi"
+    scaling_type: horizontal   # Stateless — scale by adding replicas
+    notes: "Handles N1/N2 signaling. Stateless, easy to scale horizontally."
+
+  oai-smf:
+    description: "Session Management Function"
+    category: control_plane
+    base:
+      cpu: "100m"
+      memory: "256Mi"
+    scaling:
+      per_500_sessions:
+        cpu: "150m"
+        memory: "80Mi"
+    max:
+      cpu: "1500m"
+      memory: "1.5Gi"
+    scaling_type: horizontal
+    notes: "Manages PDU sessions via N4/PFCP. Co-locate near UPF for N4 efficiency."
+
+  oai-nrf:
+    description: "Network Repository Function"
+    category: control_plane
+    base:
+      cpu: "100m"
+      memory: "128Mi"
+    scaling:
+      per_10_vnfs:
+        cpu: "50m"
+        memory: "32Mi"
+    max:
+      cpu: "500m"
+      memory: "512Mi"
+    scaling_type: vertical     # Single instance, low load
+    notes: "Service discovery. Usually 1 replica is sufficient."
+
+  oai-ausf:
+    description: "Authentication Server Function"
+    category: control_plane
+    base:
+      cpu: "100m"
+      memory: "128Mi"
+    scaling:
+      per_1000_ue:
+        cpu: "100m"
+        memory: "64Mi"
+    max:
+      cpu: "1000m"
+      memory: "1Gi"
+    scaling_type: horizontal
+    notes: "Handles 5G-AKA authentication."
+
+  oai-udm:
+    description: "Unified Data Management"
+    category: control_plane
+    base:
+      cpu: "100m"
+      memory: "128Mi"
+    scaling:
+      per_1000_ue:
+        cpu: "100m"
+        memory: "64Mi"
+    max:
+      cpu: "1000m"
+      memory: "1Gi"
+    scaling_type: horizontal
+    notes: "Subscriber data management. Pairs with UDR."
+
+  oai-udr:
+    description: "Unified Data Repository"
+    category: control_plane
+    base:
+      cpu: "100m"
+      memory: "128Mi"
+    scaling:
+      per_5000_subscribers:
+        cpu: "100m"
+        memory: "128Mi"
+    max:
+      cpu: "1000m"
+      memory: "1Gi"
+    scaling_type: vertical
+    notes: "Persistent subscriber storage. Stateful — scale vertically."
+
+  oai-nssf:
+    description: "Network Slice Selection Function"
+    category: control_plane
+    base:
+      cpu: "100m"
+      memory: "128Mi"
+    scaling:
+      per_5_slices:
+        cpu: "50m"
+        memory: "32Mi"
+    max:
+      cpu: "500m"
+      memory: "512Mi"
+    scaling_type: vertical
+    notes: "Slice selection. Low resource requirements."
+
+  # ── User Plane VNF ───────────────────────────────────────
+
+  oai-upf:
+    description: "User Plane Function"
+    category: user_plane
+    base:
+      cpu: "500m"
+      memory: "512Mi"
+    scaling:
+      per_1_gbps:
+        cpu: "800m"
+        memory: "256Mi"
+    max:
+      cpu: "4000m"
+      memory: "4Gi"
+    scaling_type: horizontal
+    notes: "Data plane packet processing. Most resource-intensive. Needs high-bandwidth network."
+
+  # ── RAN Simulator ────────────────────────────────────────
+
+  ueransim-gnb:
+    description: "UERANSIM gNodeB simulator"
+    category: ran_simulator
+    base:
+      cpu: "200m"
+      memory: "256Mi"
+    scaling:
+      per_100_ue:
+        cpu: "100m"
+        memory: "64Mi"
+    max:
+      cpu: "2000m"
+      memory: "2Gi"
+    scaling_type: horizontal
+    notes: "Simulated RAN. For testing only."
+
+  ueransim-ue:
+    description: "UERANSIM UE simulator"
+    category: ran_simulator
+    base:
+      cpu: "100m"
+      memory: "128Mi"
+    scaling:
+      per_100_ue:
+        cpu: "100m"
+        memory: "64Mi"
+    max:
+      cpu: "1000m"
+      memory: "1Gi"
+    scaling_type: horizontal
+    notes: "Simulated UEs. For testing only."

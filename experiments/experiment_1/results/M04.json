@@ -1,0 +1,28 @@
+{
+  "id": "M04",
+  "complexity": "medium",
+  "execution_time_sec": 177.24,
+  "scores": {
+    "vnf_coverage": 1.0,
+    "structural_completeness": 0.9999999999999999,
+    "resource_validity": 0.0,
+    "policy_pass_rate": 0.8,
+    "deployment_success_rate": 0.0,
+    "llm_judge": 0.65
+  },
+  "llm_judge_details": {
+    "scores": {
+      "completeness": 3,
+      "correctness": 4,
+      "resource_appropriateness": 3,
+      "slice_alignment": 5,
+      "sla_fitness": 3
+    },
+    "composite": 0.65,
+    "justification": "The core includes most mandatory VNFs but omits PCF/NEF and any RAN elements, limiting completeness. VNF types and inter\u2011connections follow 3GPP specs, though some optional links are absent, yielding good correctness. Resource requests are modest; for a campus of 2000 users with video streaming they may be marginal, so appropriateness is moderate. The single eMBB slice (SST=1) matches the intended use cases, giving full alignment. SLA latency of 10\u202fms is aggressive for end\u2011to\u2011end campus service, while throughput and availability are reasonable, resulting in a mixed SLA fitness."
+  },
+  "composite_score": 0.6225,
+  "generated_topology_id": "campus-5g-001",
+  "vnf_count": 8,
+  "error": null
+}

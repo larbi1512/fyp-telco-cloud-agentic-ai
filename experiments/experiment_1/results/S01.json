@@ -1,0 +1,28 @@
+{
+  "id": "S01",
+  "complexity": "simple",
+  "execution_time_sec": 178.67,
+  "scores": {
+    "vnf_coverage": 0.7,
+    "structural_completeness": 0.9999999999999999,
+    "resource_validity": 0.0,
+    "policy_pass_rate": 0.8,
+    "deployment_success_rate": 0.0,
+    "llm_judge": 0.6
+  },
+  "llm_judge_details": {
+    "scores": {
+      "completeness": 3,
+      "correctness": 2,
+      "resource_appropriateness": 4,
+      "slice_alignment": 4,
+      "sla_fitness": 4
+    },
+    "composite": 0.6,
+    "justification": "The topology covers most core VNFs but omits the PCF, reducing completeness. Several interface mappings are incorrect (e.g., AMF uses n1 instead of n11, SMF\u2011UPF uses n11 instead of n4, UE connection undefined), harming correctness. Resource requests are modest yet suitable for a basic deployment, so resource appropriateness is good. Adding an eMBB slice is acceptable though not required, giving reasonable slice alignment. SLA targets are realistic for a small core, yielding a solid SLA fitness score."
+  },
+  "composite_score": 0.555,
+  "generated_topology_id": "topo-3f9c2a7e-5b1d-4a8f-9c3e-2d6f7b8c9a01",
+  "vnf_count": 10,
+  "error": null
+}

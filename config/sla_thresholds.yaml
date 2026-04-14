@@ -1,0 +1,88 @@
+# ============================================================
+# SLA Threshold Definitions
+# ============================================================
+# Defines the contractual SLA objectives for the 5G network.
+# Used by the SLA Compliance Agent for monitoring and breach prediction.
+
+version: "1.0"
+
+sla_rules:
+
+  - name: "e2e_latency"
+    description: "End-to-end latency (UE to DN)"
+    metric: "latency_p99_ms"
+    threshold: 20
+    operator: "<"
+    unit: "ms"
+    severity: critical
+    measurement_window: "5m"
+    breach_prediction_horizon: "30m"
+
+  - name: "upf_throughput"
+    description: "User plane throughput"
+    metric: "upf_throughput_mbps"
+    threshold: 1000
+    operator: ">="
+    unit: "Mbps"
+    severity: critical
+    measurement_window: "5m"
+    breach_prediction_horizon: "30m"
+
+  - name: "service_availability"
+    description: "Overall 5G core service availability"
+    metric: "availability_pct"
+    threshold: 99.9
+    operator: ">="
+    unit: "%"
+    severity: critical
+    measurement_window: "1h"
+    breach_prediction_horizon: "1h"
+
+  - name: "registration_success_rate"
+    description: "UE registration success rate"
+    metric: "amf_registration_success_pct"
+    threshold: 99.0
+    operator: ">="
+    unit: "%"
+    severity: high
+    measurement_window: "5m"
+    breach_prediction_horizon: "15m"
+
+  - name: "pdu_session_setup_time"
+    description: "PDU session establishment time"
+    metric: "pdu_session_setup_ms"
+    threshold: 500
+    operator: "<"
+    unit: "ms"
+    severity: high
+    measurement_window: "5m"
+    breach_prediction_horizon: "15m"
+
+  - name: "packet_loss_rate"
+    description: "User plane packet loss"
+    metric: "upf_packet_loss_pct"
+    threshold: 0.1
+    operator: "<"
+    unit: "%"
+    severity: critical
+    measurement_window: "5m"
+    breach_prediction_horizon: "15m"
+
+# Threshold Levels for Infrastructure Metrics
+
+infra_thresholds:
+
+  cpu_utilization:
+    warning: 70
+    critical: 85
+    unit: "%"
+
+  memory_utilization:
+    warning: 75
+    critical: 90
+    unit: "%"
+
+  pod_restart_count:
+    warning: 3
+    critical: 5
+    unit: "restarts/hour"

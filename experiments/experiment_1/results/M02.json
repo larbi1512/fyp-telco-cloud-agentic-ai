@@ -1,0 +1,28 @@
+{
+  "id": "M02",
+  "complexity": "medium",
+  "execution_time_sec": 174.17,
+  "scores": {
+    "vnf_coverage": 0.8,
+    "structural_completeness": 0.9999999999999999,
+    "resource_validity": 0.0,
+    "policy_pass_rate": 0.8,
+    "deployment_success_rate": 0.0,
+    "llm_judge": 0.6
+  },
+  "llm_judge_details": {
+    "scores": {
+      "completeness": 4,
+      "correctness": 3,
+      "resource_appropriateness": 2,
+      "slice_alignment": 5,
+      "sla_fitness": 3
+    },
+    "composite": 0.6,
+    "justification": "The topology includes the core VNFs, gNB and 300 UE instances, covering the basic components needed for eMBB and URLLC slices (completeness 4). VNF types are correct, but several interface definitions are mismatched (e.g., UPF N3 uses NGAP instead of GTP\u2011U, gNB N3 also mis\u2011labelled), leading to moderate correctness (3). Resource requests are overly generous for each UE and modest for core functions, not proportional to a 300\u2011device scenario (resource_appropriateness 2). Slice definitions use proper SST values (1 for eMBB, 2 for URLLC) and are referenced by all VNFs, so slice alignment is excellent (5). SLA targets are reasonable for eMBB but too lax for URLLC latency (typically 1\u202fms) and modest throughput for 300 devices, yielding a partial fit (3)."
+  },
+  "composite_score": 0.57,
+  "generated_topology_id": "topo-20260412-001",
+  "vnf_count": 10,
+  "error": "Topology has issues: Connection references unknown VNF: internet"
+}

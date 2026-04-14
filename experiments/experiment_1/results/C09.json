@@ -1,0 +1,28 @@
+{
+  "id": "C09",
+  "complexity": "complex",
+  "execution_time_sec": 176.48,
+  "scores": {
+    "vnf_coverage": 0.4,
+    "structural_completeness": 0.9999999999999999,
+    "resource_validity": 0.0,
+    "policy_pass_rate": 0.8,
+    "deployment_success_rate": 0.0,
+    "llm_judge": 0.75
+  },
+  "llm_judge_details": {
+    "scores": {
+      "completeness": 4,
+      "correctness": 2,
+      "resource_appropriateness": 4,
+      "slice_alignment": 5,
+      "sla_fitness": 5
+    },
+    "composite": 0.75,
+    "justification": "The topology includes all core VNFs needed for office broadband (completeness good) but adds many extra functions not required for a simple use case. VNF types are correct, yet the listed interface protocols (HTTP for N1/N2/N3 etc.) and some connections do not follow 3GPP specifications, leading to major correctness issues. Resource requests are modest and roughly match a 20\u2011user scenario, so resource sizing is appropriate. The chosen eMBB slice (SST=1) aligns well with the intent. SLA targets (20\u202fms latency, 1\u202fGbps throughput, 99.9% availability) are reasonable for fast office internet."
+  },
+  "composite_score": 0.5775,
+  "generated_topology_id": "topo-20260412-001",
+  "vnf_count": 10,
+  "error": null
+}

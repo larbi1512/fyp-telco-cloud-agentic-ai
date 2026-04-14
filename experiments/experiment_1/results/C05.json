@@ -1,0 +1,28 @@
+{
+  "id": "C05",
+  "complexity": "complex",
+  "execution_time_sec": 178.22,
+  "scores": {
+    "vnf_coverage": -1.0,
+    "structural_completeness": 0.9999999999999999,
+    "resource_validity": 0.0,
+    "policy_pass_rate": 0.8,
+    "deployment_success_rate": 0.0,
+    "llm_judge": 0.6
+  },
+  "llm_judge_details": {
+    "scores": {
+      "completeness": 3,
+      "correctness": 4,
+      "resource_appropriateness": 2,
+      "slice_alignment": 5,
+      "sla_fitness": 3
+    },
+    "composite": 0.6,
+    "justification": "Core VNFs are present but missing PCF, NEF and RAN elements, so the topology is only partially complete. VNF types and basic interconnections follow 3GPP specs, though some optional links (e.g., NSSF to AMF/SMF) are omitted, yielding mostly correct design. Resource requests are far too low for a venue of 80,000 users, especially the UPF CPU/memory, making the allocation unrealistic. Slice definitions (eMBB for payments/streaming, URLLC for backstage) correctly map to the use cases. SLA targets are modest; latency of 20\u202fms is high for URLLC and 5\u202fGbps throughput may be insufficient for massive live\u2011streaming demand, so the SLA is only partially appropriate."
+  },
+  "composite_score": 0.54,
+  "generated_topology_id": "topo-20260412-001",
+  "vnf_count": 8,
+  "error": null
+}

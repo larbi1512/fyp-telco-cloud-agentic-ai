@@ -1,0 +1,28 @@
+{
+  "id": "M08",
+  "complexity": "medium",
+  "execution_time_sec": 172.33,
+  "scores": {
+    "vnf_coverage": -1.0,
+    "structural_completeness": 0.9999999999999999,
+    "resource_validity": 0.0,
+    "policy_pass_rate": 0.8,
+    "deployment_success_rate": 0.0,
+    "llm_judge": 0.45
+  },
+  "llm_judge_details": {
+    "scores": {
+      "completeness": 2,
+      "correctness": 4,
+      "resource_appropriateness": 2,
+      "slice_alignment": 2,
+      "sla_fitness": 4
+    },
+    "composite": 0.45,
+    "justification": "The topology omits several core VNFs (e.g., PCF, NEF) and provides only a single gNB, which is insufficient for 50,000 spectators, reducing completeness. VNF types and basic interconnections follow 3GPP definitions, so correctness is mostly sound. Resource requests are far too low for the expected load, indicating poor resource appropriateness. Only an eMBB slice (SST=1) is defined, while AR use\u2011cases would benefit from a URLLC slice, so slice alignment is weak. The SLA (10\u202fms latency, 12.5\u202fGbps throughput, 99.9\u202f% availability) is reasonable for the scenario, giving a decent SLA fitness score."
+  },
+  "composite_score": 0.45,
+  "generated_topology_id": "stadium-5g-2026-04-12-001",
+  "vnf_count": 9,
+  "error": null
+}
