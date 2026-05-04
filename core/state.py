@@ -67,6 +67,7 @@ class ValidationReport(TypedDict, total=False):
     conflicts: list[str]
     decision: Literal["GO", "NO_GO"]
     reasons: list[str]
+    violation_count: int
 
 
 class MetricEvent(TypedDict, total=False):
@@ -138,9 +139,10 @@ class OrchestratorState(TypedDict, total=False):
     new values are appended rather than overwritten.
     """
 
-    # User interaction 
+    # User interaction
     user_intent: str                   # Raw natural language from user
     parsed_intent: dict[str, Any]      # Structured intent from LLM parsing
+    intent_features: dict[str, Any]    # structured_features from intents_v2 (injected by harness)
     
     # Pre-deployment pipeline 
     topology: TopologyBlueprint | None
@@ -158,10 +160,16 @@ class OrchestratorState(TypedDict, total=False):
     # Deployment results (Phase 4)
     deployment_results: list[dict[str, Any]]  # Per-VNF deployment outcomes
 
-    # Conversation & control flow 
+    # Conversation & control flow
     messages: Annotated[list[dict[str, str]], operator.add]  # {role, content}
     current_agent: str                 # Name of the active agent node
     requires_approval: bool            # True when HITL checkpoint is active
     user_approved: bool | None         # User's HITL decision
     error: str | None                  # Last error message (if any)
     phase: Literal["pre_deployment", "deploying", "post_deployment", "idle"]
+
+    # Append-only log of HITL gate triggers and synthetic-critic rejections.
+    # Each entry: {"source": "topology_review_gate"|"deployment_review_gate"|"synthetic_critic",
+    #              "would_approve": bool, "reasons": list[str], "ts": iso8601}.
+    # Read by the experiment harness to compute the "Human interventions" metric.
+    intervention_log: Annotated[list[dict[str, Any]], operator.add]

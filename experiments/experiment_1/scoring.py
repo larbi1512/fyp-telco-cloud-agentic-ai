@@ -153,19 +153,28 @@ def policy_pass_rate(validation_report: dict[str, Any]) -> float:
 
 def deployment_success_rate(deployment_results: list[dict[str, Any]]) -> float:
     """
-    Compute the ratio of successful deployments.
+    Ratio of successful deployments over *attempted* deployments.
 
-    Returns a float in [0.0, 1.0].
+    `skipped` results — VNFs whose chart is not in the deployer's CHART_MAP
+    (e.g. ueransim-gnb / ueransim-ue when only OAI core charts are wired in)
+    — are excluded from the denominator. They represent a deployer-vocabulary
+    gap, not a deployment failure, and a skipped result was never a real
+    install attempt.
+
+    Returns 0.0 if nothing was attempted.
     """
     if not deployment_results:
         return 0.0
 
-    total = len(deployment_results)
+    attempted = [r for r in deployment_results if r.get("status") != "skipped"]
+    if not attempted:
+        return 0.0
+
     success = sum(
-        1 for r in deployment_results
+        1 for r in attempted
         if r.get("status") in ("installed", "upgraded")
     )
-    return success / total
+    return success / len(attempted)
 
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

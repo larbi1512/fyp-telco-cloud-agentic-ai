@@ -1,0 +1,114 @@
+# B1 Manual baseline calibration data.
+#
+# These numbers parameterise the stochastic emulator at b1_manual.py.
+# An operator who is *not* using the MAS performs the deployment by hand:
+#   1. Reads the runbook/intent
+#   2. Copies a chart's values.yaml as a starting point
+#   3. Edits per-VNF fields (replicas, resources, slice, PLMN, image tag, ...)
+#   4. Runs `helm template` / `kubectl apply --dry-run` until it converges
+#   5. Runs the real `helm install`
+#
+# Each step contributes to (a) wall-clock time and (b) the chance of leaving an
+# error in the artifact. The emulator draws from these distributions to produce
+# a RunArtifact that is comparable to the LLM-driven systems.
+#
+# CURRENT STATUS: pre-filled with literature-anchored defaults. Replace the
+# `pilot_*` blocks with measurements from your actual 2-hour pilot run; the
+# `literature_*` blocks remain as a fallback / sanity reference.
+#
+# Pilot protocol (2 hours, one operator, recorded once):
+#   - Pick 2 intents from the dataset: 1 simple (e.g. S01) and 1 complex (e.g. C03).
+#   - For each: time per VNF the operator's "lookup + edit" duration with a
+#     stopwatch (segment-by-segment). Note iterations until `helm template`
+#     and `kubectl apply --dry-run` both pass clean. Count errors that
+#     would have shipped if not caught.
+#   - After the run, record the calibration numbers in the `pilot_*` sections
+#     below. Set `source: pilot` to switch the emulator over.
+#
+# References (literature defaults):
+#   - Yousaf F.Z. et al. "NFV and SDN — Key Technology Enablers for 5G Networks", 2017.
+#       Reports manual VNF onboarding ~5–8 minutes per VNF on a calibrated test bed.
+#   - Benzaid C., Taleb T. "AI-Driven Zero Touch Network and Service Management
+#       in 5G and Beyond", IEEE Network 2020. Cites typical operator config-error
+#       rates of 10–15% in manual deployments.
+#   - 5G-PPP Architecture WG, "View on 5G Architecture", 2020 (timing reference).
+
+version: "1.0"
+calibrated_date: "2026-04-26"
+source: literature                     # set to "pilot" once pilot is complete
+
+# Active block — emulator reads from `active.*` selected by `source`.
+active:
+  source: literature
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Literature-anchored defaults (used until pilot data is recorded)
+# ─────────────────────────────────────────────────────────────────────────────
+literature_per_vnf_edit_sec:
+  # Time to find the right field in the chart, copy a known-good template,
+  # and edit per-VNF values. Lognormal in practice; we model with mean+sd.
+  mean: 95
+  sd: 25
+
+literature_per_intent_understanding_sec:
+  # Time to read the intent, sketch a target topology, and decide what to
+  # change vs. defaults. Scales with complexity.
+  simple: 60
+  medium: 180
+  complex: 420
+
+literature_helm_install_sec:
+  # Time for `helm install` plus follow-up edits if the install fails.
+  mean: 45
+  sd: 15
+
+literature_iterations_to_converge:
+  # Number of `helm template` / dry-run iterations needed before clean output.
+  mean: 2.1
+  sd: 0.9
+
+literature_config_error_rate_pct: 12.0
+  # Pct of generated artifacts that ship with at least one error a real
+  # operator would not have caught. Drives "Config error rate" metric.
+
+literature_per_vnf_intervention_count:
+  # Average HITL-equivalent moments per VNF (manual edits, second guesses,
+  # re-reading runbook). Drives "Human interventions" metric.
+  mean: 1.2
+  sd: 0.4
+
+literature_error_kinds:
+  # Stochastic errors injected by the emulator. Each row: name, prob, what it
+  # mutates in the helm_values dict. Probabilities are conditional on the run
+  # having any error at all (so they're normalised internally).
+  - name: omitted_probe
+    weight: 0.30
+    description: "drops readinessProbe and livenessProbe — operator forgot"
+  - name: missing_resource_limits
+    weight: 0.25
+    description: "leaves resources.define=false — common runbook oversight"
+  - name: latest_image_tag
+    weight: 0.15
+    description: "uses image version 'latest' instead of pinned"
+  - name: wrong_plmn
+    weight: 0.10
+    description: "off-by-one MCC/MNC — typo from copying"
+  - name: undersized_upf
+    weight: 0.10
+    description: "operator copied basic chart but forgot UPF needs more cpu/mem"
+  - name: missing_nssf
+    weight: 0.10
+    description: "operator skipped NSSF for multi-slice intent — runbook gap"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Pilot block (FILL IN AFTER 2-HOUR PILOT)
+# Once recorded, set active.source: pilot above.
+# ─────────────────────────────────────────────────────────────────────────────
+pilot_per_vnf_edit_sec:        {mean: null, sd: null}
+pilot_per_intent_understanding_sec: {simple: null, medium: null, complex: null}
+pilot_helm_install_sec:        {mean: null, sd: null}
+pilot_iterations_to_converge:  {mean: null, sd: null}
+pilot_config_error_rate_pct:   null
+pilot_per_vnf_intervention_count: {mean: null, sd: null}
+pilot_error_kinds: []           # list of {name, weight, description}
+pilot_notes: ""                  # free text — date, operator id, anomalies

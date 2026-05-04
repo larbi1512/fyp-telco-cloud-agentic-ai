@@ -187,6 +187,194 @@ class K8sClient:
             logger.error("Scale failed for %s/%s: %s", ns, name, exc.reason)
             raise
 
+    def patch_deployment_resources(
+        self,
+        name: str,
+        container_name: str,
+        factor: float = 1.5,
+        namespace: str | None = None,
+    ) -> dict[str, Any]:
+        """
+        Multiply the resource requests/limits of *container_name* inside
+        the Deployment *name* by *factor*.
+
+        Uses a strategic-merge patch on the Deployment spec.  If the
+        container's existing limits cannot be read, applies sensible
+        defaults (500m CPU, 512Mi memory) before multiplying.
+        """
+        ns = namespace or self.default_ns
+
+        # Read the current Deployment to find existing resource values.
+        try:
+            dep = self._apps.read_namespaced_deployment(name, ns)
+        except ApiException as exc:
+            logger.error(
+                "patch_deployment_resources: read failed for %s/%s: %s",
+                ns, name, exc.reason,
+            )
+            raise
+
+        # Locate the target container.
+        containers = dep.spec.template.spec.containers or []
+        target = None
+        for c in containers:
+            if c.name == container_name:
+                target = c
+                break
+
+        if target is None:
+            raise ValueError(
+                f"Container '{container_name}' not found in Deployment '{name}' "
+                f"(available: {[c.name for c in containers]})"
+            )
+
+        # Extract current limits (fall back to defaults).
+        current_limits = {}
+        if target.resources and target.resources.limits:
+            current_limits = dict(target.resources.limits)
+        current_cpu = current_limits.get("cpu", "500m")
+        current_mem = current_limits.get("memory", "512Mi")
+
+        # Parse, multiply, and format back.
+        new_cpu = self._scale_cpu(current_cpu, factor)
+        new_mem = self._scale_memory(current_mem, factor)
+
+        # Build strategic-merge patch.
+        patch_body = {
+            "spec": {
+                "template": {
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": container_name,
+                                "resources": {
+                                    "limits": {"cpu": new_cpu, "memory": new_mem},
+                                    "requests": {"cpu": new_cpu, "memory": new_mem},
+                                },
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+
+        try:
+            self._apps.patch_namespaced_deployment(name, ns, body=patch_body)
+            logger.info(
+                "Patched resources for %s/%s container=%s: "
+                "cpu %s→%s, mem %s→%s (factor=%.2f)",
+                ns, name, container_name,
+                current_cpu, new_cpu, current_mem, new_mem, factor,
+            )
+            return {
+                "status": "ok",
+                "deployment": name,
+                "container": container_name,
+                "old": {"cpu": current_cpu, "memory": current_mem},
+                "new": {"cpu": new_cpu, "memory": new_mem},
+            }
+        except ApiException as exc:
+            logger.error(
+                "patch_deployment_resources failed for %s/%s: %s",
+                ns, name, exc.reason,
+            )
+            raise
+
+    def rollout_restart_deployment(
+        self,
+        name: str,
+        namespace: str | None = None,
+    ) -> dict[str, Any]:
+        """
+        Trigger a rolling restart of a Deployment by annotating the pod
+        template with the current timestamp (same mechanism as
+        ``kubectl rollout restart``).
+        """
+        ns = namespace or self.default_ns
+        from datetime import datetime
+
+        patch_body = {
+            "spec": {
+                "template": {
+                    "metadata": {
+                        "annotations": {
+                            "kubectl.kubernetes.io/restartedAt": datetime.utcnow().isoformat(),
+                        }
+                    }
+                }
+            }
+        }
+        try:
+            self._apps.patch_namespaced_deployment(name, ns, body=patch_body)
+            logger.info("Rollout restart triggered for %s/%s", ns, name)
+            return {"status": "ok", "deployment": name, "action": "rollout_restart"}
+        except ApiException as exc:
+            logger.error("Rollout restart failed for %s/%s: %s", ns, name, exc.reason)
+            raise
+
+    # ------------------------------------------------------------------ #
+    #  ConfigMap patching                                                    #
+    # ------------------------------------------------------------------ #
+
+    def patch_configmap(
+        self,
+        name: str,
+        updates: dict[str, str],
+        namespace: str | None = None,
+    ) -> dict[str, Any]:
+        """
+        Merge *updates* into an existing ConfigMap's ``data`` field.
+
+        Uses a strategic-merge patch so only the specified keys are
+        changed; all other keys in the ConfigMap are preserved.
+        """
+        ns = namespace or self.default_ns
+        patch_body = {"data": updates}
+
+        try:
+            self._core.patch_namespaced_config_map(name, ns, body=patch_body)
+            logger.info(
+                "Patched ConfigMap %s/%s (keys=%s)",
+                ns, name, list(updates.keys()),
+            )
+            return {
+                "status": "ok",
+                "config_map": name,
+                "updated_keys": list(updates.keys()),
+            }
+        except ApiException as exc:
+            logger.error(
+                "patch_configmap failed for %s/%s: %s", ns, name, exc.reason,
+            )
+            raise
+
+    # ------------------------------------------------------------------ #
+    #  Resource-string helpers                                              #
+    # ------------------------------------------------------------------ #
+
+    @staticmethod
+    def _scale_cpu(current: str, factor: float) -> str:
+        """Scale a Kubernetes CPU string by *factor*, returning millicores."""
+        s = str(current).strip()
+        if s.endswith("m"):
+            millicores = float(s[:-1])
+        else:
+            millicores = float(s) * 1000
+        new_m = int(millicores * factor)
+        return f"{new_m}m"
+
+    @staticmethod
+    def _scale_memory(current: str, factor: float) -> str:
+        """Scale a Kubernetes memory string by *factor*, preserving the unit."""
+        s = str(current).strip()
+        for suffix in ("Gi", "Mi", "Ki", "G", "M", "K"):
+            if s.endswith(suffix):
+                numeric = float(s[: -len(suffix)])
+                new_val = int(numeric * factor)
+                return f"{new_val}{suffix}"
+        # Plain bytes
+        return str(int(float(s) * factor))
+
     # ------------------------------------------------------------------ #
     #  Manifest application (for dry-run and live apply)                    #
     # ------------------------------------------------------------------ #
