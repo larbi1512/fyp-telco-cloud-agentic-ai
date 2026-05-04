@@ -29,6 +29,7 @@ from config.settings import (
     VLLM_BASE_URL,
     VLLM_MODEL,
     VLLM_API_KEY,
+    VLLM_MAX_TOKENS,
     PROMPTS_DIR,
 )
 
@@ -52,7 +53,7 @@ class LLMCore:
                 model=VLLM_MODEL,
                 api_key=VLLM_API_KEY,
                 temperature=OLLAMA_TEMPERATURE,
-                max_tokens=OLLAMA_MAX_TOKENS,
+                max_tokens=VLLM_MAX_TOKENS,
             )
         else:
             logger.info("Initializing LLMCore with Ollama Backend")

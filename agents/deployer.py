@@ -31,24 +31,46 @@ from infra.k8s_client import K8sClient
 from infra.helm_manager import HelmManager
 from infra.grafana_client import GrafanaClient
 
+try:
+    from infra.redis_client import RedisClient as _RedisClient
+    _REDIS_AVAILABLE = True
+except ImportError:
+    _REDIS_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 # Directory for writing temporary Helm values files
 DEPLOY_DIR = Path("/tmp/fyp_deploy")
 
-# Map of VNF type → chart subdirectory under charts/oai-5g-core/
-CHART_MAP = {
-    "nrf": "oai-nrf",
-    "amf": "oai-amf",
-    "smf": "oai-smf",
-    "upf": "oai-upf",
-    "ausf": "oai-ausf",
-    "udm": "oai-udm",
-    "udr": "oai-udr",
-    "nssf": "oai-nssf",
+# Map of VNF type → chart subdirectory.
+# Core NFs and RAN simulators live under different chart roots; the deployer
+# searches both. Aliases (ueransim-*, gnodeb, ue) map planner-emitted names
+# onto the canonical chart so a topology emitted as `ueransim-gnb` resolves.
+CHART_MAP: dict[str, str] = {
+    # Core (under charts/oai-5g-core/)
+    "nrf":          "oai-nrf",
+    "amf":          "oai-amf",
+    "smf":          "oai-smf",
+    "upf":          "oai-upf",
+    "ausf":         "oai-ausf",
+    "udm":          "oai-udm",
+    "udr":          "oai-udr",
+    "nssf":         "oai-nssf",
+    # RAN (under charts/oai-5g-ran/, RFsim mode)
+    "gnb":          "oai-gnb",
+    "gnodeb":       "oai-gnb",
+    "ueransim-gnb": "oai-gnb",
+    "nr-ue":        "oai-nr-ue",
+    "ue":           "oai-nr-ue",
+    "ueransim-ue":  "oai-nr-ue",
 }
 
-CHARTS_BASE = PROJECT_ROOT / "charts" / "oai-5g-core"
+# Chart bases searched in order — first hit wins.
+CHARTS_BASE = PROJECT_ROOT / "charts" / "oai-5g-core"  # kept for backward compat
+CHART_BASES = [
+    PROJECT_ROOT / "charts" / "oai-5g-core",
+    PROJECT_ROOT / "charts" / "oai-5g-ran",
+]
 
 
 def _write_values_file(vnf_name: str, helm_values: dict[str, Any]) -> Path:
@@ -62,14 +84,15 @@ def _write_values_file(vnf_name: str, helm_values: dict[str, Any]) -> Path:
 
 
 def _resolve_chart_path(vnf_name: str) -> str | None:
-    """Resolve the local chart directory for a VNF."""
+    """Resolve the local chart directory for a VNF (core or RAN)."""
     vnf_type = vnf_name.lower().replace("oai-", "")
     chart_dir_name = CHART_MAP.get(vnf_type)
     if not chart_dir_name:
         return None
-    chart_path = CHARTS_BASE / chart_dir_name
-    if chart_path.is_dir():
-        return str(chart_path)
+    for base in CHART_BASES:
+        chart_path = base / chart_dir_name
+        if chart_path.is_dir():
+            return str(chart_path)
     return None
 
 
@@ -284,6 +307,25 @@ def deployer_agent(state: OrchestratorState) -> dict[str, Any]:
         summary_lines.append(f"\n   **Pod Health:** {running}/{total} pods running and ready")
 
     summary = "\n".join(summary_lines)
+
+    # ── Persist to Redis (best-effort) ──
+    if _REDIS_AVAILABLE:
+        try:
+            _redis = _RedisClient()
+            if _redis.ping():
+                topology_id = (state.get("topology") or {}).get("topology_id", "")
+                for r in deployment_results:
+                    _redis.push_deployment(r, topology_id=topology_id)
+                if state.get("topology"):
+                    _redis.set_topology(dict(state["topology"]))
+                if state.get("resource_allocation"):
+                    _redis.set_resource_allocation(dict(state["resource_allocation"]))
+                logger.info(
+                    "Deployer: persisted %d deployment results + topology to Redis",
+                    len(deployment_results),
+                )
+        except Exception as exc:
+            logger.warning("Deployer: Redis persistence failed (non-critical): %s", exc)
 
     return {
         "deployment_results": deployment_results,

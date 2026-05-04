@@ -369,6 +369,11 @@ def policy_validator_agent(state: OrchestratorState) -> dict[str, Any]:
     decision, reasons = determine_decision(policy_checks, llm_conflicts)
     logger.info("Policy Validator decision: %s", decision)
 
+    # Aggregate violation counts across all checks (consumed by the experiment
+    # harness to compute the "Policy violation rate" metric without re-walking
+    # the per-check report).
+    violation_count = sum(int(c.get("violations", 0)) for c in policy_checks.values())
+
     # Build ValidationReport
     validation_report: ValidationReport = {
         "topology_id": topology_id,
@@ -377,6 +382,7 @@ def policy_validator_agent(state: OrchestratorState) -> dict[str, Any]:
         "conflicts": llm_conflicts,
         "decision": decision,
         "reasons": reasons,
+        "violation_count": violation_count,
     }
 
     # Build summary message

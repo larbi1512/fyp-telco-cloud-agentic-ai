@@ -1,8 +1,11 @@
 """
-LangGraph State Machine — Pre-Deployment + Deployment Pipeline.
+LangGraph State Machine — Pre-Deployment + Deployment + Post-Deployment.
 
-Compiles a StateGraph that routes the OrchestratorState through:
+Pre-deployment graph:
   Network Planner → (HITL) → Resource Allocator → VNF Configurator → Policy Validator → (HITL) → Deployer → END
+
+Post-deployment graph (monitoring / remediation loop):
+  KPI Monitor → Anomaly Detector → SLA Compliance → Planner Reasoning → Auto-Scaler → END
 
 Human-in-the-Loop checkpoints pause execution so the CLI can prompt
 the user for approval before continuing.
@@ -23,6 +26,12 @@ from agents import (
     vnf_configurator_agent,
     policy_validator_agent,
     deployer_agent,
+    kpi_monitor_agent,
+    anomaly_detector_agent,
+    sla_compliance_agent,
+    planner_reasoning_agent,
+    auto_scaler_agent,
+    fault_recovery_agent,
 )
 
 logger = logging.getLogger(__name__)
@@ -92,7 +101,7 @@ def route_after_deploy_decision(
     return "__end__"
 
 
-#  Graph builder 
+#  Graph builder — pre-deployment 
 
 def build_pre_deployment_graph() -> tuple:
     """
@@ -149,4 +158,47 @@ def build_pre_deployment_graph() -> tuple:
     )
 
     logger.info("Pre-deployment graph compiled (nodes=%d)", len(builder.nodes))
+    return graph, memory
+
+
+#  Graph builder — post-deployment (monitoring / remediation) 
+
+def build_post_deployment_graph() -> tuple:
+    """
+    Build and compile the post-deployment monitoring LangGraph.
+
+    The graph runs a single monitoring cycle:
+      KPI Monitor → Anomaly Detector → SLA Compliance → Planner Reasoning
+        → Auto-Scaler → Fault Recovery → END
+
+    Callers are expected to invoke this graph repeatedly (e.g. on a timer
+    or in a while-loop) to achieve continuous monitoring.
+
+    Returns:
+        (compiled_graph, memory_saver) tuple.
+    """
+    builder = StateGraph(OrchestratorState)
+
+    # ── Add nodes ──
+    builder.add_node("kpi_monitor", kpi_monitor_agent)
+    builder.add_node("anomaly_detector", anomaly_detector_agent)
+    builder.add_node("sla_compliance", sla_compliance_agent)
+    builder.add_node("planner_reasoning", planner_reasoning_agent)
+    builder.add_node("auto_scaler", auto_scaler_agent)
+    builder.add_node("fault_recovery", fault_recovery_agent)
+
+    # ── Edges — linear pipeline ──
+    builder.add_edge(START, "kpi_monitor")
+    builder.add_edge("kpi_monitor", "anomaly_detector")
+    builder.add_edge("anomaly_detector", "sla_compliance")
+    builder.add_edge("sla_compliance", "planner_reasoning")
+    builder.add_edge("planner_reasoning", "auto_scaler")
+    builder.add_edge("auto_scaler", "fault_recovery")
+    builder.add_edge("fault_recovery", END)
+
+    # ── Compile with memory ──
+    memory = MemorySaver()
+    graph = builder.compile(checkpointer=memory)
+
+    logger.info("Post-deployment graph compiled (nodes=%d)", len(builder.nodes))
     return graph, memory

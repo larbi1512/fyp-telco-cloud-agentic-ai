@@ -152,33 +152,33 @@ profiles:
   # ── RAN Simulator ────────────────────────────────────────
 
   ueransim-gnb:
-    description: "UERANSIM gNodeB simulator"
+    description: "OAI gNB in RFsim mode (planner alias: ueransim-gnb → oai-gnb)"
     category: ran_simulator
     base:
-      cpu: "200m"
-      memory: "256Mi"
+      cpu: "1500m"
+      memory: "1536Mi"
     scaling:
       per_100_ue:
         cpu: "100m"
         memory: "64Mi"
     max:
-      cpu: "2000m"
-      memory: "2Gi"
+      cpu: "2500m"
+      memory: "3Gi"
     scaling_type: horizontal
-    notes: "Simulated RAN. For testing only."
+    notes: "OAI gNB binary in --rfsim mode. Memory floor avoids OOMKilled — UERANSIM-era sizing was too small for OAI."
 
   ueransim-ue:
-    description: "UERANSIM UE simulator"
+    description: "OAI NR-UE in RFsim mode (planner alias: ueransim-ue → oai-nr-ue)"
     category: ran_simulator
     base:
-      cpu: "100m"
-      memory: "128Mi"
+      cpu: "1000m"
+      memory: "1024Mi"
     scaling:
       per_100_ue:
-        cpu: "100m"
-        memory: "64Mi"
+        cpu: "50m"
+        memory: "32Mi"
     max:
-      cpu: "1000m"
-      memory: "1Gi"
+      cpu: "1800m"
+      memory: "1536Mi"
     scaling_type: horizontal
-    notes: "Simulated UEs. For testing only."
+    notes: "OAI NR-UE in --rfsim mode. Same OOM reasoning as gNB."

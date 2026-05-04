@@ -19,6 +19,7 @@ OLLAMA_MAX_TOKENS: int = int(os.getenv("OLLAMA_MAX_TOKENS", "4096"))
 VLLM_BASE_URL: str = os.getenv("VLLM_BASE_URL", "http://localhost:8000/v1")
 VLLM_MODEL: str = os.getenv("VLLM_MODEL", "gpt-oss:120b")
 VLLM_API_KEY: str = os.getenv("VLLM_API_KEY", "EMPTY")  
+VLLM_MAX_TOKENS: int = int(os.getenv("VLLM_MAX_TOKENS", "4096"))
 
 # Remote Kubernetes 
 KUBECONFIG_PATH: str = os.getenv("KUBECONFIG_PATH", "~/.kube/config")
@@ -28,6 +29,9 @@ K8S_NAMESPACE: str = os.getenv("K8S_NAMESPACE", "oai-5g")
 PROMETHEUS_URL: str = os.getenv("PROMETHEUS_URL", "http://localhost:9090")
 GRAFANA_URL: str = os.getenv("GRAFANA_URL", "http://localhost:3000")
 GRAFANA_API_KEY: str = os.getenv("GRAFANA_API_KEY", "")
+
+# Redis Shared State Store
+REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
 # Logging
 LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")

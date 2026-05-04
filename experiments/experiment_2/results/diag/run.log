@@ -1,0 +1,597 @@
+Skipping ueransim-gnb — no chart found
+Skipping ueransim-ue — no chart found
+Skipping ueransim-gnb — no chart found
+Skipping ueransim-ue — no chart found
+Skipping ueransim-gnb — no chart found
+Skipping ueransim-ue — no chart found
+Skipping ueransim-gnb — no chart found
+Running MAS on 4 intents: ['S02', 'N02', 'M04', 'C06']
+
+=== S02 ===
+{
+  "topology_vnfs": [
+    {
+      "name": "oai-nrf",
+      "type": "oai-nrf"
+    },
+    {
+      "name": "oai-amf",
+      "type": "oai-amf"
+    },
+    {
+      "name": "oai-smf",
+      "type": "oai-smf"
+    },
+    {
+      "name": "oai-upf",
+      "type": "oai-upf"
+    },
+    {
+      "name": "oai-ausf",
+      "type": "oai-ausf"
+    },
+    {
+      "name": "oai-udm",
+      "type": "oai-udm"
+    },
+    {
+      "name": "oai-udr",
+      "type": "oai-udr"
+    },
+    {
+      "name": "oai-nssf",
+      "type": "oai-nssf"
+    },
+    {
+      "name": "ueransim-gnb",
+      "type": "ueransim-gnb"
+    },
+    {
+      "name": "ueransim-ue",
+      "type": "ueransim-ue"
+    }
+  ],
+  "config_artifact_names": [
+    "oai-nrf",
+    "oai-amf",
+    "oai-smf",
+    "oai-upf",
+    "oai-ausf",
+    "oai-udm",
+    "oai-udr",
+    "oai-nssf",
+    "ueransim-gnb",
+    "ueransim-ue"
+  ],
+  "deployment_results": [
+    {
+      "vnf_name": "oai-nrf",
+      "release": "oai-nrf",
+      "status": "installed",
+      "msg": "Release \"oai-nrf\" does not exist. Installing it now.\nNAME: oai-nrf\nLAST DEPLOYED: Fri May  1 23:29:43 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-amf",
+      "release": "oai-amf",
+      "status": "installed",
+      "msg": "Release \"oai-amf\" does not exist. Installing it now.\nNAME: oai-amf\nLAST DEPLOYED: Fri May  1 23:29:43 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-smf",
+      "release": "oai-smf",
+      "status": "installed",
+      "msg": "Release \"oai-smf\" does not exist. Installing it now.\nNAME: oai-smf\nLAST DEPLOYED: Fri May  1 23:29:44 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-upf",
+      "release": "oai-upf",
+      "status": "installed",
+      "msg": "Release \"oai-upf\" does not exist. Installing it now.\nNAME: oai-upf\nLAST DEPLOYED: Fri May  1 23:29:44 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-ausf",
+      "release": "oai-ausf",
+      "status": "installed",
+      "msg": "Release \"oai-ausf\" does not exist. Installing it now.\nNAME: oai-ausf\nLAST DEPLOYED: Fri May  1 23:29:44 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "oai-udm",
+      "release": "oai-udm",
+      "status": "installed",
+      "msg": "Release \"oai-udm\" does not exist. Installing it now.\nNAME: oai-udm\nLAST DEPLOYED: Fri May  1 23:29:44 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-udr",
+      "release": "oai-udr",
+      "status": "installed",
+      "msg": "Release \"oai-udr\" does not exist. Installing it now.\nNAME: oai-udr\nLAST DEPLOYED: Fri May  1 23:29:45 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-nssf",
+      "release": "oai-nssf",
+      "status": "installed",
+      "msg": "Release \"oai-nssf\" does not exist. Installing it now.\nNAME: oai-nssf\nLAST DEPLOYED: Fri May  1 23:29:45 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "ueransim-gnb",
+      "release": "ueransim-gnb",
+      "status": "skipped",
+      "msg": "No chart found for ueransim-gnb"
+    },
+    {
+      "vnf_name": "ueransim-ue",
+      "release": "ueransim-ue",
+      "status": "skipped",
+      "msg": "No chart found for ueransim-ue"
+    }
+  ],
+  "policy_checks": {
+    "resource_limits": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have resource limits defined"
+    },
+    "root_containers": {
+      "status": "WARNING",
+      "violations": 11,
+      "details": "oai-nrf: runs as root (runAsUser=0); oai-amf: runs as root (runAsUser=0); oai-smf: runs as root (runAsUser=0); oai-upf: "
+    },
+    "mandatory_fields": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have mandatory fields"
+    },
+    "image_tags": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs use pinned image tags"
+    },
+    "health_probes": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have health probes configured"
+    }
+  },
+  "policy_decision": "GO",
+  "error": null
+}
+  -> /home/larbi/fyp/experiments/experiment_2/results/diag/S02_artifact.json
+
+=== N02 ===
+{
+  "topology_vnfs": [
+    {
+      "name": "oai-nrf",
+      "type": "oai-nrf"
+    },
+    {
+      "name": "oai-amf",
+      "type": "oai-amf"
+    },
+    {
+      "name": "oai-smf",
+      "type": "oai-smf"
+    },
+    {
+      "name": "oai-upf",
+      "type": "oai-upf"
+    },
+    {
+      "name": "oai-ausf",
+      "type": "oai-ausf"
+    },
+    {
+      "name": "oai-udm",
+      "type": "oai-udm"
+    },
+    {
+      "name": "oai-udr",
+      "type": "oai-udr"
+    },
+    {
+      "name": "oai-nssf",
+      "type": "oai-nssf"
+    },
+    {
+      "name": "ueransim-gnb",
+      "type": "ueransim-gnb"
+    },
+    {
+      "name": "ueransim-ue",
+      "type": "ueransim-ue"
+    }
+  ],
+  "config_artifact_names": [
+    "oai-nrf",
+    "oai-amf",
+    "oai-smf",
+    "oai-upf",
+    "oai-ausf",
+    "oai-udm",
+    "oai-udr",
+    "oai-nssf",
+    "ueransim-gnb",
+    "ueransim-ue"
+  ],
+  "deployment_results": [
+    {
+      "vnf_name": "oai-nrf",
+      "release": "oai-nrf",
+      "status": "installed",
+      "msg": "Release \"oai-nrf\" does not exist. Installing it now.\nNAME: oai-nrf\nLAST DEPLOYED: Fri May  1 23:32:06 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-amf",
+      "release": "oai-amf",
+      "status": "installed",
+      "msg": "Release \"oai-amf\" does not exist. Installing it now.\nNAME: oai-amf\nLAST DEPLOYED: Fri May  1 23:32:06 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-smf",
+      "release": "oai-smf",
+      "status": "installed",
+      "msg": "Release \"oai-smf\" does not exist. Installing it now.\nNAME: oai-smf\nLAST DEPLOYED: Fri May  1 23:32:06 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-upf",
+      "release": "oai-upf",
+      "status": "installed",
+      "msg": "Release \"oai-upf\" does not exist. Installing it now.\nNAME: oai-upf\nLAST DEPLOYED: Fri May  1 23:32:07 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-ausf",
+      "release": "oai-ausf",
+      "status": "installed",
+      "msg": "Release \"oai-ausf\" does not exist. Installing it now.\nNAME: oai-ausf\nLAST DEPLOYED: Fri May  1 23:32:07 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "oai-udm",
+      "release": "oai-udm",
+      "status": "installed",
+      "msg": "Release \"oai-udm\" does not exist. Installing it now.\nNAME: oai-udm\nLAST DEPLOYED: Fri May  1 23:32:07 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-udr",
+      "release": "oai-udr",
+      "status": "installed",
+      "msg": "Release \"oai-udr\" does not exist. Installing it now.\nNAME: oai-udr\nLAST DEPLOYED: Fri May  1 23:32:07 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-nssf",
+      "release": "oai-nssf",
+      "status": "installed",
+      "msg": "Release \"oai-nssf\" does not exist. Installing it now.\nNAME: oai-nssf\nLAST DEPLOYED: Fri May  1 23:32:08 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "ueransim-gnb",
+      "release": "ueransim-gnb",
+      "status": "skipped",
+      "msg": "No chart found for ueransim-gnb"
+    },
+    {
+      "vnf_name": "ueransim-ue",
+      "release": "ueransim-ue",
+      "status": "skipped",
+      "msg": "No chart found for ueransim-ue"
+    }
+  ],
+  "policy_checks": {
+    "resource_limits": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have resource limits defined"
+    },
+    "root_containers": {
+      "status": "WARNING",
+      "violations": 11,
+      "details": "oai-nrf: runs as root (runAsUser=0); oai-amf: runs as root (runAsUser=0); oai-smf: runs as root (runAsUser=0); oai-upf: "
+    },
+    "mandatory_fields": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have mandatory fields"
+    },
+    "image_tags": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs use pinned image tags"
+    },
+    "health_probes": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have health probes configured"
+    }
+  },
+  "policy_decision": "GO",
+  "error": null
+}
+  -> /home/larbi/fyp/experiments/experiment_2/results/diag/N02_artifact.json
+
+=== M04 ===
+{
+  "topology_vnfs": [
+    {
+      "name": "oai-nrf",
+      "type": "oai-nrf"
+    },
+    {
+      "name": "oai-amf",
+      "type": "oai-amf"
+    },
+    {
+      "name": "oai-smf",
+      "type": "oai-smf"
+    },
+    {
+      "name": "oai-upf",
+      "type": "oai-upf"
+    },
+    {
+      "name": "oai-ausf",
+      "type": "oai-ausf"
+    },
+    {
+      "name": "oai-udm",
+      "type": "oai-udm"
+    },
+    {
+      "name": "oai-udr",
+      "type": "oai-udr"
+    },
+    {
+      "name": "oai-nssf",
+      "type": "oai-nssf"
+    },
+    {
+      "name": "ueransim-gnb",
+      "type": "ueransim-gnb"
+    },
+    {
+      "name": "ueransim-ue",
+      "type": "ueransim-ue"
+    }
+  ],
+  "config_artifact_names": [
+    "oai-nrf",
+    "oai-amf",
+    "oai-smf",
+    "oai-upf",
+    "oai-ausf",
+    "oai-udm",
+    "oai-udr",
+    "oai-nssf",
+    "ueransim-gnb",
+    "ueransim-ue"
+  ],
+  "deployment_results": [
+    {
+      "vnf_name": "oai-nrf",
+      "release": "oai-nrf",
+      "status": "installed",
+      "msg": "Release \"oai-nrf\" does not exist. Installing it now.\nNAME: oai-nrf\nLAST DEPLOYED: Fri May  1 23:34:29 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-amf",
+      "release": "oai-amf",
+      "status": "installed",
+      "msg": "Release \"oai-amf\" does not exist. Installing it now.\nNAME: oai-amf\nLAST DEPLOYED: Fri May  1 23:34:29 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-smf",
+      "release": "oai-smf",
+      "status": "installed",
+      "msg": "Release \"oai-smf\" does not exist. Installing it now.\nNAME: oai-smf\nLAST DEPLOYED: Fri May  1 23:34:29 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-upf",
+      "release": "oai-upf",
+      "status": "installed",
+      "msg": "Release \"oai-upf\" does not exist. Installing it now.\nNAME: oai-upf\nLAST DEPLOYED: Fri May  1 23:34:29 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-ausf",
+      "release": "oai-ausf",
+      "status": "installed",
+      "msg": "Release \"oai-ausf\" does not exist. Installing it now.\nNAME: oai-ausf\nLAST DEPLOYED: Fri May  1 23:34:30 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "oai-udm",
+      "release": "oai-udm",
+      "status": "installed",
+      "msg": "Release \"oai-udm\" does not exist. Installing it now.\nNAME: oai-udm\nLAST DEPLOYED: Fri May  1 23:34:30 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-udr",
+      "release": "oai-udr",
+      "status": "installed",
+      "msg": "Release \"oai-udr\" does not exist. Installing it now.\nNAME: oai-udr\nLAST DEPLOYED: Fri May  1 23:34:30 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-nssf",
+      "release": "oai-nssf",
+      "status": "installed",
+      "msg": "Release \"oai-nssf\" does not exist. Installing it now.\nNAME: oai-nssf\nLAST DEPLOYED: Fri May  1 23:34:30 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "ueransim-gnb",
+      "release": "ueransim-gnb",
+      "status": "skipped",
+      "msg": "No chart found for ueransim-gnb"
+    },
+    {
+      "vnf_name": "ueransim-ue",
+      "release": "ueransim-ue",
+      "status": "skipped",
+      "msg": "No chart found for ueransim-ue"
+    }
+  ],
+  "policy_checks": {
+    "resource_limits": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have resource limits defined"
+    },
+    "root_containers": {
+      "status": "WARNING",
+      "violations": 11,
+      "details": "oai-nrf: runs as root (runAsUser=0); oai-amf: runs as root (runAsUser=0); oai-smf: runs as root (runAsUser=0); oai-upf: "
+    },
+    "mandatory_fields": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have mandatory fields"
+    },
+    "image_tags": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs use pinned image tags"
+    },
+    "health_probes": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 10 VNFs have health probes configured"
+    }
+  },
+  "policy_decision": "GO",
+  "error": null
+}
+  -> /home/larbi/fyp/experiments/experiment_2/results/diag/M04_artifact.json
+
+=== C06 ===
+{
+  "topology_vnfs": [
+    {
+      "name": "oai-nrf",
+      "type": "oai-nrf"
+    },
+    {
+      "name": "oai-amf",
+      "type": "oai-amf"
+    },
+    {
+      "name": "oai-smf",
+      "type": "oai-smf"
+    },
+    {
+      "name": "oai-upf",
+      "type": "oai-upf"
+    },
+    {
+      "name": "oai-ausf",
+      "type": "oai-ausf"
+    },
+    {
+      "name": "oai-udm",
+      "type": "oai-udm"
+    },
+    {
+      "name": "oai-udr",
+      "type": "oai-udr"
+    },
+    {
+      "name": "oai-nssf",
+      "type": "oai-nssf"
+    },
+    {
+      "name": "ueransim-gnb",
+      "type": "ueransim-gnb"
+    }
+  ],
+  "config_artifact_names": [
+    "oai-nrf",
+    "oai-amf",
+    "oai-smf",
+    "oai-upf",
+    "oai-ausf",
+    "oai-udm",
+    "oai-udr",
+    "oai-nssf",
+    "ueransim-gnb"
+  ],
+  "deployment_results": [
+    {
+      "vnf_name": "oai-nrf",
+      "release": "oai-nrf",
+      "status": "installed",
+      "msg": "Release \"oai-nrf\" does not exist. Installing it now.\nNAME: oai-nrf\nLAST DEPLOYED: Fri May  1 23:36:52 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-amf",
+      "release": "oai-amf",
+      "status": "installed",
+      "msg": "Release \"oai-amf\" does not exist. Installing it now.\nNAME: oai-amf\nLAST DEPLOYED: Fri May  1 23:36:52 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-smf",
+      "release": "oai-smf",
+      "status": "installed",
+      "msg": "Release \"oai-smf\" does not exist. Installing it now.\nNAME: oai-smf\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-upf",
+      "release": "oai-upf",
+      "status": "installed",
+      "msg": "Release \"oai-upf\" does not exist. Installing it now.\nNAME: oai-upf\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-ausf",
+      "release": "oai-ausf",
+      "status": "installed",
+      "msg": "Release \"oai-ausf\" does not exist. Installing it now.\nNAME: oai-ausf\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "oai-udm",
+      "release": "oai-udm",
+      "status": "installed",
+      "msg": "Release \"oai-udm\" does not exist. Installing it now.\nNAME: oai-udm\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-udr",
+      "release": "oai-udr",
+      "status": "installed",
+      "msg": "Release \"oai-udr\" does not exist. Installing it now.\nNAME: oai-udr\nLAST DEPLOYED: Fri May  1 23:36:54 2026\nNAMESPACE: oa"
+    },
+    {
+      "vnf_name": "oai-nssf",
+      "release": "oai-nssf",
+      "status": "installed",
+      "msg": "Release \"oai-nssf\" does not exist. Installing it now.\nNAME: oai-nssf\nLAST DEPLOYED: Fri May  1 23:36:54 2026\nNAMESPACE: "
+    },
+    {
+      "vnf_name": "ueransim-gnb",
+      "release": "ueransim-gnb",
+      "status": "skipped",
+      "msg": "No chart found for ueransim-gnb"
+    }
+  ],
+  "policy_checks": {
+    "resource_limits": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 9 VNFs have resource limits defined"
+    },
+    "root_containers": {
+      "status": "WARNING",
+      "violations": 10,
+      "details": "oai-nrf: runs as root (runAsUser=0); oai-amf: runs as root (runAsUser=0); oai-smf: runs as root (runAsUser=0); oai-upf: "
+    },
+    "mandatory_fields": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 9 VNFs have mandatory fields"
+    },
+    "image_tags": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 9 VNFs use pinned image tags"
+    },
+    "health_probes": {
+      "status": "PASS",
+      "violations": 0,
+      "details": "All 9 VNFs have health probes configured"
+    }
+  },
+  "policy_decision": "GO",
+  "error": null
+}
+  -> /home/larbi/fyp/experiments/experiment_2/results/diag/C06_artifact.json

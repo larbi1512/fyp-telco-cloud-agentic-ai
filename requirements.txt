@@ -18,6 +18,9 @@ kubernetes>=28.1.0
 prometheus-api-client>=0.5.3
 requests>=2.31.0
 
+# Redis Shared State Store
+redis>=5.0.0
+
 # ML / Anomaly Detection
 scikit-learn>=1.4.0
 numpy>=1.26.0

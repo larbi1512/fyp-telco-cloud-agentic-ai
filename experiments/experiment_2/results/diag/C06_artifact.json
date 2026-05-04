@@ -1,0 +1,1594 @@
+{
+  "system": "mas",
+  "intent_id": "C06",
+  "run_id": "2fd16a36-43a1-4d60-a258-4e6fc2d43f55",
+  "topology": {
+    "topology_id": "port-authority-5g-topology-v1",
+    "connectivity": {
+      "plmn": {
+        "mcc": "001",
+        "mnc": "01"
+      },
+      "slices": [
+        {
+          "sst": 1,
+          "sd": "ebmb",
+          "description": "Enhanced Mobile Broadband for container tracking and drone communications"
+        },
+        {
+          "sst": 2,
+          "sd": "mec",
+          "description": "Multi-access Edge Computing for real-time crane automation"
+        },
+        {
+          "sst": 3,
+          "sd": "urllc",
+          "description": "Ultra Reliable Low Latency Communications for ship-to-shore control"
+        }
+      ],
+      "dnns": [
+        "container-tracking",
+        "crane-control",
+        "drone-inspection",
+        "customs-data"
+      ]
+    },
+    "vnfs": [
+      {
+        "name": "oai-nrf",
+        "type": "oai-nrf",
+        "replicas": 1,
+        "supported_slices": [],
+        "interfaces": [
+          {
+            "name": "nrf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ]
+      },
+      {
+        "name": "oai-amf",
+        "type": "oai-amf",
+        "replicas": 2,
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "interfaces": [
+          {
+            "name": "n1",
+            "protocol": "udp",
+            "port": 38412
+          },
+          {
+            "name": "n2",
+            "protocol": "tcp",
+            "port": 38412
+          },
+          {
+            "name": "naf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ]
+      },
+      {
+        "name": "oai-smf",
+        "type": "oai-smf",
+        "replicas": 2,
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "interfaces": [
+          {
+            "name": "n4",
+            "protocol": "gtp",
+            "port": 2152
+          },
+          {
+            "name": "n7",
+            "protocol": "http",
+            "port": 8000
+          }
+        ]
+      },
+      {
+        "name": "oai-upf",
+        "type": "oai-upf",
+        "replicas": 3,
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "interfaces": [
+          {
+            "name": "n3",
+            "protocol": "gtp",
+            "port": 2152
+          },
+          {
+            "name": "n9",
+            "protocol": "http",
+            "port": 8000
+          },
+          {
+            "name": "n4",
+            "protocol": "gtp",
+            "port": 2152
+          }
+        ]
+      },
+      {
+        "name": "oai-ausf",
+        "type": "oai-ausf",
+        "replicas": 1,
+        "supported_slices": [],
+        "interfaces": [
+          {
+            "name": "ausf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ]
+      },
+      {
+        "name": "oai-udm",
+        "type": "oai-udm",
+        "replicas": 1,
+        "supported_slices": [],
+        "interfaces": [
+          {
+            "name": "udm-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ]
+      },
+      {
+        "name": "oai-udr",
+        "type": "oai-udr",
+        "replicas": 1,
+        "supported_slices": [],
+        "interfaces": [
+          {
+            "name": "udr-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ]
+      },
+      {
+        "name": "oai-nssf",
+        "type": "oai-nssf",
+        "replicas": 1,
+        "supported_slices": [],
+        "interfaces": [
+          {
+            "name": "nssf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ]
+      },
+      {
+        "name": "ueransim-gnb",
+        "type": "ueransim-gnb",
+        "replicas": 2,
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "interfaces": [
+          {
+            "name": "ngap",
+            "protocol": "tcp",
+            "port": 38412
+          }
+        ]
+      }
+    ],
+    "connections": [
+      {
+        "from": "oai-amf",
+        "to": "oai-nrf",
+        "interface": "naf-sbi"
+      },
+      {
+        "from": "oai-smf",
+        "to": "oai-nrf",
+        "interface": "n7"
+      },
+      {
+        "from": "oai-upf",
+        "to": "oai-nrf",
+        "interface": "n9"
+      },
+      {
+        "from": "oai-amf",
+        "to": "oai-ausf",
+        "interface": "naf-sbi"
+      },
+      {
+        "from": "oai-amf",
+        "to": "oai-udm",
+        "interface": "naf-sbi"
+      },
+      {
+        "from": "oai-smf",
+        "to": "oai-udm",
+        "interface": "n7"
+      },
+      {
+        "from": "oai-smf",
+        "to": "oai-udr",
+        "interface": "n7"
+      },
+      {
+        "from": "oai-amf",
+        "to": "oai-nssf",
+        "interface": "naf-sbi"
+      },
+      {
+        "from": "oai-upf",
+        "to": "oai-smf",
+        "interface": "n4"
+      },
+      {
+        "from": "oai-amf",
+        "to": "oai-upf",
+        "interface": "n2"
+      },
+      {
+        "from": "ueransim-gnb",
+        "to": "oai-amf",
+        "interface": "ngap"
+      }
+    ],
+    "sla": {
+      "max_latency_ms": 10,
+      "min_throughput_gbps": 1.0,
+      "min_availability_pct": 99.9
+    }
+  },
+  "resource_allocation": {
+    "topology_id": "port-authority-5g-topology-v1",
+    "vnfs": [
+      {
+        "name": "oai-nrf",
+        "type": "oai-nrf",
+        "replicas": 1,
+        "resources": {
+          "requests": {
+            "cpu": "150m",
+            "memory": "160Mi"
+          },
+          "limits": {
+            "cpu": "225m",
+            "memory": "240Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "nrf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ],
+        "supported_slices": [],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "oai-amf",
+        "type": "oai-amf",
+        "replicas": 2,
+        "resources": {
+          "requests": {
+            "cpu": "120m",
+            "memory": "266Mi"
+          },
+          "limits": {
+            "cpu": "180m",
+            "memory": "399Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "n1",
+            "protocol": "udp",
+            "port": 38412
+          },
+          {
+            "name": "n2",
+            "protocol": "tcp",
+            "port": 38412
+          },
+          {
+            "name": "naf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ],
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "oai-smf",
+        "type": "oai-smf",
+        "replicas": 2,
+        "resources": {
+          "requests": {
+            "cpu": "130m",
+            "memory": "272Mi"
+          },
+          "limits": {
+            "cpu": "195m",
+            "memory": "408Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "n4",
+            "protocol": "gtp",
+            "port": 2152
+          },
+          {
+            "name": "n7",
+            "protocol": "http",
+            "port": 8000
+          }
+        ],
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "oai-upf",
+        "type": "oai-upf",
+        "replicas": 3,
+        "resources": {
+          "requests": {
+            "cpu": "1300m",
+            "memory": "768Mi"
+          },
+          "limits": {
+            "cpu": "1950m",
+            "memory": "1152Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "n3",
+            "protocol": "gtp",
+            "port": 2152
+          },
+          {
+            "name": "n9",
+            "protocol": "http",
+            "port": 8000
+          },
+          {
+            "name": "n4",
+            "protocol": "gtp",
+            "port": 2152
+          }
+        ],
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "oai-ausf",
+        "type": "oai-ausf",
+        "replicas": 1,
+        "resources": {
+          "requests": {
+            "cpu": "110m",
+            "memory": "134Mi"
+          },
+          "limits": {
+            "cpu": "165m",
+            "memory": "201Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "ausf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ],
+        "supported_slices": [],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "oai-udm",
+        "type": "oai-udm",
+        "replicas": 1,
+        "resources": {
+          "requests": {
+            "cpu": "110m",
+            "memory": "134Mi"
+          },
+          "limits": {
+            "cpu": "165m",
+            "memory": "201Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "udm-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ],
+        "supported_slices": [],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "oai-udr",
+        "type": "oai-udr",
+        "replicas": 1,
+        "resources": {
+          "requests": {
+            "cpu": "102m",
+            "memory": "130Mi"
+          },
+          "limits": {
+            "cpu": "153m",
+            "memory": "195Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "udr-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ],
+        "supported_slices": [],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "oai-nssf",
+        "type": "oai-nssf",
+        "replicas": 1,
+        "resources": {
+          "requests": {
+            "cpu": "130m",
+            "memory": "147Mi"
+          },
+          "limits": {
+            "cpu": "195m",
+            "memory": "220Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "nssf-sbi",
+            "protocol": "https",
+            "port": 8000
+          }
+        ],
+        "supported_slices": [],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      },
+      {
+        "name": "ueransim-gnb",
+        "type": "ueransim-gnb",
+        "replicas": 2,
+        "resources": {
+          "requests": {
+            "cpu": "300m",
+            "memory": "320Mi"
+          },
+          "limits": {
+            "cpu": "450m",
+            "memory": "480Mi"
+          }
+        },
+        "interfaces": [
+          {
+            "name": "ngap",
+            "protocol": "tcp",
+            "port": 38412
+          }
+        ],
+        "supported_slices": [
+          {
+            "sst": 1,
+            "sd": "ebmb"
+          },
+          {
+            "sst": 2,
+            "sd": "mec"
+          },
+          {
+            "sst": 3,
+            "sd": "urllc"
+          }
+        ],
+        "affinity": {
+          "nodeSelector": {}
+        }
+      }
+    ],
+    "node_assignments": {}
+  },
+  "config_artifacts": [
+    {
+      "vnf_name": "oai-nrf",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-nrf",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-nrf-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "nrf": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "225m",
+              "memory": "240Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "150m",
+              "memory": "160Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80
+        },
+        "config": {
+          "logLevel": "debug"
+        }
+      },
+      "config_maps": {
+        "core_network": {
+          "log_level": {
+            "general": "debug"
+          },
+          "register_nf": {
+            "general": "yes"
+          },
+          "http_version": 2,
+          "snssais": [
+            {
+              "sst": 1,
+              "sd": "EBMB"
+            },
+            {
+              "sst": 2,
+              "sd": "MEC"
+            },
+            {
+              "sst": 3,
+              "sd": "URLLC"
+            }
+          ],
+          "nfs": {
+            "nrf": {
+              "host": "oai-nrf",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              }
+            },
+            "amf": {
+              "host": "oai-amf",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              },
+              "n2": {
+                "interface_name": "eth0",
+                "port": 38412
+              }
+            },
+            "smf": {
+              "host": "oai-smf",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              },
+              "n4": {
+                "interface_name": "eth0",
+                "port": 8805
+              }
+            },
+            "upf": {
+              "host": "oai-upf",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              },
+              "n3": {
+                "interface_name": "eth0",
+                "port": 2152
+              },
+              "n4": {
+                "interface_name": "eth0",
+                "port": 8805
+              },
+              "n6": {
+                "interface_name": "eth0"
+              },
+              "n9": {
+                "interface_name": "eth0",
+                "port": 2152
+              }
+            },
+            "ausf": {
+              "host": "oai-ausf",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              }
+            },
+            "udm": {
+              "host": "oai-udm",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              }
+            },
+            "udr": {
+              "host": "oai-udr",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              }
+            },
+            "nssf": {
+              "host": "oai-nssf",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              }
+            },
+            "ueransim-gnb": {
+              "host": "ueransim-gnb",
+              "sbi": {
+                "port": 80,
+                "api_version": "v1",
+                "interface_name": "eth0"
+              }
+            }
+          },
+          "database": {
+            "host": "mysql",
+            "user": "test",
+            "type": "mysql",
+            "password": "test",
+            "database_name": "oai_db",
+            "generate_random": true,
+            "connection_timeout": 300
+          },
+          "amf": {
+            "amf_name": "OAI-AMF",
+            "support_features_options": {
+              "enable_simple_scenario": "no",
+              "enable_nssf": "no",
+              "enable_smf_selection": "yes"
+            },
+            "relative_capacity": 30,
+            "statistics_timer_interval": 20,
+            "emergency_support": false,
+            "served_guami_list": [
+              {
+                "mcc": "001",
+                "mnc": "01",
+                "amf_region_id": "01",
+                "amf_set_id": "001",
+                "amf_pointer": "01"
+              }
+            ],
+            "plmn_support_list": [
+              {
+                "mcc": "001",
+                "mnc": "01",
+                "tac": "0x0001",
+                "nssai": [
+                  {
+                    "sst": 1,
+                    "sd": "EBMB"
+                  },
+                  {
+                    "sst": 2,
+                    "sd": "MEC"
+                  },
+                  {
+                    "sst": 3,
+                    "sd": "URLLC"
+                  }
+                ]
+              }
+            ],
+            "supported_integrity_algorithms": [
+              "NIA1",
+              "NIA2"
+            ],
+            "supported_encryption_algorithms": [
+              "NEA0",
+              "NEA1",
+              "NEA2"
+            ]
+          },
+          "smf": {
+            "ue_mtu": 1500,
+            "support_features": {
+              "use_local_subscription_info": "no",
+              "use_local_pcc_rules": "yes"
+            },
+            "upfs": [
+              {
+                "host": "oai-upf",
+                "config": {
+                  "enable_usage_reporting": "no"
+                }
+              }
+            ],
+            "ue_dns": {
+              "primary_ipv4": "10.3.2.200",
+              "primary_ipv6": "2001:4860:4860::8888",
+              "secondary_ipv4": "8.8.8.8",
+              "secondary_ipv6": "2001:4860:4860::8888"
+            },
+            "smf_info": {
+              "sNssaiSmfInfoList": [
+                {
+                  "sNssai": {
+                    "sst": 1,
+                    "sd": "EBMB"
+                  },
+                  "dnnSmfInfoList": [
+                    {
+                      "dnn": "container-tracking"
+                    },
+                    {
+                      "dnn": "crane-control"
+                    },
+                    {
+                      "dnn": "drone-inspection"
+                    },
+                    {
+                      "dnn": "customs-data"
+                    }
+                  ]
+                },
+                {
+                  "sNssai": {
+                    "sst": 2,
+                    "sd": "MEC"
+                  },
+                  "dnnSmfInfoList": [
+                    {
+                      "dnn": "container-tracking"
+                    },
+                    {
+                      "dnn": "crane-control"
+                    },
+                    {
+                      "dnn": "drone-inspection"
+                    },
+                    {
+                      "dnn": "customs-data"
+                    }
+                  ]
+                },
+                {
+                  "sNssai": {
+                    "sst": 3,
+                    "sd": "URLLC"
+                  },
+                  "dnnSmfInfoList": [
+                    {
+                      "dnn": "container-tracking"
+                    },
+                    {
+                      "dnn": "crane-control"
+                    },
+                    {
+                      "dnn": "drone-inspection"
+                    },
+                    {
+                      "dnn": "customs-data"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "upf": {
+            "support_features": {
+              "enable_bpf_datapath": "no",
+              "enable_snat": "yes"
+            },
+            "remote_n6_gw": "127.0.0.1",
+            "upf_info": {
+              "sNssaiUpfInfoList": [
+                {
+                  "sNssai": {
+                    "sst": 1,
+                    "sd": "EBMB"
+                  },
+                  "dnnUpfInfoList": [
+                    {
+                      "dnn": "container-tracking"
+                    },
+                    {
+                      "dnn": "crane-control"
+                    },
+                    {
+                      "dnn": "drone-inspection"
+                    },
+                    {
+                      "dnn": "customs-data"
+                    }
+                  ]
+                },
+                {
+                  "sNssai": {
+                    "sst": 2,
+                    "sd": "MEC"
+                  },
+                  "dnnUpfInfoList": [
+                    {
+                      "dnn": "container-tracking"
+                    },
+                    {
+                      "dnn": "crane-control"
+                    },
+                    {
+                      "dnn": "drone-inspection"
+                    },
+                    {
+                      "dnn": "customs-data"
+                    }
+                  ]
+                },
+                {
+                  "sNssai": {
+                    "sst": 3,
+                    "sd": "URLLC"
+                  },
+                  "dnnUpfInfoList": [
+                    {
+                      "dnn": "container-tracking"
+                    },
+                    {
+                      "dnn": "crane-control"
+                    },
+                    {
+                      "dnn": "drone-inspection"
+                    },
+                    {
+                      "dnn": "customs-data"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "dnns": [
+            {
+              "dnn": "container-tracking",
+              "pdu_session_type": "IPV4",
+              "ipv4_subnet": "12.1.1.0/24"
+            },
+            {
+              "dnn": "crane-control",
+              "pdu_session_type": "IPV4",
+              "ipv4_subnet": "13.1.1.0/24"
+            },
+            {
+              "dnn": "drone-inspection",
+              "pdu_session_type": "IPV4",
+              "ipv4_subnet": "14.1.1.0/24"
+            },
+            {
+              "dnn": "customs-data",
+              "pdu_session_type": "IPV4",
+              "ipv4_subnet": "15.1.1.0/24"
+            }
+          ]
+        }
+      },
+      "secrets": []
+    },
+    {
+      "vnf_name": "oai-amf",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-amf",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-amf-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "amf": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "180m",
+              "memory": "399Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "120m",
+              "memory": "266Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sctp": 38412,
+          "sbi": 80
+        },
+        "multus": {
+          "defaultGateway": "",
+          "n2Interface": {
+            "create": false
+          }
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    },
+    {
+      "vnf_name": "oai-smf",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-smf",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-smf-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "smf": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "195m",
+              "memory": "408Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "130m",
+              "memory": "272Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80,
+          "n4": 8805
+        },
+        "multus": {
+          "defaultGateway": "",
+          "n4Interface": {
+            "create": false
+          }
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    },
+    {
+      "vnf_name": "oai-upf",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-upf",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-upf-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "spgwu": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "1950m",
+              "memory": "1152Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "1300m",
+              "memory": "768Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80,
+          "n4": 8805,
+          "n3": 2152
+        },
+        "securityContext": {
+          "privileged": true
+        },
+        "multus": {
+          "defaultGateway": "",
+          "n3Interface": {
+            "create": false
+          },
+          "n4Interface": {
+            "create": false
+          },
+          "n6Interface": {
+            "create": false
+          }
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    },
+    {
+      "vnf_name": "oai-ausf",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-ausf",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-ausf-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "ausf": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "165m",
+              "memory": "201Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "110m",
+              "memory": "134Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80
+        },
+        "config": {
+          "logLevel": "debug"
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    },
+    {
+      "vnf_name": "oai-udm",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-udm",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-udm-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "udm": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "165m",
+              "memory": "201Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "110m",
+              "memory": "134Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80
+        },
+        "config": {
+          "logLevel": "debug"
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    },
+    {
+      "vnf_name": "oai-udr",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-udr",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-udr-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "udr": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "153m",
+              "memory": "195Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "102m",
+              "memory": "130Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80
+        },
+        "config": {
+          "logLevel": "debug"
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    },
+    {
+      "vnf_name": "oai-nssf",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/oai-nssf",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "oai-nssf-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "nssf": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "195m",
+              "memory": "220Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "130m",
+              "memory": "147Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    },
+    {
+      "vnf_name": "ueransim-gnb",
+      "helm_values": {
+        "kubernetesDistribution": "Vanilla",
+        "nfimage": {
+          "repository": "docker.io/oaisoftwarealliance/ueransim-gnb",
+          "version": "v2.1.0",
+          "pullPolicy": "IfNotPresent"
+        },
+        "serviceAccount": {
+          "create": true,
+          "name": "ueransim-gnb-sa"
+        },
+        "podSecurityContext": {
+          "runAsUser": 0,
+          "runAsGroup": 0
+        },
+        "start": {
+          "ueransim-gnb": true,
+          "tcpdump": false
+        },
+        "includeTcpDumpContainer": false,
+        "persistent": {
+          "sharedvolume": false
+        },
+        "readinessProbe": true,
+        "livenessProbe": false,
+        "terminationGracePeriodSeconds": 5,
+        "nodeSelector": {},
+        "resources": {
+          "define": true,
+          "limits": {
+            "nf": {
+              "cpu": "450m",
+              "memory": "480Mi"
+            }
+          },
+          "requests": {
+            "nf": {
+              "cpu": "300m",
+              "memory": "320Mi"
+            }
+          }
+        },
+        "exposedPorts": {
+          "sbi": 80
+        }
+      },
+      "config_maps": {},
+      "secrets": []
+    }
+  ],
+  "validation_report": {
+    "topology_id": "port-authority-5g-topology-v1",
+    "policy_checks": {
+      "resource_limits": {
+        "status": "PASS",
+        "checked": 9,
+        "violations": 0,
+        "details": "All 9 VNFs have resource limits defined"
+      },
+      "root_containers": {
+        "status": "WARNING",
+        "checked": 9,
+        "violations": 10,
+        "details": "oai-nrf: runs as root (runAsUser=0); oai-amf: runs as root (runAsUser=0); oai-smf: runs as root (runAsUser=0); oai-upf: runs as root (runAsUser=0); oai-upf: privileged container; oai-ausf: runs as root (runAsUser=0); oai-udm: runs as root (runAsUser=0); oai-udr: runs as root (runAsUser=0); oai-nssf: runs as root (runAsUser=0); ueransim-gnb: runs as root (runAsUser=0)"
+      },
+      "mandatory_fields": {
+        "status": "PASS",
+        "checked": 9,
+        "violations": 0,
+        "details": "All 9 VNFs have mandatory fields"
+      },
+      "image_tags": {
+        "status": "PASS",
+        "checked": 9,
+        "violations": 0,
+        "details": "All 9 VNFs use pinned image tags"
+      },
+      "health_probes": {
+        "status": "PASS",
+        "checked": 9,
+        "violations": 0,
+        "details": "All 9 VNFs have health probes configured"
+      }
+    },
+    "dry_run": {
+      "status": "SUCCESS",
+      "errors": []
+    },
+    "conflicts": [
+      "SMF references non-existent UPF",
+      "PLMN mismatch between AMF and core config"
+    ],
+    "decision": "GO",
+    "reasons": [
+      "WARNING: root_containers \u2014 oai-nrf: runs as root (runAsUser=0); oai-amf: runs as root (runAsUser=0); oai-smf: runs as root (runAsUser=0); oai-upf: runs as root (runAsUser=0); oai-upf: privileged container; oai-ausf: runs as root (runAsUser=0); oai-udm: runs as root (runAsUser=0); oai-udr: runs as root (runAsUser=0); oai-nssf: runs as root (runAsUser=0); ueransim-gnb: runs as root (runAsUser=0)",
+      "NOTE (LLM): SMF references non-existent UPF",
+      "NOTE (LLM): PLMN mismatch between AMF and core config"
+    ],
+    "violation_count": 10
+  },
+  "deployment_results": [
+    {
+      "vnf_name": "oai-nrf",
+      "release_name": "oai-nrf",
+      "status": "installed",
+      "message": "Release \"oai-nrf\" does not exist. Installing it now.\nNAME: oai-nrf\nLAST DEPLOYED: Fri May  1 23:36:52 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the application"
+    },
+    {
+      "vnf_name": "oai-amf",
+      "release_name": "oai-amf",
+      "status": "installed",
+      "message": "Release \"oai-amf\" does not exist. Installing it now.\nNAME: oai-amf\nLAST DEPLOYED: Fri May  1 23:36:52 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the application"
+    },
+    {
+      "vnf_name": "oai-smf",
+      "release_name": "oai-smf",
+      "status": "installed",
+      "message": "Release \"oai-smf\" does not exist. Installing it now.\nNAME: oai-smf\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the application"
+    },
+    {
+      "vnf_name": "oai-upf",
+      "release_name": "oai-upf",
+      "status": "installed",
+      "message": "Release \"oai-upf\" does not exist. Installing it now.\nNAME: oai-upf\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the application"
+    },
+    {
+      "vnf_name": "oai-ausf",
+      "release_name": "oai-ausf",
+      "status": "installed",
+      "message": "Release \"oai-ausf\" does not exist. Installing it now.\nNAME: oai-ausf\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the applicati"
+    },
+    {
+      "vnf_name": "oai-udm",
+      "release_name": "oai-udm",
+      "status": "installed",
+      "message": "Release \"oai-udm\" does not exist. Installing it now.\nNAME: oai-udm\nLAST DEPLOYED: Fri May  1 23:36:53 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the application"
+    },
+    {
+      "vnf_name": "oai-udr",
+      "release_name": "oai-udr",
+      "status": "installed",
+      "message": "Release \"oai-udr\" does not exist. Installing it now.\nNAME: oai-udr\nLAST DEPLOYED: Fri May  1 23:36:54 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the application"
+    },
+    {
+      "vnf_name": "oai-nssf",
+      "release_name": "oai-nssf",
+      "status": "installed",
+      "message": "Release \"oai-nssf\" does not exist. Installing it now.\nNAME: oai-nssf\nLAST DEPLOYED: Fri May  1 23:36:54 2026\nNAMESPACE: oai-5g\nSTATUS: deployed\nREVISION: 1\nTEST SUITE: None\nNOTES:\n1. Get the applicati"
+    },
+    {
+      "vnf_name": "ueransim-gnb",
+      "release_name": "ueransim-gnb",
+      "status": "skipped",
+      "message": "No chart found for ueransim-gnb"
+    }
+  ],
+  "intervention_log": [],
+  "wall_clock_s": 143.6087749004364,
+  "deployment_wait_s": null,
+  "release_names": [
+    "oai-nrf",
+    "oai-amf",
+    "oai-smf",
+    "oai-upf",
+    "oai-ausf",
+    "oai-udm",
+    "oai-udr",
+    "oai-nssf"
+  ],
+  "error": null
+}
