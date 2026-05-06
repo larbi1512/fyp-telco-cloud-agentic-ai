@@ -39,12 +39,21 @@ REQUIRED_CORE_VNFS = {"amf", "smf", "upf", "nrf"}
 SLICE_REQUIRES_NSSF_THRESHOLD = 1  # >1 distinct slice → NSSF required
 
 
+_KNOWN_SHORT_TYPES = {"amf", "smf", "upf", "nrf", "ausf", "udm", "udr", "nssf", "pcf"}
+
+
 def _vnf_types(topology: dict[str, Any]) -> set[str]:
     out = set()
     for v in topology.get("vnfs") or []:
-        t = (v.get("type") or v.get("name") or "").lower().replace("oai-", "")
-        if t:
-            out.add(t)
+        raw_type = (v.get("type") or "").lower().replace("oai-", "")
+        # If type is a known short code, use it; else fall back to name
+        # (guards against small models emitting verbose type strings)
+        if raw_type in _KNOWN_SHORT_TYPES:
+            out.add(raw_type)
+        else:
+            t = (v.get("name") or "").lower().replace("oai-", "")
+            if t:
+                out.add(t)
     return out
 
 
