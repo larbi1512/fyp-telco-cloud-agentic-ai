@@ -13,11 +13,12 @@ from __future__ import annotations
 
 import json
 import logging
+import time
 import uuid
 from datetime import datetime, timezone
 
 from core.logger import setup_logging
-from core.graph import build_pre_deployment_graph
+from core.graph import build_pre_deployment_graph, build_post_deployment_graph
 from core.state import OrchestratorState
 from interface.cli import (
     print_welcome,
@@ -32,10 +33,11 @@ from interface.cli import (
     ask_approval,
     display_error,
     display_final_status,
+    display_metrics_summary,
+    display_anomaly_alerts,
+    display_remediation_plan,
     console,
 )
-import os
-print(f"OPENAI_API_BASE: {os.environ.get('OPENAI_API_BASE')}")
 
 logger = logging.getLogger(__name__)
 
@@ -195,5 +197,146 @@ def main() -> None:
     )
 
 
+def run_monitor(interval: int = 30) -> None:
+    """Run the post-deployment monitoring loop."""
+    log_file = setup_logging()
+    print_welcome(log_file)
+
+    # ── Bootstrap topology from Redis ──
+    topology = None
+    resource_allocation = None
+    try:
+        from infra.redis_client import RedisClient
+        _redis = RedisClient()
+        if _redis.ping():
+            topology = _redis.get_topology()
+            resource_allocation = _redis.get_resource_allocation()
+            if topology:
+                console.print(
+                    f"  [bold green]Loaded topology from Redis:[/bold green] "
+                    f"{topology.get('topology_id')} "
+                    f"({len(topology.get('vnfs', []))} VNFs)"
+                )
+            else:
+                console.print(
+                    "  [bold yellow]Warning:[/bold yellow] No topology in Redis. "
+                    "Run pre-deployment first (python main.py --mode deploy)."
+                )
+        else:
+            console.print(
+                "  [bold yellow]Warning:[/bold yellow] Redis unavailable — "
+                "starting with empty state."
+            )
+    except ImportError:
+        console.print("  [dim]Redis not installed — starting with empty state.[/dim]")
+
+    # ── Build graph ──
+    graph, _ = build_post_deployment_graph()
+    thread_id = str(uuid.uuid4())
+    config = {"configurable": {"thread_id": thread_id}}
+
+    # ── Initial state ──
+    state: OrchestratorState = {
+        "user_intent": "monitor",
+        "parsed_intent": {},
+        "intent_features": {},
+        "topology": topology,
+        "resource_allocation": resource_allocation,
+        "config_artifacts": [],
+        "validation_report": None,
+        "deployment_results": [],
+        "current_metrics": [],
+        "anomaly_alerts": [],
+        "sla_status": [],
+        "remediation_plan": None,
+        "execution_results": [],
+        "messages": [],
+        "intervention_log": [],
+        "current_agent": "start",
+        "requires_approval": False,
+        "user_approved": None,
+        "error": None,
+        "phase": "post_deployment",
+    }
+
+    console.print(
+        f"\n  [bold]Monitoring loop started[/bold] — "
+        f"interval: [cyan]{interval}s[/cyan]  |  Ctrl+C to stop\n"
+    )
+    cycle = 0
+
+    try:
+        while True:
+            cycle += 1
+            console.rule(
+                f"[bold blue]Cycle {cycle}[/bold blue]  "
+                f"{datetime.now(timezone.utc).strftime('%H:%M:%S UTC')}"
+            )
+
+            try:
+                result = graph.invoke(state, config)
+            except Exception as exc:
+                display_error(f"Monitoring cycle {cycle} failed: {exc}")
+                logger.exception("Monitoring cycle %d failed", cycle)
+                time.sleep(interval)
+                continue
+
+            # ── Display cycle outputs ──
+            display_metrics_summary(result.get("current_metrics") or [])
+            display_anomaly_alerts(result.get("anomaly_alerts") or [])
+            display_remediation_plan(result.get("remediation_plan"))
+
+            exec_results = result.get("execution_results") or []
+            if exec_results:
+                console.print("\n  [bold]Execution Results:[/bold]")
+                display_deployment_results(exec_results)
+
+            if result.get("error"):
+                display_error(result["error"])
+
+            # ── Roll state forward ──
+            # Reset per-cycle fields; carry forward topology context
+            state = {
+                **state,
+                "current_metrics": [],
+                "anomaly_alerts": [],
+                "sla_status": [],
+                "remediation_plan": None,
+                "execution_results": [],
+                "messages": [],
+                "error": None,
+                "topology": result.get("topology") or state.get("topology"),
+                "resource_allocation": (
+                    result.get("resource_allocation") or state.get("resource_allocation")
+                ),
+            }
+
+            time.sleep(interval)
+
+    except KeyboardInterrupt:
+        console.print("\n  [bold yellow]Monitoring stopped.[/bold yellow]\n")
+
+
 if __name__ == "__main__":
-    main()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="5G Network Orchestrator")
+    parser.add_argument(
+        "--mode",
+        choices=["deploy", "monitor"],
+        default="deploy",
+        help="deploy: interactive pre-deployment pipeline (default). "
+             "monitor: continuous post-deployment monitoring loop.",
+    )
+    parser.add_argument(
+        "--interval",
+        type=int,
+        default=30,
+        help="Monitoring cycle interval in seconds (monitor mode only, default: 30)",
+    )
+    args = parser.parse_args()
+
+    if args.mode == "monitor":
+        run_monitor(interval=args.interval)
+    else:
+        main()

@@ -288,3 +288,118 @@ def display_final_status(decision: str) -> None:
                 border_style="red",
             )
         )
+
+
+# ──────────────────── Post-deployment monitoring display ──────────────────── #
+
+
+def display_metrics_summary(metrics: list[dict[str, Any]]) -> None:
+    """Render a compact table of the current monitoring cycle's KPI metrics."""
+    if not metrics:
+        console.print("  [dim]No metrics collected this cycle.[/dim]")
+        return
+
+    table = Table(title="KPI Monitor", box=box.ROUNDED, show_lines=True)
+    table.add_column("VNF", style="bold")
+    table.add_column("Metric")
+    table.add_column("Value", justify="right")
+    table.add_column("Unit")
+    table.add_column("Status")
+
+    status_styles = {
+        "normal": "green",
+        "warning": "yellow",
+        "critical": "red",
+    }
+
+    for m in metrics:
+        status = m.get("threshold_status", "normal")
+        style = status_styles.get(status, "white")
+        table.add_row(
+            m.get("vnf_name", "?"),
+            m.get("metric_name", "?"),
+            f"{m.get('value', 0):.1f}",
+            m.get("unit", ""),
+            f"[{style}]{status}[/{style}]",
+        )
+
+    console.print(table)
+
+
+def display_anomaly_alerts(alerts: list[dict[str, Any]]) -> None:
+    """Render anomaly alerts. Shows a green status line when none are detected."""
+    if not alerts:
+        console.print("  [bold green]No anomalies detected.[/bold green]")
+        return
+
+    for alert in alerts:
+        confidence = alert.get("confidence", 0.0)
+        border = "red" if confidence >= 0.85 else "yellow"
+        title_color = "red" if confidence >= 0.85 else "yellow"
+
+        affected = ", ".join(
+            f"{m.get('name', '?')} ({m.get('current', '?')} {m.get('unit', '')})"
+            for m in alert.get("affected_metrics", [])
+        )
+        actions = "\n".join(
+            f"  • {a}" for a in alert.get("suggested_actions", [])
+        )
+
+        body = (
+            f"[bold]Type:[/bold]       {alert.get('type', '?')}\n"
+            f"[bold]Affected:[/bold]   {affected or '—'}\n"
+            f"[bold]Cause:[/bold]      {alert.get('suggested_cause', '—')}\n"
+            f"[bold]Actions:[/bold]\n{actions or '  —'}"
+        )
+
+        console.print(
+            Panel(
+                body,
+                title=f"[bold {title_color}]ANOMALY ALERT  [confidence: {confidence:.2f}][/bold {title_color}]",
+                border_style=border,
+            )
+        )
+
+
+def display_remediation_plan(plan: dict[str, Any] | None) -> None:
+    """Render a remediation plan. Shows a neutral line when no plan is needed."""
+    if not plan:
+        console.print("  [dim]No remediation needed this cycle.[/dim]")
+        return
+
+    confidence = plan.get("confidence", 0.0)
+    header = (
+        f"[bold]Plan ID:[/bold]    {plan.get('plan_id', '?')}\n"
+        f"[bold]Triggered by:[/bold] {plan.get('triggered_by', '?')}\n"
+        f"[bold]Confidence:[/bold]  {confidence:.2f}\n"
+        f"[bold]Diagnosis:[/bold]  {plan.get('diagnosis', '—')}\n"
+    )
+
+    actions = plan.get("recommended_actions", [])
+    if actions:
+        table = Table(box=box.SIMPLE, show_header=True, padding=(0, 1))
+        table.add_column("#", justify="right", style="dim")
+        table.add_column("Type", style="bold")
+        table.add_column("Target")
+        table.add_column("Action")
+        table.add_column("Reason")
+        for a in sorted(actions, key=lambda x: int(x.get("order", 99))):
+            table.add_row(
+                str(a.get("order", "?")),
+                a.get("type", "?"),
+                a.get("target", "?"),
+                a.get("action", "?"),
+                str(a.get("reason", ""))[:60],
+            )
+
+    from rich.console import Group
+    from rich.text import Text
+    content: Any = Group(Text.from_markup(header), table) if actions else Text.from_markup(header)
+
+    console.print(
+        Panel(
+            content,
+            title="[bold cyan]Remediation Plan[/bold cyan]",
+            border_style="cyan",
+        )
+    )

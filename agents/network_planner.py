@@ -40,7 +40,36 @@ def _load_vnf_catalog() -> list[dict[str, str]]:
     return catalog
 
 
-# Topology validation 
+# Topology validation
+
+# Maps verbose type strings that small models emit → canonical short form
+_VNF_TYPE_ALIASES: dict[str, str] = {
+    "access_and_mobility_management_function": "amf",
+    "access and mobility management function": "amf",
+    "session_management_function": "smf",
+    "session management function": "smf",
+    "user_plane_function": "upf",
+    "user plane function": "upf",
+    "network_repository_function": "nrf",
+    "network repository function": "nrf",
+    "authentication_server_function": "ausf",
+    "authentication server function": "ausf",
+    "unified_data_management": "udm",
+    "unified data management": "udm",
+    "unified_data_repository": "udr",
+    "unified data repository": "udr",
+    "network_slice_selection_function": "nssf",
+    "network slice selection function": "nssf",
+    "policy_control_function": "pcf",
+    "policy control function": "pcf",
+}
+
+
+def _normalize_vnf_type(raw: str) -> str:
+    """Normalize a VNF type string to its canonical short form."""
+    key = raw.strip().lower().replace("oai-", "").replace("-", "_")
+    return _VNF_TYPE_ALIASES.get(key, raw.strip())
+
 
 def _validate_topology(topology: dict[str, Any]) -> list[str]:
     """
@@ -88,6 +117,9 @@ def _validate_topology(topology: dict[str, Any]) -> list[str]:
 
     vnf_names = set()
     for i, vnf in enumerate(topology["vnfs"]):
+        # Normalize verbose type strings (e.g. "access_and_mobility_management_function" → "amf")
+        if "type" in vnf:
+            vnf["type"] = _normalize_vnf_type(vnf["type"])
         vnf_type = vnf.get("type", "").lower()
         name = vnf.get("name", f"index_{i}")
         if "name" not in vnf:

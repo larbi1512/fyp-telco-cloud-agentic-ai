@@ -70,9 +70,11 @@ def _resource_accuracy(
     deltas: list[dict[str, Any]] = []
 
     # Build a name→resources lookup from each fallback source.
+    _known_alloc = set(VNF_TYPE_TO_PROFILE.keys())
     alloc_by_type: dict[str, dict[str, Any]] = {}
     for v in (resource_allocation or {}).get("vnfs") or []:
-        t = (v.get("type") or v.get("name") or "").lower().replace("oai-", "")
+        raw_t = (v.get("type") or "").lower().replace("oai-", "")
+        t = raw_t if raw_t in _known_alloc else (v.get("name") or "").lower().replace("oai-", "")
         if t:
             alloc_by_type[t] = v
 
@@ -82,8 +84,11 @@ def _resource_accuracy(
         if name:
             artifact_by_name[name] = cfg
 
+    _known_types = set(VNF_TYPE_TO_PROFILE.keys())
     for vnf in topology.get("vnfs") or []:
-        vnf_type = (vnf.get("type") or vnf.get("name") or "").lower().replace("oai-", "")
+        raw_type = (vnf.get("type") or "").lower().replace("oai-", "")
+        # Fall back to name when type is not a recognized short form
+        vnf_type = raw_type if raw_type in _known_types else (vnf.get("name") or "").lower().replace("oai-", "")
         if vnf_type not in VNF_TYPE_TO_PROFILE:
             continue
         gen = parse_vnf_resources(vnf)

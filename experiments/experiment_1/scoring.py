@@ -42,11 +42,15 @@ def vnf_coverage_score(
     if not expected_vnfs:
         return -1.0  # sentinel: metric not applicable
 
+    _known = {"amf", "smf", "upf", "nrf", "ausf", "udm", "udr", "nssf", "pcf"}
     expected = {v.lower().replace("oai-", "") for v in expected_vnfs}
     generated = set()
     for vnf in generated_vnfs:
-        vnf_type = vnf.get("type", vnf.get("name", "")).lower().replace("oai-", "")
-        generated.add(vnf_type)
+        raw_type = (vnf.get("type") or "").lower().replace("oai-", "")
+        # Fall back to name when type is verbose/unknown (small model schema drift)
+        vnf_type = raw_type if raw_type in _known else (vnf.get("name") or "").lower().replace("oai-", "")
+        if vnf_type:
+            generated.add(vnf_type)
 
     if not expected and not generated:
         return 1.0

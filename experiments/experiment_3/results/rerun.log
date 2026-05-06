@@ -1,0 +1,3238 @@
+──────────────────────── Experiment 3 — LLM Comparison ─────────────────────────
+llms=['llama32_3b', 'qwen25_7b', 'deepseek_r1_7b']  intents=36  reps=5  
+mode=config-only  out=/home/larbi/fyp/experiments/experiment_3/results
+resume: 0/540 runs done — 540 to go
+────────────────────────── Llama 3.2 3B  (3B  ollama) ──────────────────────────
+
+ S01 rep=0  starting...
+2026-05-05 23:33:36 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8477  err_rate=0.0  pol_viol=0.2  (6.9s)
+
+ S01 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ S01 rep=2  starting...
+2026-05-05 23:33:48 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8477  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ S01 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.0  pol_viol=0.2  (5.1s)
+
+ S01 rep=4  starting...
+2026-05-05 23:33:58 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8477  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ S02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (6.0s)
+
+ S02 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ S02 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (5.5s)
+
+ S02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ S02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ S03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ S03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ S03 rep=2  starting...
+2026-05-05 23:34:42 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6202  err_rate=0.0  pol_viol=0.2  (4.6s)
+
+ S03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.6202  err_rate=0.0  pol_viol=0.2  (3.9s)
+
+ S03 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ S04 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ S04 rep=1  starting...
+2026-05-05 23:35:02 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8905  err_rate=0.0  pol_viol=0.2  (6.5s)
+
+ S04 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (5.7s)
+
+ S04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8905  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ S04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ S05 rep=0  starting...
+2026-05-05 23:35:25 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8608  err_rate=0.0  pol_viol=0.2  (3.5s)
+
+ S05 rep=1  starting...
+2026-05-05 23:35:29 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8608  err_rate=0.0  pol_viol=0.2  (3.5s)
+
+ S05 rep=2  starting...
+2026-05-05 23:35:32 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8608  err_rate=0.0  pol_viol=0.2  (3.7s)
+
+ S05 rep=3  starting...
+2026-05-05 23:35:36 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8608  err_rate=0.0  pol_viol=0.2  (4.1s)
+
+ S05 rep=4  starting...
+2026-05-05 23:35:40 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8608  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ S06 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (4.2s)
+
+ S06 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (3.6s)
+
+ S06 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (3.6s)
+
+ S06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ S06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (3.6s)
+
+ N01 rep=0  starting...
+2026-05-05 23:36:06 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ N01 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ N01 rep=2  starting...
+2026-05-05 23:36:17 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ N01 rep=3  starting...
+2026-05-05 23:36:21 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ N01 rep=4  starting...
+2026-05-05 23:36:26 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ M01 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (6.0s)
+
+ M01 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ M01 rep=2  starting...
+2026-05-05 23:36:44 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=1.0  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ M01 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ M01 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9862  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ M02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (12.7s)
+
+ M02 rep=1  starting...
+2026-05-05 23:37:13 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.937  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ M02 rep=2  starting...
+2026-05-05 23:37:24 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-ue', 'Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (12.5s)
+
+ M02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (12.3s)
+
+ M02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (12.3s)
+
+ M03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7181  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ M03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7181  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ M03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7181  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ M03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7181  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ M03 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7181  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ M04 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.4995  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ M04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.4995  err_rate=0.0  pol_viol=0.2  (6.0s)
+
+ M04 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.4995  err_rate=0.0  pol_viol=0.2  (5.6s)
+
+ M04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.4995  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ M04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.4995  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ M05 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.6025  err_rate=0.0  pol_viol=0.2  (7.0s)
+
+ M05 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.6025  err_rate=0.0  pol_viol=0.2  (6.0s)
+
+ M05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6025  err_rate=0.0  pol_viol=0.2  (5.4s)
+
+ M05 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.6025  err_rate=0.0  pol_viol=0.2  (6.8s)
+
+ M05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.6025  err_rate=0.0  pol_viol=0.2  (7.0s)
+
+ M06 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7301  err_rate=0.0  pol_viol=0.2  (5.5s)
+
+ M06 rep=1  starting...
+2026-05-05 23:39:30 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.7512  err_rate=0.0  pol_viol=0.2  (4.7s)
+
+ M06 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7301  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ M06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7301  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ M06 rep=4  starting...
+2026-05-05 23:39:47 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.7512  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ M07 rep=0  starting...
+2026-05-05 23:39:51 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8818  err_rate=0.0  pol_viol=0.2  (3.6s)
+
+ M07 rep=1  starting...
+2026-05-05 23:39:55 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8818  err_rate=0.0  pol_viol=0.2  (3.9s)
+
+ M07 rep=2  starting...
+2026-05-05 23:39:59 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8818  err_rate=0.0  pol_viol=0.2  (4.0s)
+
+ M07 rep=3  starting...
+2026-05-05 23:40:03 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8818  err_rate=0.0  pol_viol=0.2  (3.9s)
+
+ M07 rep=4  starting...
+2026-05-05 23:40:07 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8818  err_rate=0.0  pol_viol=0.2  (3.8s)
+
+ M08 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.4011  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ M08 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.4011  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ M08 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.4011  err_rate=0.0  pol_viol=0.2  (5.5s)
+
+ M08 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.4011  err_rate=0.0  pol_viol=0.2  (6.4s)
+
+ M08 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.4011  err_rate=0.0  pol_viol=0.2  (6.9s)
+
+ M09 rep=0  starting...
+2026-05-05 23:40:40 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9553  err_rate=0.0  pol_viol=0.2  (3.7s)
+
+ M09 rep=1  starting...
+2026-05-05 23:40:44 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9553  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ M09 rep=2  starting...
+2026-05-05 23:40:49 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9553  err_rate=0.0  pol_viol=0.2  (4.8s)
+
+ M09 rep=3  starting...
+2026-05-05 23:40:54 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9553  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ M09 rep=4  starting...
+2026-05-05 23:40:59 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9553  err_rate=0.0  pol_viol=0.2  (4.8s)
+
+ M10 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (10.4s)
+
+ M10 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (10.0s)
+
+ M10 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (9.3s)
+
+ M10 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (8.8s)
+
+ M10 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (9.5s)
+
+ N02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8199  err_rate=0.3333  pol_viol=0.2  (7.0s)
+
+ N02 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8199  err_rate=0.2  pol_viol=0.2  (6.3s)
+
+ N02 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8199  err_rate=0.2  pol_viol=0.2  (5.7s)
+
+ N02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8199  err_rate=0.2  pol_viol=0.2  (5.5s)
+
+ N02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8199  err_rate=0.3333  pol_viol=0.2  (7.6s)
+
+ N03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ N03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ N03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (6.8s)
+
+ N03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ N03 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ N04 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ N04 rep=1  starting...
+2026-05-05 23:43:00 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ N04 rep=2  starting...
+2026-05-05 23:43:06 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ N04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ N04 rep=4  starting...
+2026-05-05 23:43:17 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ N05 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9334  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ N05 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9334  err_rate=0.0  pol_viol=0.2  (5.1s)
+
+ N05 rep=2  starting...
+2026-05-05 23:43:33 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9334  err_rate=0.0  pol_viol=0.2  (5.5s)
+
+ N05 rep=3  starting...
+2026-05-05 23:43:39 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9334  err_rate=0.0  pol_viol=0.2  (5.6s)
+
+ N05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9334  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ N06 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7448  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ N06 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.0  pol_viol=0.2  (7.8s)
+
+ N06 rep=2  starting...
+2026-05-05 23:44:04 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.7334  err_rate=0.0  pol_viol=0.2  (5.6s)
+
+ N06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7448  err_rate=0.3333  pol_viol=0.2  (7.4s)
+
+ N06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.0  pol_viol=0.2  (8.0s)
+
+ N07 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ N07 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ N07 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ N07 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ N07 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7345  err_rate=0.0  pol_viol=0.2  (6.8s)
+
+ N08 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5886  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ N08 rep=1  starting...
+2026-05-05 23:44:59 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.5498  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ N08 rep=2  starting...
+2026-05-05 23:45:05 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.5498  err_rate=0.0  pol_viol=0.2  (5.4s)
+
+ N08 rep=3  starting...
+2026-05-05 23:45:10 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.5498  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ N08 rep=4  starting...
+2026-05-05 23:45:16 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.5955  err_rate=0.0  pol_viol=0.2  (5.5s)
+
+ C01 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.4919  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ C01 rep=1  starting...
+2026-05-05 23:45:27 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.4982  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ C01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.4919  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ C01 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.4919  err_rate=0.0  pol_viol=0.2  (6.6s)
+
+ C01 rep=4  starting...
+2026-05-05 23:45:46 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.4982  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ C02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.4089  err_rate=0.0  pol_viol=0.2  (6.0s)
+
+ C02 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.4089  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ C02 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.4089  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ C02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.4089  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ C02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.4089  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ C03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5691  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ C03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5691  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ C03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5691  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ C03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.5691  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ C03 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5691  err_rate=0.0  pol_viol=0.2  (6.5s)
+
+ C04 rep=0  starting...
+2026-05-05 23:46:50 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9213  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ C04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9106  err_rate=0.0  pol_viol=0.2  (5.9s)
+
+ C04 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9106  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ C04 rep=3  starting...
+2026-05-05 23:47:08 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.9154  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ C04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9106  err_rate=0.0  pol_viol=0.2  (5.5s)
+
+ C05 rep=0  starting...
+2026-05-05 23:47:19 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-udm' (type=udm) requires 'udr' but it is not in the topology"]
+2026-05-05 23:47:22 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: {
+  "topology_id": "concerts-festival-venue",
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "amf",
+      "replicas": 1,
+      "resources": {
+        "requests": {"cpu": "200m", "memory": "256Mi"},
+        "limits": {"cpu": "400m", "memory": "512Mi"}
+      },
+      "affinity": {"nodeSelect
+  ok  intent_acc=0  res_acc=0.3043  err_rate=0.0  pol_viol=0.2  (8.3s)
+
+ C05 rep=1  starting...
+2026-05-05 23:47:28 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-udm' (type=udm) requires 'udr' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.3043  err_rate=0.25  pol_viol=0.2  (7.6s)
+
+ C05 rep=2  starting...
+2026-05-05 23:47:35 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.3321  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ C05 rep=3  starting...
+2026-05-05 23:47:41 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.3321  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ C05 rep=4  starting...
+2026-05-05 23:47:47 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.3321  err_rate=0.0  pol_viol=0.2  (5.3s)
+
+ C06 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5962  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ C06 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5962  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ C06 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5962  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ C06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.5962  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ C06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5962  err_rate=0.0  pol_viol=0.2  (6.9s)
+
+ C07 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.592  err_rate=0.0  pol_viol=0.2  (5.1s)
+
+ C07 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.6173  err_rate=0.0  pol_viol=0.2  (7.6s)
+
+ C07 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.592  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ C07 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.592  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ C07 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.592  err_rate=0.0  pol_viol=0.2  (5.1s)
+
+ C08 rep=0  starting...
+2026-05-05 23:48:52 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.769  err_rate=0.0  pol_viol=0.2  (5.1s)
+
+ C08 rep=1  starting...
+2026-05-05 23:48:57 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.769  err_rate=0.0  pol_viol=0.2  (5.4s)
+
+ C08 rep=2  starting...
+2026-05-05 23:49:02 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.769  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ C08 rep=3  starting...
+2026-05-05 23:49:07 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-upf' (type=upf) requires 'smf' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.769  err_rate=0.0  pol_viol=0.2  (4.5s)
+
+ C08 rep=4  starting...
+2026-05-05 23:49:11 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-nrf']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.681  err_rate=0.0  pol_viol=0.2  (4.7s)
+
+ C09 rep=0  starting...
+2026-05-05 23:49:16 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-smf']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.333  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ C09 rep=1  starting...
+2026-05-05 23:49:20 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-smf']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.333  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ C09 rep=2  starting...
+2026-05-05 23:49:26 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-nrf']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.333  err_rate=0.0  pol_viol=0.2  (5.2s)
+
+ C09 rep=3  starting...
+2026-05-05 23:49:31 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-smf']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.333  err_rate=0.0  pol_viol=0.2  (4.8s)
+
+ C09 rep=4  starting...
+2026-05-05 23:49:36 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-smf']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.333  err_rate=0.0  pol_viol=0.2  (5.5s)
+
+ N09 rep=0  starting...
+2026-05-05 23:49:43 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8115  err_rate=0.0  pol_viol=0.2  (4.8s)
+
+ N09 rep=1  starting...
+2026-05-05 23:49:48 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8115  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ N09 rep=2  starting...
+2026-05-05 23:49:52 | WARNING  | agents.network_planner         | Topology validation issues: ['Duplicate VNF name: oai-upf', 'Connection references unknown VNF: oai-upf-0', 'Connection references unknown VNF: oai-nrf']
+  ERR: Topology has issues: Duplicate VNF name: oai-upf; Connection  
+intent_acc=0  res_acc=0.524  err_rate=0.0  pol_viol=0.2  (6.3s)
+
+ N09 rep=3  starting...
+2026-05-05 23:49:59 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8115  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ N09 rep=4  starting...
+2026-05-05 23:50:05 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-amf' (type=amf) requires 'nrf' but it is not in the topology", "VNF 'oai-upf' (type=upf) requires 'nrf' but it is not in the topology", "VNF 'oai-smf' (type=smf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'nrf' but it is not in the topology", "VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8115  err_rate=0.0  pol_viol=0.2  (5.6s)
+
+ N10 rep=0  starting...
+2026-05-05 23:50:11 | WARNING  | agents.network_planner         | Dependency warnings: ["VNF 'oai-ausf' (type=ausf) requires 'udm' but it is not in the topology"]
+  ok  intent_acc=0  res_acc=0.8956  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ N10 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (6.3s)
+
+ N10 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (6.0s)
+
+ N10 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (6.0s)
+
+ N10 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ N11 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7171  err_rate=0.0  pol_viol=0.2  (5.7s)
+
+ N11 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7171  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ N11 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7171  err_rate=0.0  pol_viol=0.2  (5.8s)
+
+ N11 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7171  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ N11 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7171  err_rate=0.0  pol_viol=0.2  (5.7s)
+─────────────────────────── Qwen2.5 7B  (7B  ollama) ───────────────────────────
+
+ S01 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.0  pol_viol=0.2  (12.7s)
+
+ S01 rep=1  starting...
+2026-05-05 23:51:25 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_Core_Network_Topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband Slice"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {"name": "oai-amf", "type": "control_plane", "replicas
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.0  pol_viol=0.2  (15.5s)
+
+ S01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ S01 rep=3  starting...
+2026-05-05 23:51:53 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_Core_Network_Topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+  
+2026-05-05 23:51:58 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: {
+  "topology_id": "5GCoreNetworkTopology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "embbeded", "description": "eMBB Slice"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "replicas"
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.0  pol_viol=0.2  (21.3s)
+
+ S01 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ S02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9926  err_rate=0.2  pol_viol=0.2  (13.2s)
+
+ S02 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9926  err_rate=0.1111  pol_viol=0.2  (11.5s)
+
+ S02 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9926  err_rate=0.2  pol_viol=0.2  (13.2s)
+
+ S02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9926  err_rate=0.1111  pol_viol=0.2  (12.4s)
+
+ S02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9926  err_rate=0.2  pol_viol=0.2  (13.3s)
+
+ S03 rep=0  starting...
+2026-05-05 23:53:29 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: internet']
+  ERR: Topology has issues: Connection references unknown VNF: inte  
+intent_acc=0  res_acc=0.8646  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ S03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8472  err_rate=0.0  pol_viol=0.2  (9.7s)
+
+ S03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8646  err_rate=0.0  pol_viol=0.2  (10.8s)
+
+ S03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8646  err_rate=0.0  pol_viol=0.2  (10.5s)
+
+ S03 rep=4  starting...
+2026-05-05 23:54:11 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "simple_5g_core_test",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "
+  ok  intent_acc=0  res_acc=0.8646  err_rate=0.0  pol_viol=0.2  (15.6s)
+
+ S04 rep=0  starting...
+2026-05-05 23:54:27 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_eMBB_Slice_Topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "embbsd1", "description": "eMBB Slice"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "replicas"
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.2  pol_viol=0.2  (19.1s)
+
+ S04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.1111  pol_viol=0.2  (11.9s)
+
+ S04 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.1111  pol_viol=0.2  (12.1s)
+
+ S04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.1111  pol_viol=0.2  (12.4s)
+
+ S04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.2  pol_viol=0.2  (13.7s)
+
+ S05 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (7.4s)
+
+ S05 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (7.3s)
+
+ S05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (7.3s)
+
+ S05 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (7.1s)
+
+ S05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (7.5s)
+
+ S06 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (4.8s)
+
+ S06 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ S06 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (5.0s)
+
+ S06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ S06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (4.9s)
+
+ N01 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8068  err_rate=0.0  pol_viol=0.2  (10.3s)
+
+ N01 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8068  err_rate=0.0  pol_viol=0.2  (10.8s)
+
+ N01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ N01 rep=3  starting...
+2026-05-05 23:57:09 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G-Core-SmallOffice",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband Slice"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_pla
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.0  pol_viol=0.2  (16.0s)
+
+ N01 rep=4  starting...
+2026-05-05 23:57:25 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G-Core-SmallOffice",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband Slice"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_pla
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.0  pol_viol=0.2  (16.3s)
+
+ M01 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9927  err_rate=0.0  pol_viol=0.2  (11.1s)
+
+ M01 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9927  err_rate=0.0  pol_viol=0.2  (11.3s)
+
+ M01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9927  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ M01 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9927  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ M01 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9927  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ M02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (15.7s)
+
+ M02 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (15.5s)
+
+ M02 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (15.5s)
+
+ M02 rep=3  starting...
+2026-05-05 23:59:26 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_eMBB_URLLC_Topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [
+      {"sst": 1, "sd": "A", "description": "eMBB Slice"},
+      {"sst": 2, "sd": "B", "description": "URLLC Slice"}
+    ],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (19.7s)
+
+ M02 rep=4  starting...
+2026-05-05 23:59:46 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_eMBB_URLLC_Topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [
+      {"sst": 1, "sd": "A", "description": "eMBB Slice"},
+      {"sst": 2, "sd": "B", "description": "URLLC Slice"}
+    ],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.1111  pol_viol=0.2  (19.5s)
+
+ M03 rep=0  starting...
+2026-05-06 00:00:03 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5GCoreTopology_001_01",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+     
+2026-05-06 00:00:08 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: {
+  "topology_id": "5GCoreHighAvailability",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+    
+2026-05-06 00:00:13 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 3). Raw: {
+  "topology_id": "5GCoreHighAvailability",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+    
+2026-05-06 00:00:13 | ERROR    | core.llm_core                  | All 3 JSON parse attempts failed for network_planner
+2026-05-06 00:00:13 | ERROR    | agents.network_planner         | Network Planner: LLM returned raw text instead of JSON
+  ERR: No configuration artifacts provided — run VNF Configurator f  
+intent_acc=0  res_acc=0.0  err_rate=0.0  pol_viol=0.0  (15.2s)
+
+ M03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.6922  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ M03 rep=2  starting...
+2026-05-06 00:00:30 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5GCoreTopology_001_01",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+     
+  ok  intent_acc=0  res_acc=0.6922  err_rate=0.0  pol_viol=0.2  (16.7s)
+
+ M03 rep=3  starting...
+2026-05-06 00:00:46 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5GCoreTopology_001_01",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+     
+  ok  intent_acc=0  res_acc=0.6922  err_rate=0.0  pol_viol=0.2  (16.0s)
+
+ M03 rep=4  starting...
+2026-05-06 00:01:03 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5GCoreTopology_001_01",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+     
+  ok  intent_acc=0  res_acc=0.6922  err_rate=0.0  pol_viol=0.2  (16.6s)
+
+ M04 rep=0  starting...
+2026-05-06 00:01:19 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "university_campus_5g",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband for video streaming and web browsing"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {"name": "oai-amf", "type":
+2026-05-06 00:01:24 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: {
+  "topology_id": "university_campus_5g",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband for video streaming and web browsing"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+
+  ok  intent_acc=0  res_acc=0.5769  err_rate=0.2  pol_viol=0.2  (23.0s)
+
+ M04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5769  err_rate=0.1111  pol_viol=0.2  (11.4s)
+
+ M04 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5958  err_rate=0.125  pol_viol=0.2  (10.9s)
+
+ M04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.5769  err_rate=0.1111  pol_viol=0.2  (11.6s)
+
+ M04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5769  err_rate=0.1111  pol_viol=0.2  (12.4s)
+
+ M05 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5042  err_rate=0.0  pol_viol=0.2  (11.5s)
+
+ M05 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5042  err_rate=0.0  pol_viol=0.2  (11.1s)
+
+ M05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5042  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ M05 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.5042  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ M05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5042  err_rate=0.0  pol_viol=0.2  (11.5s)
+
+ M06 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.6976  err_rate=0.1111  pol_viol=0.2  (12.2s)
+
+ M06 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.6976  err_rate=0.1111  pol_viol=0.2  (12.2s)
+
+ M06 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6976  err_rate=0.0  pol_viol=0.2  (11.0s)
+
+ M06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.6976  err_rate=0.1111  pol_viol=0.2  (11.6s)
+
+ M06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7301  err_rate=0.0  pol_viol=0.2  (7.7s)
+
+ M07 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9364  err_rate=0.1111  pol_viol=0.2  (11.9s)
+
+ M07 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9364  err_rate=0.1111  pol_viol=0.2  (11.9s)
+
+ M07 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9364  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ M07 rep=3  starting...
+2026-05-06 00:04:59 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: {
+  "topology_id": "manuf_plant_private_5g",
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "replicas": 2,
+      "resources": {
+        "requests": {"cpu": "100m", "memory": "256Mi"},
+        "limits": {"cpu": "100m", "memory": "256Mi"}
+      },
+      "affinity": {"n
+  ok  intent_acc=0  res_acc=0.9364  err_rate=0.0  pol_viol=0.2  (15.0s)
+
+ M07 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9364  err_rate=0.1111  pol_viol=0.2  (11.8s)
+
+ M08 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.4001  err_rate=0.1111  pol_viol=0.2  (11.2s)
+
+ M08 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.4001  err_rate=0.1111  pol_viol=0.2  (12.0s)
+
+ M08 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.4001  err_rate=0.1111  pol_viol=0.2  (12.6s)
+
+ M08 rep=3  starting...
+2026-05-06 00:05:59 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "sports_stadium_5g",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband for AR and Video Replays"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "ty
+  ok  intent_acc=0  res_acc=0.4001  err_rate=0.2  pol_viol=0.2  (18.9s)
+
+ M08 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.4001  err_rate=0.1111  pol_viol=0.2  (12.2s)
+
+ M09 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ M09 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.0  pol_viol=0.2  (11.1s)
+
+ M09 rep=2  starting...
+2026-05-06 00:06:51 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "drone_delivery_network",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband for drones"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "con
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.2  pol_viol=0.2  (17.9s)
+
+ M09 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.0  pol_viol=0.2  (11.0s)
+
+ M09 rep=4  starting...
+2026-05-06 00:07:20 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "drone_delivery_network",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband for drones"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "con
+2026-05-06 00:07:25 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: {
+  "topology_id": "drone_delivery_network",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband for drones"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "con
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.0  pol_viol=0.2  (20.7s)
+
+ M10 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8642  err_rate=0.0  pol_viol=0.2  (13.2s)
+
+ M10 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8642  err_rate=0.0  pol_viol=0.2  (12.5s)
+
+ M10 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8642  err_rate=0.0  pol_viol=0.2  (12.9s)
+
+ M10 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8642  err_rate=0.0  pol_viol=0.2  (12.3s)
+
+ M10 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8642  err_rate=0.0  pol_viol=0.2  (12.9s)
+
+ N02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8999  err_rate=0.1111  pol_viol=0.2  (12.1s)
+
+ N02 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8999  err_rate=0.1111  pol_viol=0.2  (11.6s)
+
+ N02 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8999  err_rate=0.1111  pol_viol=0.2  (11.5s)
+
+ N02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8999  err_rate=0.1111  pol_viol=0.2  (12.0s)
+
+ N02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8999  err_rate=0.0  pol_viol=0.2  (11.1s)
+
+ N03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9238  err_rate=0.2  pol_viol=0.2  (13.3s)
+
+ N03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9238  err_rate=0.1111  pol_viol=0.2  (12.1s)
+
+ N03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9238  err_rate=0.2  pol_viol=0.2  (13.1s)
+
+ N03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9238  err_rate=0.2  pol_viol=0.2  (13.0s)
+
+ N03 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9238  err_rate=0.1111  pol_viol=0.2  (12.0s)
+
+ N04 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.2  pol_viol=0.2  (12.8s)
+
+ N04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.2  pol_viol=0.2  (12.9s)
+
+ N04 rep=2  starting...
+2026-05-06 00:11:12 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_Commuter_Network_Topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane"
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.2  pol_viol=0.2  (18.1s)
+
+ N04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.2  pol_viol=0.2  (13.3s)
+
+ N04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.2  pol_viol=0.2  (12.8s)
+
+ N05 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.2  pol_viol=0.2  (13.4s)
+
+ N05 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.1111  pol_viol=0.2  (12.2s)
+
+ N05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.2  pol_viol=0.2  (13.1s)
+
+ N05 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.2  pol_viol=0.2  (13.0s)
+
+ N05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.1111  pol_viol=0.2  (12.1s)
+
+ N06 rep=0  starting...
+2026-05-06 00:13:00 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "clinic_5g_topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband Slice"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plan
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.0  pol_viol=0.2  (16.5s)
+
+ N06 rep=1  starting...
+2026-05-06 00:13:17 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "clinic_5g_topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB_slice", "description": "Enhanced Mobile Broadband Slice"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plan
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.0  pol_viol=0.2  (16.2s)
+
+ N06 rep=2  starting...
+2026-05-06 00:13:33 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: internet']
+  ERR: Topology has issues: Connection references unknown VNF: inte  
+intent_acc=0  res_acc=0.7013  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ N06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.0  pol_viol=0.2  (10.7s)
+
+ N06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.0  pol_viol=0.2  (11.3s)
+
+ N07 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7957  err_rate=0.0  pol_viol=0.2  (11.0s)
+
+ N07 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7957  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ N07 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7957  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ N07 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7957  err_rate=0.0  pol_viol=0.2  (11.5s)
+
+ N07 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7957  err_rate=0.0  pol_viol=0.2  (11.5s)
+
+ N08 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.6147  err_rate=0.2  pol_viol=0.2  (13.2s)
+
+ N08 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.6147  err_rate=0.2  pol_viol=0.2  (13.1s)
+
+ N08 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6147  err_rate=0.2  pol_viol=0.2  (13.3s)
+
+ N08 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.6147  err_rate=0.2  pol_viol=0.2  (12.9s)
+
+ N08 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.6147  err_rate=0.2  pol_viol=0.2  (12.9s)
+
+ C01 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5271  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ C01 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5276  err_rate=0.0  pol_viol=0.2  (10.6s)
+
+ C01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5271  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ C01 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.5271  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ C01 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5271  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ C02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.4382  err_rate=0.0  pol_viol=0.2  (11.0s)
+
+ C02 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.4382  err_rate=0.0  pol_viol=0.2  (11.3s)
+
+ C02 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.4382  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ C02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.4382  err_rate=0.0  pol_viol=0.2  (11.1s)
+
+ C02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.4382  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ C03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5862  err_rate=0.125  pol_viol=0.2  (11.1s)
+
+ C03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5876  err_rate=0.1111  pol_viol=0.2  (11.4s)
+
+ C03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5876  err_rate=0.1111  pol_viol=0.2  (12.1s)
+
+ C03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.5862  err_rate=0.125  pol_viol=0.2  (11.4s)
+
+ C03 rep=4  starting...
+2026-05-06 00:18:45 | WARNING  | agents.resource_allocator      | No profile found for dashboard (type=application), using defaults
+  ok  intent_acc=0  res_acc=0.5876  err_rate=0.1111  pol_viol=0.2  (11.8s)
+
+ C04 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9296  err_rate=0.1111  pol_viol=0.2  (12.0s)
+
+ C04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9296  err_rate=0.1111  pol_viol=0.2  (12.3s)
+
+ C04 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9296  err_rate=0.0  pol_viol=0.2  (10.8s)
+
+ C04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9296  err_rate=0.1111  pol_viol=0.2  (11.9s)
+
+ C04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9214  err_rate=0.125  pol_viol=0.2  (10.4s)
+
+ C05 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.3592  err_rate=0.1111  pol_viol=0.2  (11.7s)
+
+ C05 rep=1  starting...
+2026-05-06 00:20:06 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "concerts_festivals_5g",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband for high capacity"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "con
+  ok  intent_acc=0  res_acc=0.3592  err_rate=0.1111  pol_viol=0.2  (17.1s)
+
+ C05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.3592  err_rate=0.2  pol_viol=0.2  (13.3s)
+
+ C05 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.3592  err_rate=0.1111  pol_viol=0.2  (12.8s)
+
+ C05 rep=4  starting...
+2026-05-06 00:20:49 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "concerts_festivals_5g",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband for high capacity"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "con
+  ok  intent_acc=0  res_acc=0.3592  err_rate=0.2  pol_viol=0.2  (18.0s)
+
+ C06 rep=0  starting...
+2026-05-06 00:21:08 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_Port_Authority_Topology",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband for high-speed data"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type
+  ok  intent_acc=0  res_acc=0.6276  err_rate=0.1111  pol_viol=0.2  (17.4s)
+
+ C06 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.6276  err_rate=0.1111  pol_viol=0.2  (12.2s)
+
+ C06 rep=2  starting...
+2026-05-06 00:21:37 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "5G_Network_Topology_Container_Tracking",
+  "connectivity": {
+    "plmn": {"mcc": "001", "mnc": "01"},
+    "slices": [{"sst": 1, "sd": "eMBB", "description": "Enhanced Mobile Broadband for high-speed data"}],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+      "name": "oai-amf",
+  ok  intent_acc=0  res_acc=0.6276  err_rate=0.1111  pol_viol=0.2  (17.6s)
+
+ C06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.6276  err_rate=0.0  pol_viol=0.2  (10.6s)
+
+ C06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.6276  err_rate=0.0  pol_viol=0.2  (11.3s)
+
+ C07 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.6232  err_rate=0.1111  pol_viol=0.2  (11.4s)
+
+ C07 rep=1  starting...
+2026-05-06 00:22:29 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: central_ai_processing_unit']
+  ERR: Topology has issues: Connection references unknown VNF: cent  
+intent_acc=0  res_acc=0.6173  err_rate=0.2222  pol_viol=0.2  (12.7s)
+
+ C07 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6173  err_rate=0.125  pol_viol=0.2  (10.2s)
+
+ C07 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.6232  err_rate=0.1111  pol_viol=0.2  (11.6s)
+
+ C07 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.6173  err_rate=0.125  pol_viol=0.2  (10.2s)
+
+ C08 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7109  err_rate=0.0  pol_viol=0.2  (11.2s)
+
+ C08 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7109  err_rate=0.1111  pol_viol=0.2  (12.0s)
+
+ C08 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6933  err_rate=0.125  pol_viol=0.2  (10.3s)
+
+ C08 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7109  err_rate=0.1111  pol_viol=0.2  (12.4s)
+
+ C08 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7109  err_rate=0.0  pol_viol=0.2  (10.9s)
+
+ C09 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (6.4s)
+
+ C09 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ C09 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (6.1s)
+
+ C09 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7619  err_rate=0.0  pol_viol=0.2  (7.4s)
+
+ C09 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (6.2s)
+
+ N09 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8796  err_rate=0.0  pol_viol=0.2  (11.5s)
+
+ N09 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8796  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ N09 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8796  err_rate=0.0  pol_viol=0.2  (11.1s)
+
+ N09 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8796  err_rate=0.0  pol_viol=0.2  (11.3s)
+
+ N09 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.8796  err_rate=0.0  pol_viol=0.2  (11.0s)
+
+ N10 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9155  err_rate=0.0  pol_viol=0.2  (11.6s)
+
+ N10 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9155  err_rate=0.0  pol_viol=0.2  (10.8s)
+
+ N10 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9155  err_rate=0.0  pol_viol=0.2  (11.4s)
+
+ N10 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9155  err_rate=0.0  pol_viol=0.2  (11.3s)
+
+ N10 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9155  err_rate=0.2  pol_viol=0.2  (12.9s)
+
+ N11 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7871  err_rate=0.2  pol_viol=0.2  (13.0s)
+
+ N11 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7871  err_rate=0.2  pol_viol=0.2  (13.4s)
+
+ N11 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7871  err_rate=0.2  pol_viol=0.2  (13.5s)
+
+ N11 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7871  err_rate=0.1111  pol_viol=0.2  (12.1s)
+
+ N11 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7871  err_rate=0.1111  pol_viol=0.2  (12.1s)
+───────────────────────── DeepSeek-R1 7B  (7B  ollama) ─────────────────────────
+
+ S01 rep=0  starting...
+2026-05-06 00:27:44 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: eMBB-slice', 'Connection references unknown VNF: MTC-slice']
+  ERR: Topology has issues: Connection references unknown VNF: eMBB  
+intent_acc=0  res_acc=0.8477  err_rate=0.0  pol_viol=0.2  (22.1s)
+
+ S01 rep=1  starting...
+2026-05-06 00:28:07 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9175  err_rate=0.2  pol_viol=0.2  (26.5s)
+
+ S01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.926  err_rate=0.2  pol_viol=0.2  (25.7s)
+
+ S01 rep=3  starting...
+2026-05-06 00:29:00 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "Enhanced Mobile Broadband"
+      },
+      {
+        "sst": 2,
+        "sd": "M2M",
+        "description"
+2026-05-06 00:29:10 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: ueransim-gnb', 'Connection references unknown VNF: ueransim-ue']
+  ERR: Topology has issues: Connection references unknown VNF: uera  
+intent_acc=0  res_acc=0.926  err_rate=0.0  pol_viol=0.2  (42.3s)
+
+ S01 rep=4  starting...
+2026-05-06 00:29:40 | WARNING  | agents.network_planner         | Topology validation issues: ['Duplicate VNF name: oai-upf']
+  ERR: Topology has issues: Duplicate VNF name: oai-upf  intent_acc=0  
+res_acc=0.8984  err_rate=0.0  pol_viol=0.2  (30.6s)
+
+ S02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9926  err_rate=0.2  pol_viol=0.2  (28.1s)
+
+ S02 rep=1  starting...
+2026-05-06 00:30:40 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-gnb']
+2026-05-06 00:31:03 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource allocation for each VNF in the given scenario, we start by calculating the base CPU and memory requirements based on their respective profiles. We then consider scaling factors where applicable and ensure that the total resources do not exceed the cluster's maximum capacity
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9926  err_rate=0.2  pol_viol=0.2  (51.9s)
+
+ S02 rep=2  starting...
+2026-05-06 00:31:32 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ue', 'Connection references unknown VNF: oai-ue']
+2026-05-06 00:31:55 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [
+    "No cross-VNF configuration conflicts were identified."
+  ],
+  "validation_notes": [
+    "All mandatory fields are present in the VNF configurations."
+    "Static 
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9926  err_rate=0.2  pol_viol=0.2  (35.8s)
+
+ S02 rep=3  starting...
+2026-05-06 00:32:24 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "replicas": 1,
+      "resources": {
+        "requests": {"cpu": "100m", "memory": "256Mi"},
+        "limits": {"cpu": "200m", "memory": "512Mi"}
+      },
+      "affinity": {"nodeSelec
+  ok  intent_acc=0  res_acc=0.9841  err_rate=0.2  pol_viol=0.2  (50.0s)
+
+ S02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9926  err_rate=0.2  pol_viol=0.2  (24.4s)
+
+ S03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7619  err_rate=0.0  pol_viol=0.2  (37.3s)
+
+ S03 rep=1  starting...
+2026-05-06 00:33:58 | WARNING  | agents.resource_allocator      | No profile found for oai-amf-001 (type=control_plane), using defaults
+2026-05-06 00:33:58 | WARNING  | agents.resource_allocator      | No profile found for oai-smf-001 (type=control_plane), using defaults
+2026-05-06 00:33:58 | WARNING  | agents.resource_allocator      | No profile found for oai-nrf-001 (type=control_plane), using defaults
+2026-05-06 00:33:58 | WARNING  | agents.resource_allocator      | No profile found for oai-upf-001 (type=user_plane), using defaults
+  ok  intent_acc=0  res_acc=0.0  err_rate=1.0  pol_viol=0.2  (23.6s)
+
+ S03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8217  err_rate=0.0  pol_viol=0.2  (22.1s)
+
+ S03 rep=3  starting...
+2026-05-06 00:34:41 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: slice-eMBB']
+2026-05-06 00:34:57 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "replicas": 1,
+      "resources": {
+        "requests": {"cpu": "120m", "memory": "256Mi"}
+      },
+      "affinity": {}
+    },
+    {
+      "name": "oai-smf",
+      "type": "control_p
+2026-05-06 00:35:32 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: 
+  ERR: Topology has issues: Connection references unknown VNF: slic  
+intent_acc=0  res_acc=0.7008  err_rate=0.0  pol_viol=0.2  (78.7s)
+
+ S03 rep=4  starting...
+2026-05-06 00:36:01 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "1",
+      "mnc": "2"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "eNB with eMBB traffic characteristics"
+      }
+    ],
+    "dnns": ["internet"]
+  },
+  "vnfs": [
+    {
+     
+2026-05-06 00:36:10 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.8646  err_rate=0.2  pol_viol=0.2  (37.9s)
+
+ S04 rep=0  starting...
+2026-05-06 00:36:38 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: amf-vnf', 'Connection references unknown VNF: nr-ue-vnf']
+2026-05-06 00:36:38 | WARNING  | agents.resource_allocator      | No profile found for upf-vnf (type=user_plane), using defaults
+2026-05-06 00:36:45 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To calculate the optimal resource allocation for each VNF, we need to consider the topology blueprint, resource profiles, scaling formulas, and cluster capacity requirements.
+
+1. **Determine Resource Requirements:**
+   - The upf-vnf is handling 100 UEs with a minimum throughput of 100Mbps.
+   - Each
+  ERR: Topology has issues: Connection references unknown VNF: amf-  
+intent_acc=0  res_acc=0.0  err_rate=1.0  pol_viol=0.2  (24.9s)
+
+ S04 rep=1  starting...
+2026-05-06 00:37:04 | WARNING  | agents.network_planner         | Topology validation issues: ['Duplicate VNF name: oai-nrf', 'Duplicate VNF name: oai-upf']
+2026-05-06 00:37:12 | WARNING  | core.llm_core                  | JSON parse failed for vnf_configurator (attempt 1). Raw: ```json
+{
+  "validation_notes": [
+    "The oai-nrf and oai-smf configurations lack the correct nodeSelector specifying the PLMN ID, which is essential for consistent resource allocation across VNFs."
+    "The interfaces configuration includes both N2 and N4 ports. It's unclear if this is intentional
+  ERR: Topology has issues: Duplicate VNF name: oai-nrf; Duplicate   
+intent_acc=0  res_acc=0.8332  err_rate=0.0  pol_viol=0.2  (21.2s)
+
+ S04 rep=2  starting...
+2026-05-06 00:37:29 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.926  err_rate=0.2  pol_viol=0.2  (27.4s)
+
+ S04 rep=3  starting...
+2026-05-06 00:37:53 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "001",
+        "description": "eMBB Slice with 100 Mbps Downlink and 1 Mbps Uplink"
+      }
+    ],
+    "dnns": ["internet"]
+    },
+    "
+  ok  intent_acc=0  res_acc=0.839  err_rate=0.0  pol_viol=0.2  (21.4s)
+
+ S04 rep=4  starting...
+2026-05-06 00:38:11 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-upf', 'Connection references unknown VNF: oai-nrf']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=1.0  err_rate=0.0  pol_viol=0.2  (24.6s)
+
+ S05 rep=0  starting...
+2026-05-06 00:38:40 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-gnb', 'Connection references unknown VNF: oai-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9238  err_rate=0.2  pol_viol=0.2  (26.9s)
+
+ S05 rep=1  starting...
+2026-05-06 00:39:05 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "internet",
+        "description": "eMBB internet slice with high data rate support"
+      }
+    ],
+    "dnns": ["internet"]
+  }
+  ok  intent_acc=0  res_acc=0.9153  err_rate=0.2  pol_viol=0.2  (30.5s)
+
+ S05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.8861  err_rate=0.0  pol_viol=0.2  (28.1s)
+
+ S05 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.8888  err_rate=0.0  pol_viol=0.2  (18.6s)
+
+ S05 rep=4  starting...
+2026-05-06 00:40:27 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9238  err_rate=0.2  pol_viol=0.2  (28.8s)
+
+ S06 rep=0  starting...
+2026-05-06 00:41:27 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: 
+  ok  intent_acc=0  res_acc=0.9327  err_rate=0.0  pol_viol=0.2  (52.5s)
+
+ S06 rep=1  starting...
+2026-05-06 00:42:18 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource allocation for each VNF based on their scaling formulas and the number of UEs they handle:
+
+1. **AMF (eMBB)**:
+   - Base CPU: 100m
+   - Scaling: Horizontal (replicas)
+   - UEs: 100
+   - Additional CPU: (200m / 1000) * 100 = 20m
+   - Total CPU: 100m + 20m = **120m**
+
+2. **SM
+2026-05-06 00:42:53 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: 
+  ok  intent_acc=0  res_acc=0.8631  err_rate=0.0  pol_viol=0.2  (93.8s)
+
+ S06 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.712  err_rate=0.0  pol_viol=0.2  (23.3s)
+
+ S06 rep=3  starting...
+2026-05-06 00:43:39 | WARNING  | agents.resource_allocator      | No profile found for 5G Core AMF (type=control_plane), using defaults
+  ok  intent_acc=0  res_acc=0.0  err_rate=1.0  pol_viol=0.2  (22.1s)
+
+ S06 rep=4  starting...
+2026-05-06 00:44:10 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To calculate the optimal resource allocation for each VNF in the 5G network orchestration system, we'll follow these steps:
+
+1. **Determine Base Resource Usage**: Multiply each VNF's base resource requirements by their respective number of replicas.
+
+2. **Apply Scaling Formulas**: Add any additional
+  ok  intent_acc=0  res_acc=0.7702  err_rate=0.0  pol_viol=0.2  (31.0s)
+
+ N01 rep=0  starting...
+2026-05-06 00:44:36 | WARNING  | agents.resource_allocator      | No profile found for oai-eransim-gnb (type=ran_simulator), using defaults
+2026-05-06 00:44:36 | WARNING  | agents.resource_allocator      | No profile found for oai-eransim-ue (type=ran_simulator), using defaults
+  ok  intent_acc=0  res_acc=0.8041  err_rate=0.2  pol_viol=0.2  (24.3s)
+
+ N01 rep=1  starting...
+2026-05-06 00:45:12 | ERROR    | experiments.common.runners     | MASRunner failed for intent N01: 'dict' object has no attribute 'lower'
+  ERR: 'dict' object has no attribute 'lower'  intent_acc=0  res_acc=0.0  
+err_rate=0.0  pol_viol=0.0  (19.9s)
+
+ N01 rep=2  starting...
+2026-05-06 00:45:21 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.8041  err_rate=0.2  pol_viol=0.2  (26.7s)
+
+ N01 rep=3  starting...
+2026-05-06 00:45:47 | WARNING  | agents.network_planner         | Topology validation issues: ['Duplicate VNF name: oai-upf', 'Duplicate VNF name: oai-udm']
+2026-05-06 00:46:05 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To allocate resources for the given VNFs in the cluster while meeting the required throughput and considering scaling policies, we proceed as follows:
+
+1. **Identify Resource Profiles and Scaling Policies:**
+   - **AMF:** 1 replica, base CPU = 100m, scales horizontally.
+   - **SMF:** Same as AMF.
+  
+2026-05-06 00:46:20 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "dry_run": {
+    "status": "FAILED",
+    "errors": [
+      "Duplicate VNF name 'oai-upf' found."
+    ]
+  },
+  "conflicts": ["Duplicate VNF name 'oai-upf' found."],
+  "reasons": [
+    "Duplicate VNF names cause conflicts in Kubernetes cluster"
+  ],
+  "validation
+  ERR: Topology has issues: Duplicate VNF name: oai-upf; Duplicate   
+intent_acc=0  res_acc=0.7811  err_rate=0.0  pol_viol=0.2  (44.6s)
+
+ N01 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.6643  err_rate=0.0  pol_viol=0.2  (21.4s)
+
+ M01 rep=0  starting...
+2026-05-06 00:46:55 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-gnb', 'Connection references unknown VNF: oai_ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9927  err_rate=0.2  pol_viol=0.2  (28.0s)
+
+ M01 rep=1  starting...
+2026-05-06 00:47:25 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9842  err_rate=0.2  pol_viol=0.2  (29.4s)
+
+ M01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9927  err_rate=0.2  pol_viol=0.2  (33.5s)
+
+ M01 rep=3  starting...
+2026-05-06 00:48:25 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-gnb', 'Connection references unknown VNF: oai-ue']
+2026-05-06 00:48:37 | WARNING  | core.llm_core                  | JSON parse failed for vnf_configurator (attempt 1). Raw: ```json
+{
+  "validation_notes": ["All VNFs are configured with consistent PLMN ID (001/01) and use the same DNN (internet). The interface ports align with their respective roles. No immediate cross-VNF consistency issues were found except potential dependencies between control-plane VNFs and user-pl
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9927  err_rate=0.2  pol_viol=0.2  (31.4s)
+
+ M01 rep=4  starting...
+  ok  intent_acc=0  res_acc=1.0  err_rate=0.4  pol_viol=0.2  (19.9s)
+
+ M02 rep=0  starting...
+2026-05-06 00:49:18 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ausm']
+2026-05-06 00:49:36 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To allocate resources exactly based on scaling, we consider each VNF's type (horizontal or vertical) and number of replicas:
+
+- **Horizontal Scaling**: Double base resources per replica.
+- **Vertical Scaling**: Add additional resources per slice.
+
+Here's the exact resource allocation:
+
+| VNF  | CPU 
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (52.4s)
+
+ M02 rep=1  starting...
+2026-05-06 00:50:05 | WARNING  | agents.resource_allocator      | No profile found for eMBB Slice (type=control_plane), using defaults
+2026-05-06 00:50:05 | WARNING  | agents.resource_allocator      | No profile found for URLLC Slice (type=control_plane), using defaults
+2026-05-06 00:50:05 | WARNING  | agents.resource_allocator      | No profile found for NBG (type=ran_simulator), using defaults
+  ok  intent_acc=0  res_acc=0.0  err_rate=1.0  pol_viol=0.2  (26.8s)
+
+ M02 rep=2  starting...
+2026-05-06 00:50:33 | WARNING  | agents.network_planner         | Topology validation issues: ['Duplicate VNF name: oai-nssf']
+2026-05-06 00:50:33 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+  ERR: Topology has issues: Duplicate VNF name: oai-nssf  intent_acc=0  
+res_acc=0.9715  err_rate=0.125  pol_viol=0.2  (21.2s)
+
+ M02 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (33.6s)
+
+ M02 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9686  err_rate=0.2  pol_viol=0.2  (25.1s)
+
+ M03 rep=0  starting...
+2026-05-06 00:52:28 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: 
+  ok  intent_acc=0  res_acc=0.7181  err_rate=0.3333  pol_viol=0.2  (55.1s)
+
+ M03 rep=1  starting...
+2026-05-06 00:52:54 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "1",
+      "mnc": "2"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "internet",
+        "description": "eMBB slice with 333 subscribers and 5 Gbps throughput"
+      },
+      {
+        "sst": 1,
+     
+2026-05-06 00:53:17 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs have the same 'sbi' port but are configured separately, which is acceptable as long as they are mapped to different services or
+  ok  intent_acc=0  res_acc=0.7019  err_rate=0.0  pol_viol=0.2  (41.0s)
+
+ M03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6978  err_rate=0.2  pol_viol=0.2  (32.8s)
+
+ M03 rep=3  starting...
+2026-05-06 00:54:06 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/02",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "002"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "Massive MIMO slice for high throughput and low latency applications"
+      },
+      {
+        "sst": 0,
+  ok  intent_acc=0  res_acc=0.6922  err_rate=0.2  pol_viol=0.2  (41.3s)
+
+ M03 rep=4  starting...
+2026-05-06 00:54:48 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ue-001-001', 'Connection references unknown VNF: oai-ue-001-001']
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-amf-001-001 (type=control_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-smf-001-001 (type=control_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-nrf-001-001 (type=control_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-ausf-001-001 (type=control_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-udm-001-001 (type=control_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-upf-001-001 (type=user_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-udr-001-001 (type=control_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for oai-nssf-001-001 (type=control_plane), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for ueransim-gnb-001-001 (type=ran_simulator), using defaults
+2026-05-06 00:54:48 | WARNING  | agents.resource_allocator      | No profile found for ueransim-ue-001-001 (type=ran_simulator), using defaults
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.0  err_rate=1.0  pol_viol=0.2  (28.7s)
+
+ M04 rep=0  starting...
+2026-05-06 00:55:36 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "1/1",
+  "dry_run": {
+    "status": "FAILED",
+    "errors": [
+      "Port conflict: Multiple VNFs are using the same port (80). Kubernetes only allows one service per port in a namespace."
+    ]
+  },
+  "conflicts": [],
+  "reasons": ["Port conflicts between multiple VNFs on
+  ok  intent_acc=0  res_acc=0.5165  err_rate=0.0  pol_viol=0.2  (35.0s)
+
+ M04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5684  err_rate=0.2  pol_viol=0.2  (34.2s)
+
+ M04 rep=2  starting...
+2026-05-06 00:56:18 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: eNB_slice']
+  ERR: Topology has issues: Connection references unknown VNF: eNB_  
+intent_acc=0  res_acc=0.351  err_rate=0.0  pol_viol=0.2  (19.2s)
+
+ M04 rep=3  starting...
+2026-05-06 00:56:43 | WARNING  | agents.resource_allocator      | No profile found for oai-umf (type=user_plane), using defaults
+  ok  intent_acc=0  res_acc=0.6026  err_rate=0.3  pol_viol=0.2  (24.3s)
+
+ M04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5769  err_rate=0.2  pol_viol=0.2  (29.4s)
+
+ M05 rep=0  starting...
+2026-05-06 00:57:37 | WARNING  | agents.resource_allocator      | No profile found for oai-ueransim-gnb (type=ran_simulator), using defaults
+2026-05-06 00:57:37 | WARNING  | agents.resource_allocator      | No profile found for oai-ueransim-ue (type=ran_simulator), using defaults
+  ok  intent_acc=0  res_acc=0.4868  err_rate=0.2  pol_viol=0.2  (28.1s)
+
+ M05 rep=1  starting...
+2026-05-06 00:58:05 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "0",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 3,
+        "sd": "massive_mtc",
+        "description": "Massive MTC slice for IoT applications requiring high throughput and low latency."
+      }
+ 
+2026-05-06 00:58:13 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-ue']
+2026-05-06 00:58:26 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To calculate the optimal resource allocation for each VNF in the Kubernetes cluster, we need to consider their resource profiles, scaling formulas, and the cluster's capacity requirements. Here's a step-by-step breakdown:
+
+1. **Identify Resource Requirements**:
+   - Each VNF has a base CPU and memor
+2026-05-06 00:58:39 | WARNING  | core.llm_core                  | JSON parse failed for vnf_configurator (attempt 1). Raw: ```json
+{
+  "validation_notes": [
+    "The nodeSelector is empty for all VNFs. It should be populated with specific nodes or pods based on their roles.",
+    "The interfaces might not correctly map the required ports for each VNF's role (e.g., oai-upf needs a separate interface).",
+    "DNN assignme
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.5042  err_rate=0.2  pol_viol=0.2  (51.5s)
+
+ M05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.4957  err_rate=0.2  pol_viol=0.2  (30.8s)
+
+ M05 rep=3  starting...
+2026-05-06 00:59:46 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource allocation for each VNF in the given cluster, we need to consider their base resources, scaling formulas, and the total capacity of the cluster. Here's a step-by-step explanation:
+
+1. **Identify Base Resources:**
+   - Each VNF has a base CPU and memory allocation based on i
+  ok  intent_acc=0  res_acc=0.5042  err_rate=0.2  pol_viol=0.2  (48.7s)
+
+ M05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5042  err_rate=0.2  pol_viol=0.2  (41.0s)
+
+ M06 rep=0  starting...
+2026-05-06 01:00:53 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: Slice1', 'Connection references unknown VNF: Slice2', 'Connection references unknown VNF: Slice1', 'Connection references unknown VNF: Slice3', 'Connection references unknown VNF: Slice2', 'Connection references unknown VNF: Slice3']
+  ERR: Topology has issues: Connection references unknown VNF: Slic  
+intent_acc=0  res_acc=0.7301  err_rate=0.0  pol_viol=0.2  (26.1s)
+
+ M06 rep=1  starting...
+2026-05-06 01:01:22 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "1",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "Low latency slice for warehouse automation and autonomous robots"
+      },
+      {
+        "sst": 
+2026-05-06 01:01:25 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: gNB', 'Connection references unknown VNF: slice_eMBB']
+2026-05-06 01:01:35 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To calculate the optimal resource allocation for each VNF in the given 5G network orchestration system, we will follow these steps:
+
+1. **Understand the Topology Blueprint**: The topology includes a user-plane VNF ("oai-upf") with 4 replicas and interfaces n1, n2, and n4. It is connected to gNB and 
+2026-05-06 01:01:43 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: ```json
+{
+  "topology_id": "001/01",
+  "vnfs": [
+    {
+      "name": "oai-upf",
+      "type": "user_plane",
+      "replicas": 4,
+      "resources": {
+        "requests": {"cpu": "2000m", "memory": "2048Mi"},
+        "limits": {},
+        "affinity": {}
+      }
+    },
+    // Other VNFs omitted for br
+  ERR: Topology has issues: Connection references unknown VNF: gNB;  
+intent_acc=0  res_acc=0.8815  err_rate=0.0  pol_viol=0.2  (44.0s)
+
+ M06 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7201  err_rate=0.0  pol_viol=0.2  (16.9s)
+
+ M06 rep=3  starting...
+2026-05-06 01:02:25 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "5G_Warehouse_Network",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High throughput slice for warehouse automation and robotics"
+      },
+      {
+    
+2026-05-06 01:02:57 | ERROR    | experiments.common.runners     | MASRunner failed for intent M06: 'dict' object has no attribute 'lower'
+  ERR: 'dict' object has no attribute 'lower'  intent_acc=0  res_acc=0.0  
+err_rate=0.0  pol_viol=0.0  (43.1s)
+
+ M06 rep=4  starting...
+2026-05-06 01:03:07 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.6976  err_rate=0.2  pol_viol=0.2  (37.5s)
+
+ M07 rep=0  starting...
+2026-05-06 01:04:05 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource allocation for each VNF in the given LTE network scenario, we'll follow these steps:
+
+1. **Identify Supported Slices**: Each VNF operates within a specific slice based on its supported_slices.
+
+2. **Determine UEs per Slice**: Assuming 50% of UEs are allocated to eMIMO (AMF)
+2026-05-06 01:04:18 | ERROR    | experiments.common.runners     | MASRunner failed for intent M07: 'dict' object has no attribute 'lower'
+  ERR: 'dict' object has no attribute 'lower'  intent_acc=0  res_acc=0.0  
+err_rate=0.0  pol_viol=0.0  (43.8s)
+
+ M07 rep=1  starting...
+2026-05-06 01:04:30 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-nSSF', 'Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ue']
+2026-05-06 01:05:00 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the appropriate resource allocation for each VNF in the given topology, we analyze their type (control_plane or user_plane) and scaling strategy (horizontal or vertical). Here's the breakdown:
+
+1. **Control Plane VNFs:**
+   - **oai-amf:** 3 replicas × horizontal scaling → CPU: 300m, Mem
+2026-05-06 01:05:16 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs are configured with the same image version ('v2.1.0') and port definitions (SBI:80), which is consistent across the cluster."
+ 
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9443  err_rate=0.2  pol_viol=0.2  (65.1s)
+
+ M07 rep=2  starting...
+2026-05-06 01:05:39 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "972", 
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High throughput, low latency for quality inspection cameras."
+      },
+      {
+        "sst": 3,
+  ok  intent_acc=0  res_acc=0.9443  err_rate=0.2  pol_viol=0.2  (44.2s)
+
+ M07 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9443  err_rate=0.2  pol_viol=0.2  (28.7s)
+
+ M07 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9415  err_rate=0.0  pol_viol=0.2  (20.0s)
+
+ M08 rep=0  starting...
+2026-05-06 01:07:22 | ERROR    | experiments.common.runners     | MASRunner failed for intent M08: 'str' object has no attribute 'get'
+  ERR: 'str' object has no attribute 'get'  intent_acc=0  res_acc=0.0  
+err_rate=0.0  pol_viol=0.0  (25.8s)
+
+ M08 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.4001  err_rate=0.2  pol_viol=0.2  (28.5s)
+
+ M08 rep=2  starting...
+2026-05-06 01:08:21 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/02",
+  "dry_run": {
+    "status": "FAILED",
+    "errors": [
+      "Port conflicts detected across services."
+    ]
+  },
+  "conflicts": [
+    "AMF and SMF reference mismatch or missing UPF configuration."
+    "PLMN mismatch between AMF and core config."
+  ],
+  "reasons
+  ok  intent_acc=0  res_acc=0.4011  err_rate=0.0  pol_viol=0.2  (33.8s)
+
+ M08 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.3827  err_rate=0.2  pol_viol=0.2  (35.3s)
+
+ M08 rep=4  starting...
+2026-05-06 01:09:08 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/02/3",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "002"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High throughput for eMBB applications (AR, video streaming)"
+      },
+      {
+        "sst": 4,
+     
+  ok  intent_acc=0  res_acc=0.4533  err_rate=0.0  pol_viol=0.2  (33.4s)
+
+ M09 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9389  err_rate=0.0  pol_viol=0.2  (30.0s)
+
+ M09 rep=1  starting...
+2026-05-06 01:10:22 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "drone-5g-topology-001",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs are configured with the same image version and port settings, which is consistent."
+    "No cross-VNF references
+  ok  intent_acc=0  res_acc=0.9167  err_rate=0.0  pol_viol=0.2  (21.6s)
+
+ M09 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9389  err_rate=0.2  pol_viol=0.2  (31.5s)
+
+ M09 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9334  err_rate=0.25  pol_viol=0.2  (26.0s)
+
+ M09 rep=4  starting...
+2026-05-06 01:11:44 | WARNING  | core.llm_core                  | JSON parse failed for vnf_configurator (attempt 1). Raw: ```json
+{
+  "validation_notes": [
+    "oai-amf is missing an interface configuration on port 8003 (N2). This could cause issues with VNF communication if other VNFs rely on this port.",
+    "The VNF oai-amf does not have a resource definition for the N4 interface, which is used by other VNFs. This m
+  ok  intent_acc=0  res_acc=0.9201  err_rate=0.0  pol_viol=0.2  (28.1s)
+
+ M10 rep=0  starting...
+2026-05-06 01:12:03 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ue']
+2026-05-06 01:12:15 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "resource_allocations": {
+    "oai-amf": {
+      "cpu": 400000000,
+      "memory": 768000000
+    },
+    "oai-smf": {
+      "cpu": 300000000,
+      "memory": 512000000
+    },
+    "oai-nrf": {
+      "cpu": 400000000,
+      "memory": 512000000
+    },
+    "oai-upf"
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (42.7s)
+
+ M10 rep=1  starting...
+2026-05-06 01:12:42 | WARNING  | agents.resource_allocator      | No profile found for oai-ue (type=user_plane), using defaults
+2026-05-06 01:12:57 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the appropriate resource allocation for each VNF in the given scenario, we need to consider their respective base resource profiles and ensure that the total allocated resources do not exceed the cluster's capacity. Here's a step-by-step breakdown:
+
+1. **Identify Base Resource Profiles:
+2026-05-06 01:13:19 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: To determine the resource allocation for each VNF in the Kubernetes cluster, we consider their respective scaling types (horizontal or vertical) and number of replicas. Here's a breakdown:
+
+1. **Control Plane VNFs**:
+   - **oai-amf**: 1 replica (horizontal), base resources: 100m CPU + 256Mi
+   - **o
+  ok  intent_acc=0  res_acc=0.8815  err_rate=0.125  pol_viol=0.2  (65.2s)
+
+ M10 rep=2  starting...
+2026-05-06 01:13:50 | ERROR    | experiments.common.runners     | MASRunner failed for intent M10: 'list' object has no attribute 'get'
+  ERR: 'list' object has no attribute 'get'  intent_acc=0  res_acc=0.0  
+err_rate=0.0  pol_viol=0.0  (11.8s)
+
+ M10 rep=3  starting...
+2026-05-06 01:14:21 | WARNING  | agents.network_planner         | Topology validation issues: ["Missing or invalid 'vnfs' list"]
+2026-05-06 01:14:40 | WARNING  | agents.resource_allocator      | Allocation validation issues: ['No VNFs in allocation']
+2026-05-06 01:14:40 | WARNING  | agents.vnf_configurator        | Using topology VNFs (no resource_allocation VNFs found)
+2026-05-06 01:14:40 | WARNING  | agents.vnf_configurator        | Config validation issues: ['No VNF configurations generated']
+  ERR: No configuration artifacts provided — run VNF Configurator f  
+intent_acc=0  res_acc=0.0  err_rate=0.0  pol_viol=0.0  (51.2s)
+
+ M10 rep=4  starting...
+2026-05-06 01:14:55 | WARNING  | agents.resource_allocator      | No profile found for oai-ueransim-gnb (type=ran_simulator), using defaults
+2026-05-06 01:14:55 | WARNING  | agents.resource_allocator      | No profile found for oai-ueransim-ue (type=ran_simulator), using defaults
+2026-05-06 01:15:08 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To allocate compute resources optimally for each VNF in the given 5G network orchestration system, we follow a systematic approach considering resource profiles, scaling types, supported slices, interfaces, and cluster capacity constraints.
+
+### Allocation Summary:
+
+- **oai-amf (control_plane):**
+  
+  ok  intent_acc=0  res_acc=0.872  err_rate=0.2  pol_viol=0.2  (46.6s)
+
+ N02 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.8999  err_rate=0.2  pol_viol=0.2  (24.5s)
+
+ N02 rep=1  starting...
+2026-05-06 01:16:12 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To calculate the optimal resource allocation for each VNF in the given Kubernetes cluster, we'll follow a systematic approach based on the provided topology blueprint and resource profiles. Here's how we can determine the resource allocation:
+
+1. **Understand the VNFs and Their Requirements**:
+   - 
+2026-05-06 01:16:47 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: 
+  ok  intent_acc=0  res_acc=0.8891  err_rate=0.0  pol_viol=0.2  (71.0s)
+
+ N02 rep=2  starting...
+2026-05-06 01:17:12 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-gnb', 'Connection references unknown VNF: oai-ue', 'Connection references unknown VNF: oai-gnb']
+2026-05-06 01:17:47 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: 
+2026-05-06 01:18:06 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: To determine the resource allocation for each VNF in the given cluster, we consider their roles, connections, and scaling profiles while adhering to the SLA constraints. Here's a structured approach:
+
+1. **Identify Resource Requirements**:
+   - Each UE typically requires significant CPU resources, e
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.8999  err_rate=0.2  pol_viol=0.2  (93.0s)
+
+ N02 rep=3  starting...
+2026-05-06 01:18:42 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=user_plane), using defaults
+  ok  intent_acc=0  res_acc=0.8048  err_rate=0.5  pol_viol=0.2  (18.3s)
+
+ N02 rep=4  starting...
+2026-05-06 01:19:03 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "eMBB IoT devices (50 IoT prototypes)"
+      },
+      {
+        "sst": 2,
+        "sd": "macro",
+        
+  ok  intent_acc=0  res_acc=0.831  err_rate=0.0  pol_viol=0.2  (26.8s)
+
+ N03 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9238  err_rate=0.2  pol_viol=0.2  (22.2s)
+
+ N03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8888  err_rate=0.0  pol_viol=0.2  (20.5s)
+
+ N03 rep=2  starting...
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-nus (type=control_plane), using defaults
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-udm-highspeed (type=control_plane), using defaults
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-udr-highspeed (type=control_plane), using defaults
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-nssf-highspeed (type=control_plane), using defaults
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-upf-highspeed (type=user_plane), using defaults
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-eransim-gnb (type=ran_simulator), using defaults
+2026-05-06 01:20:16 | WARNING  | agents.resource_allocator      | No profile found for oai-eransim-ue (type=ran_simulator), using defaults
+2026-05-06 01:20:23 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the optimal resource allocation for each VNF in the given 5G network topology, we analyze their resource profiles, scaling types, and interface connections. The goal is to allocate CPU and memory while respecting node capacity limits and scaling constraints.
+
+### Step-by-Step Calculatio
+2026-05-06 01:20:58 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: 
+2026-05-06 01:21:16 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 3). Raw: ```json
+{
+  "topology": {
+    "name": "RETAIL_STORE_5G",
+    "slices": [
+      {
+        "slice_name": " retail_store",
+        "type": " retail",
+        "interfaces": ["n1-1", "n2-1"]
+      }
+    ],
+    "vnfs": [
+      {
+        "vni": "0",
+        "vn_name": " oai-amf",
+        "type": " control_
+2026-05-06 01:21:16 | ERROR    | core.llm_core                  | All 3 JSON parse attempts failed for resource_allocator
+  ok  intent_acc=0  res_acc=0.9268  err_rate=0.6154  pol_viol=0.2  (81.8s)
+
+ N03 rep=3  starting...
+2026-05-06 01:21:31 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+2026-05-06 01:21:48 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs have consistent image versions and ports, with no port conflicts."
+    "No namespace issues or service name collisions were det
+  ok  intent_acc=0  res_acc=0.8722  err_rate=0.3333  pol_viol=0.2  (24.7s)
+
+ N03 rep=4  starting...
+2026-05-06 01:22:28 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the appropriate resource allocations for each VNF in the given network topology, we consider the scaling factors (horizontal or vertical) applied to each VNF. Here's the step-by-step breakdown:
+
+1. **Control Plane VNFs**:
+   - **oai-amf**: 2 replicas → 200m CPU, 512Mi memory
+   - **oai-
+  ok  intent_acc=0  res_acc=0.9153  err_rate=0.2  pol_viol=0.2  (53.3s)
+
+ N04 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7956  err_rate=0.2  pol_viol=0.2  (33.5s)
+
+ N04 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.7513  err_rate=0.0  pol_viol=0.2  (23.5s)
+
+ N04 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7956  err_rate=0.2  pol_viol=0.2  (24.6s)
+
+ N04 rep=3  starting...
+2026-05-06 01:24:45 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: The maximum number of User Equipment (UE) that can be supported by the resource allocation in the given cluster is **100**, as specified by the `ue_count` parameter. This aligns with the total resource requirements and capacities defined across all VNFs within the cluster's limits.
+
+**Step-by-Step E
+  ok  intent_acc=0  res_acc=0.7956  err_rate=0.2  pol_viol=0.2  (56.3s)
+
+ N04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7956  err_rate=0.2  pol_viol=0.2  (27.1s)
+
+ N05 rep=0  starting...
+2026-05-06 01:25:39 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.93  err_rate=0.2  pol_viol=0.2  (25.2s)
+
+ N05 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9389  err_rate=0.2  pol_viol=0.2  (26.0s)
+
+ N05 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9389  err_rate=0.2  pol_viol=0.2  (25.8s)
+
+ N05 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9474  err_rate=0.2  pol_viol=0.2  (21.2s)
+
+ N05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.93  err_rate=0.2  pol_viol=0.2  (29.8s)
+
+ N06 rep=0  starting...
+2026-05-06 01:27:47 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "0",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "internet",
+        "description": "eMBB slice for high throughput medical IoT devices"
+      }
+    ],
+    "dnns": ["internet"]
+  }
+  ok  intent_acc=0  res_acc=0.7258  err_rate=0.25  pol_viol=0.2  (33.6s)
+
+ N06 rep=1  starting...
+2026-05-06 01:28:43 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To allocate resources for each VNF in the Kubernetes cluster while respecting capacity constraints and applying scaling factors, we follow these steps:
+
+1. **Identify Base Resources**: Each VNF's base resource profile is determined by its category (control_plane or user_plane) and number of replicas
+2026-05-06 01:29:18 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: 
+  ok  intent_acc=0  res_acc=0.7062  err_rate=0.0  pol_viol=0.2  (82.8s)
+
+ N06 rep=2  starting...
+2026-05-06 01:30:07 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To solve this problem, we need to allocate resources (CPU and memory) to various network functions while considering their scaling requirements. The goal is to efficiently distribute these resources using bin-packing optimization.
+
+### Approach
+1. **Identify Resource Requirements**: Each network fun
+2026-05-06 01:30:16 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: ```json
+{
+  "topology_id": "003/01",
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "replicas": 2,
+      "resources": {
+        "requests": {"cpu": "200m", "memory": "512Mi"},
+        "limits": {"cpu": "1000m", "memory": "1024Mi"}
+      },
+      "affinity": {"nodeSel
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.2  pol_viol=0.2  (59.1s)
+
+ N06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7013  err_rate=0.2  pol_viol=0.2  (25.3s)
+
+ N06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7112  err_rate=0.0  pol_viol=0.2  (35.7s)
+
+ N07 rep=0  starting...
+2026-05-06 01:31:43 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+  ok  intent_acc=0  res_acc=0.7834  err_rate=0.3  pol_viol=0.2  (27.4s)
+
+ N07 rep=1  starting...
+2026-05-06 01:32:14 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-nSSF']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.7957  err_rate=0.2  pol_viol=0.2  (29.1s)
+
+ N07 rep=2  starting...
+2026-05-06 01:32:54 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To calculate the required CPU and memory for each VNF:
+
+1. **oai-amf**: control_plane, 2 replicas → 200m CPU, 512Mi
+2. **oai-smf**: same as above → 200m CPU, 512Mi
+3. **oai-nrf**: control_plane, vertical scaling → 200m CPU, 256Mi
+4. **oai-ausf**: control_plane, horizontal scaling → 200m CPU, 256Mi
+5
+  ok  intent_acc=0  res_acc=0.8036  err_rate=0.2  pol_viol=0.2  (42.0s)
+
+ N07 rep=3  starting...
+2026-05-06 01:33:22 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-udr']
+2026-05-06 01:33:45 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource allocations for each VNF in the given Kubernetes deployment, we consider their scaling formulas and the SLa constraints. Here's a structured breakdown:
+
+1. **oai-amf**:
+   - **Type**: control_plane
+   - **Replicas**: 2
+   - **Base CPU**: 100m
+   - **Scaling**: +200m per 100
+2026-05-06 01:34:15 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: To determine a resource allocation for each VNF based on their roles and given parameters, we calculate the required CPU and memory considering base resources and vertical/horizontal scaling as defined.
+
+1. **oai-amf**: Control Plane (horizontal scaling)
+   - 2 replicas
+   - Base: 100m CPU, 128Mi me
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.7513  err_rate=0.25  pol_viol=0.2  (82.3s)
+
+ N07 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7957  err_rate=0.0  pol_viol=0.2  (24.8s)
+
+ N08 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5498  err_rate=0.0  pol_viol=0.2  (19.9s)
+
+ N08 rep=1  starting...
+2026-05-06 01:35:52 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To address the resource allocation challenge while respecting the cluster capacity constraints, we will scale down all VNFs uniformly based on the CPU reduction factor. This ensures no single VNF exceeds its allocated resources.
+
+Here's the adjusted resource allocation:
+
+- **oai-amf**: 2 replicas
+  
+  ok  intent_acc=0  res_acc=0.5886  err_rate=0.3333  pol_viol=0.2  (48.3s)
+
+ N08 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6147  err_rate=0.2  pol_viol=0.2  (27.7s)
+
+ N08 rep=3  starting...
+2026-05-06 01:36:46 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {"mcc": "0", "mnc": "1"},
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "General business traffic with low latency requirements"
+      },
+      {
+        "sst": 2,
+        "sd": "URLLC",
+        "de
+2026-05-06 01:36:55 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "URLLC_eMBB",
+        "description": "URLLC eMBB slice with sub-5ms latency and 99.999% availability."
+      }
+    ],
+    "dnns"
+  ok  intent_acc=0  res_acc=0.5886  err_rate=0.0  pol_viol=0.2  (46.5s)
+
+ N08 rep=4  starting...
+2026-05-06 01:37:30 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+2026-05-06 01:37:30 | WARNING  | agents.resource_allocator      | No profile found for oai-ue (type=user_plane), using defaults
+2026-05-06 01:37:30 | WARNING  | agents.resource_allocator      | No profile found for oai-gnb (type=ran_simulator), using defaults
+2026-05-06 01:37:30 | WARNING  | agents.resource_allocator      | No profile found for oai-nr-ue (type=ran_simulator), using defaults
+  ok  intent_acc=0  res_acc=0.6007  err_rate=0.4444  pol_viol=0.2  (22.6s)
+
+ C01 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.5372  err_rate=0.0  pol_viol=0.2  (31.3s)
+
+ C01 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5319  err_rate=0.2  pol_viol=0.2  (26.2s)
+
+ C01 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5319  err_rate=0.2  pol_viol=0.2  (26.8s)
+
+ C01 rep=3  starting...
+2026-05-06 01:39:36 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To calculate the optimal resource allocation for each VNF in the given Kubernetes cluster, we need to consider the following factors:
+
+1. **Cluster Capacity**: The remote Kubernetes cluster has 1500m CPU and 1536Mi memory available.
+
+2. **SLA Requirements**:
+   - Maximum latency: 10ms
+   - Minimum t
+  ok  intent_acc=0  res_acc=0.5319  err_rate=0.2  pol_viol=0.2  (47.9s)
+
+ C01 rep=4  starting...
+2026-05-06 01:40:32 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the appropriate resource allocation for each VNF based on their scaling factors and considering bin-packing optimization, we proceed as follows:
+
+1. **Identify Scaling Factors:**
+   - Vertical scaling applies only if a VNF has multiple replicas (e.g., oai-upf with 2 replicas).
+   - Hori
+2026-05-06 01:40:52 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: To determine the resource profiles for each VNF in the Kubernetes cluster, we consider their respective scaling types (horizontal or vertical) and the number of replicas. Here's the allocation:
+
+- **oai-amf**: Control Plane, Horizontal Scaling × 1 replica → 100m CPU + 256Mi
+- **oai-smf**: Control Pl
+  ok  intent_acc=0  res_acc=0.5372  err_rate=0.2  pol_viol=0.2  (74.3s)
+
+ C02 rep=0  starting...
+2026-05-06 01:41:21 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "255.255.255.0",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "Traffic management and connectivity for smart city applications"
+      },
+      {
+        "sst"
+  ok  intent_acc=0  res_acc=0.4459  err_rate=0.0  pol_viol=0.2  (40.3s)
+
+ C02 rep=1  starting...
+2026-05-06 01:42:02 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "Smart City Traffic Management (e.g., IoT, M2M, U2U traffic)"
+      },
+      {
+        "sst": 2,
+        
+2026-05-06 01:42:12 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-n4sim']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.4382  err_rate=0.2  pol_viol=0.2  (42.9s)
+
+ C02 rep=2  starting...
+2026-05-06 01:42:49 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/04",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "04"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "internet",
+        "description": "eMBB for traffic management and public WiFi offloading"
+      },
+      {
+        "sst": 2,
+ 
+2026-05-06 01:43:01 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "255.255.255.0",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High throughput for traffic management"
+      },
+      {
+        "sst": 2,
+        "sd"
+  ok  intent_acc=0  res_acc=0.4459  err_rate=0.2  pol_viol=0.2  (51.9s)
+
+ C02 rep=3  starting...
+2026-05-06 01:43:36 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High throughput, low latency for traffic management and IoT devices."
+      },
+      {
+        "sst": 3,
+2026-05-06 01:43:46 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: ```json
+{
+  "topology_id": "012",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 3,
+        "sd": "eMBB",
+        "description": "High throughput traffic management and environmental sensor data"
+      },
+      {
+        "sst": 3
+2026-05-06 01:44:27 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource allocation for each VNF in the given cluster, we analyze their scaling types and calculate their CPU and memory requirements accordingly. Here's the breakdown:
+
+### Control-Plane VNFs:
+1. **oai-amf**: 1 replica  
+   - CPU: 100m  
+   - Memory: 256Mi
+
+2. **oai-smf**: 1 replic
+2026-05-06 01:44:53 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: To address the resource allocation and bin-packing optimization for the given VNFs in a Kubernetes cluster, we proceed as follows:
+
+1. **Calculate Resource Requirements:**
+   - For each VNF (e.g., oai-amf, oai-smf), determine their base CPU and memory resources.
+   - Apply scaling formulas where app
+2026-05-06 01:45:23 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 3). Raw: To determine the CPU and memory requirements for each Virtual Network Function (VNF) in the given Resource Management scenario, we'll follow a structured approach based on their respective configurations, scaling types, and slice capabilities. The goal is to allocate resources efficiently while adhe
+2026-05-06 01:45:23 | ERROR    | core.llm_core                  | All 3 JSON parse attempts failed for resource_allocator
+  ok  intent_acc=0  res_acc=0.3741  err_rate=0.2222  pol_viol=0.2  (123.6s)
+
+ C02 rep=4  starting...
+2026-05-06 01:45:40 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "999",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High throughput for traffic management and IoT devices"
+      },
+      {
+        "sst": 2,
+      
+2026-05-06 01:45:50 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "999",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "internet",
+        "description": "eMBB for traffic management and IoT Core"
+      },
+      {
+        "sst": 2,
+        "sd": "m
+2026-05-06 01:46:01 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 3). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "1",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 2,
+        "sd": "internet",
+        "description": "High throughput traffic management"
+      },
+      {
+        "sst": 1,
+        "sd": "internet
+2026-05-06 01:46:01 | ERROR    | core.llm_core                  | All 3 JSON parse attempts failed for network_planner
+2026-05-06 01:46:01 | ERROR    | agents.network_planner         | Network Planner: LLM returned raw text instead of JSON
+  ERR: No configuration artifacts provided — run VNF Configurator f  
+intent_acc=0  res_acc=0.0  err_rate=0.0  pol_viol=0.0  (31.5s)
+
+ C03 rep=0  starting...
+2026-05-06 01:46:31 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/02",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs are configured with the same namespace and container context, ensuring consistency."
+    "No port conflicts or service name col
+  ok  intent_acc=0  res_acc=0.5924  err_rate=0.2  pol_viol=0.2  (33.9s)
+
+ C03 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.5977  err_rate=0.2  pol_viol=0.2  (24.5s)
+
+ C03 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.5977  err_rate=0.0  pol_viol=0.2  (24.7s)
+
+ C03 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.5924  err_rate=0.2  pol_viol=0.2  (27.1s)
+
+ C03 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.5924  err_rate=0.2  pol_viol=0.2  (32.8s)
+
+ C04 rep=0  starting...
+2026-05-06 01:48:31 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: control_room', 'Connection references unknown VNF: node_a', 'Connection references unknown VNF: node_a', 'Connection references unknown VNF: node_b', 'Connection references unknown VNF: node_b', 'Connection references unknown VNF: node_c']
+  ERR: Topology has issues: Connection references unknown VNF: cont  
+intent_acc=0  res_acc=0.8992  err_rate=0.0  pol_viol=0.2  (19.6s)
+
+ C04 rep=1  starting...
+2026-05-06 01:48:54 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ue']
+2026-05-06 01:49:30 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: 
+2026-05-06 01:49:50 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: To determine the resource allocation for each VNF in the Kubernetes cluster, we'll follow these steps:
+
+1. **Calculate CPU and Memory Requirements:**
+   - Each VNF's base resources are taken from their respective profiles.
+   - Apply scaling factors based on the number of UEs they handle or supporte
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9374  err_rate=0.2  pol_viol=0.2  (81.7s)
+
+ C04 rep=2  starting...
+2026-05-06 01:50:34 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ue', 'Connection references unknown VNF: oai-ue', 'Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ue', 'Connection references unknown VNF: oai-ueransim-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9369  err_rate=0.2  pol_viol=0.2  (63.2s)
+
+ C04 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.9447  err_rate=0.0  pol_viol=0.2  (25.3s)
+
+ C04 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9369  err_rate=0.2  pol_viol=0.2  (26.0s)
+
+ C05 rep=0  starting...
+2026-05-06 01:52:12 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/02",
+  "connectivity": {
+    "plmn": {
+      "mcc": "999",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "internet",
+        "description": "Mobile Payments and Contactless Services"
+      },
+      {
+        "sst": 3,
+        "sd": "e
+2026-05-06 01:52:42 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "003/04",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs have the same SPI (80) mapping, which is consistent across all configurations."
+    "No namespace issues were detected as all V
+  ok  intent_acc=0  res_acc=0.3671  err_rate=0.2  pol_viol=0.2  (47.0s)
+
+ C05 rep=1  starting...
+2026-05-06 01:52:59 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/02",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "02"
+    },
+    "slices": [
+      {
+        "sst": 4,
+        "sd": "m1",
+        "description": "eMBB for mobile payments and high data rate services"
+      },
+      {
+        "sst": 3,
+        "
+2026-05-06 01:53:08 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+2026-05-06 01:53:37 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource requirements for the given VNFs under 100 UEs, we first calculate their base resources and then apply horizontal scaling based on oai-amf's scaling factor. Here's a step-by-step breakdown:
+
+### Step 1: Calculate Base Resources
+Summing up the base CPU and memory for all list
+  ok  intent_acc=0  res_acc=0.1762  err_rate=0.1667  pol_viol=0.2  (64.5s)
+
+ C05 rep=2  starting...
+2026-05-06 01:54:01 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "012/03",
+  "connectivity": {
+    "plmn": {
+      "mcc": "0",
+      "mnc": "12"
+    },
+    "slices": [
+      {
+        "sst": 7,
+        "sd": "LiveStreaming",
+        "description": "High capacity slice for live streaming with low latency requirements."
+      },
+      {
+ 
+2026-05-06 01:54:06 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: slice_eMBB', 'Connection references unknown VNF: slice_uRAN', 'Connection references unknown VNF: slice_mMIMO']
+  ERR: Topology has issues: Connection references unknown VNF: slic  
+intent_acc=0  res_acc=0.1615  err_rate=0.0  pol_viol=0.2  (29.1s)
+
+ C05 rep=3  starting...
+2026-05-06 01:54:31 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+  ok  intent_acc=0  res_acc=0.2761  err_rate=0.3  pol_viol=0.2  (25.5s)
+
+ C05 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.3043  err_rate=0.0  pol_viol=0.2  (24.4s)
+
+ C06 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.6428  err_rate=0.2  pol_viol=0.2  (33.3s)
+
+ C06 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.6512  err_rate=0.0  pol_viol=0.2  (24.8s)
+
+ C06 rep=2  starting...
+2026-05-06 01:56:24 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/02",
+  "connectivity": {
+    "plmn": {
+      "mcc": "999",
+      "mnc": "99"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High throughput for container tracking and crane automation"
+      },
+      {
+        "sst": 3,
+
+  ok  intent_acc=0  res_acc=0.5962  err_rate=0.0  pol_viol=0.2  (46.6s)
+
+ C06 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.6428  err_rate=0.2  pol_viol=0.2  (29.6s)
+
+ C06 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.6428  err_rate=0.2  pol_viol=0.2  (29.6s)
+
+ C07 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.6286  err_rate=0.2  pol_viol=0.2  (24.1s)
+
+ C07 rep=1  starting...
+2026-05-06 01:58:28 | WARNING  | agents.resource_allocator      | No profile found for oai-nrs (type=slicing_function), using defaults
+  ok  intent_acc=0  res_acc=0.6234  err_rate=0.3  pol_viol=0.2  (26.9s)
+
+ C07 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6163  err_rate=0.0  pol_viol=0.2  (24.4s)
+
+ C07 rep=3  starting...
+2026-05-06 01:59:16 | WARNING  | agents.resource_allocator      | No profile found for central_ai_amf (type=control_plane), using defaults
+2026-05-06 01:59:16 | WARNING  | agents.resource_allocator      | No profile found for vehicle_smf (type=control_plane), using defaults
+2026-05-06 01:59:16 | WARNING  | agents.resource_allocator      | No profile found for roadside_ausf (type=control_plane), using defaults
+2026-05-06 01:59:29 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs are configured with the same resource limits and image version, which aligns with static policy checks."
+    "Static policies r
+  ok  intent_acc=0  res_acc=0.0  err_rate=1.0  pol_viol=0.2  (23.4s)
+
+ C07 rep=4  starting...
+2026-05-06 01:59:43 | WARNING  | agents.network_planner         | Topology validation issues: ['Duplicate VNF name: oai-upf', 'Duplicate VNF name: oai-nssf', 'Duplicate VNF name: oai-upf']
+  ERR: Topology has issues: Duplicate VNF name: oai-upf; Duplicate   
+intent_acc=0  res_acc=0.5685  err_rate=0.0  pol_viol=0.2  (25.0s)
+
+ C08 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7109  err_rate=0.2  pol_viol=0.2  (36.7s)
+
+ C08 rep=1  starting...
+2026-05-06 02:00:55 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: ```json
+{
+  "topology_id": "012/03",
+  "vnfs": [
+    {
+      "name": "oai-amf",
+      "type": "control_plane",
+      "replicas": 1,
+      "resources": {
+        "requests": {"cpu": "700m", "memory": "1408Mi"},
+        "limits": null, // Assuming no limits provided
+        "affinity": {}
+      }
+    
+2026-05-06 02:01:17 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 2). Raw: {
+  "resource_plane": {
+    "oai-amf": {
+      "cpu": "120m",
+      "memory": "256Mi"
+    },
+    "oai-smf": {
+      "cpu": "120m",
+      "memory": "256Mi"
+    },
+    "oai-nrf": {
+      "cpu": "100m",
+      "memory": "128Mi"
+    },
+    "oai-ausf": {
+      "cpu": "120m",
+      "memory": "128Mi"
+    },
+2026-05-06 02:01:31 | WARNING  | core.llm_core                  | JSON parse failed for policy_validator (attempt 1). Raw: ```json
+{
+  "topology_id": "012/03",
+  "dry_run": {
+    "status": "SUCCESS",
+    "errors": []
+  },
+  "conflicts": [],
+  "reasons": [],
+  "validation_notes": [
+    "All VNFs have the same SI (80) and no port conflicts were detected."
+    "Namespace issues, service name collisions, or manifest consist
+  ok  intent_acc=0  res_acc=0.7109  err_rate=0.0  pol_viol=0.2  (60.1s)
+
+ C08 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.6932  err_rate=0.3333  pol_viol=0.2  (28.3s)
+
+ C08 rep=3  starting...
+2026-05-06 02:02:50 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: 
+  ok  intent_acc=0  res_acc=0.7261  err_rate=0.0  pol_viol=0.2  (69.6s)
+
+ C08 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.7183  err_rate=0.2  pol_viol=0.2  (29.3s)
+
+ C09 rep=0  starting...
+2026-05-06 02:03:53 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "eMBB",
+        "description": "High-speed internet connectivity for users"
+      }
+    ],
+    "dnns": ["internet"]
+  },
+  "vnfs
+  ok  intent_acc=0  res_acc=0.8561  err_rate=0.2  pol_viol=0.2  (35.9s)
+
+ C09 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8646  err_rate=0.0  pol_viol=0.2  (21.5s)
+
+ C09 rep=2  starting...
+2026-05-06 02:04:44 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-upf-1', 'Connection references unknown VNF: eMBB-slice-1', 'Connection references unknown VNF: oai-upf-2', 'Connection references unknown VNF: eMBB-slice-1']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.333  err_rate=0.0  pol_viol=0.2  (24.2s)
+
+ C09 rep=3  starting...
+  ok  intent_acc=0  res_acc=0.7285  err_rate=0.0  pol_viol=0.2  (20.6s)
+
+ C09 rep=4  starting...
+  ok  intent_acc=0  res_acc=0.9075  err_rate=0.0  pol_viol=0.2  (25.2s)
+
+ N09 rep=0  starting...
+2026-05-06 02:05:59 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/02",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "02"
+    },
+    "slices": [
+      {
+        "dnns": ["high_bandwidth"],
+        "slices": [
+          {
+            "sst": 1,
+            "sd": "high_bandwidth",
+            "description": "High Bandwidth
+2026-05-06 02:06:06 | WARNING  | agents.resource_allocator      | No profile found for oai-ueransim-gnb (type=ran_simulator), using defaults
+2026-05-06 02:06:06 | WARNING  | agents.resource_allocator      | No profile found for oai-ueransim-ue (type=ran_simulator), using defaults
+  ok  intent_acc=0  res_acc=0.8709  err_rate=0.25  pol_viol=0.2  (38.7s)
+
+ N09 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.8796  err_rate=0.0  pol_viol=0.2  (28.1s)
+
+ N09 rep=2  starting...
+2026-05-06 02:07:07 | WARNING  | agents.network_planner         | Topology validation issues: ['Duplicate VNF name: oai-upf']
+  ERR: Topology has issues: Duplicate VNF name: oai-upf  intent_acc=0  
+res_acc=0.8471  err_rate=0.0  pol_viol=0.2  (27.5s)
+
+ N09 rep=3  starting...
+2026-05-06 02:07:30 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+2026-05-06 02:08:01 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the appropriate resource allocation for each VNF in the Kubernetes cluster, we'll consider the number of replicas and scaling types specified. Here's a breakdown:
+
+1. **oai-amf**:
+   - **Replicas**: 2
+   - **Base Resources**: 100m CPU, 256Mi memory
+   - **Total Allocation**: 2 * (100m +
+  ok  intent_acc=0  res_acc=0.9391  err_rate=0.2  pol_viol=0.2  (53.9s)
+
+ N09 rep=4  starting...
+2026-05-06 02:08:23 | WARNING  | agents.resource_allocator      | No profile found for oai-nsf (type=control_plane), using defaults
+  ok  intent_acc=0  res_acc=0.7893  err_rate=0.25  pol_viol=0.2  (24.9s)
+
+ N10 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.9234  err_rate=0.2  pol_viol=0.2  (26.6s)
+
+ N10 rep=1  starting...
+  ok  intent_acc=0  res_acc=0.9155  err_rate=0.2  pol_viol=0.2  (27.2s)
+
+ N10 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.9201  err_rate=0.0  pol_viol=0.2  (24.3s)
+
+ N10 rep=3  starting...
+2026-05-06 02:10:47 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine if the required resources can be accommodated within the cluster's capacity, we'll calculate the total CPU and memory needed by all VNFs and compare it with the cluster's available resources based on the number of slices.
+
+1. **Calculate Total Resource Requests:**
+   - **oai-amf:** 100m
+  ok  intent_acc=0  res_acc=0.9234  err_rate=0.2  pol_viol=0.2  (71.2s)
+
+ N10 rep=4  starting...
+2026-05-06 02:11:22 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ueransim-gnb', 'Connection references unknown VNF: oai-ue']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.9155  err_rate=0.2  pol_viol=0.2  (29.7s)
+
+ N11 rep=0  starting...
+  ok  intent_acc=0  res_acc=0.7875  err_rate=0.2  pol_viol=0.2  (26.8s)
+
+ N11 rep=1  starting...
+2026-05-06 02:12:43 | WARNING  | core.llm_core                  | JSON parse failed for resource_allocator (attempt 1). Raw: To determine the resource requirements for each VNF in the given scenario, we need to consider their base resource profiles and apply scaling based on the number of User Equipment (UE) they handle. However, due to the complexity and lack of specific data on the exact number of UEs each VNF manages, 
+  ok  intent_acc=0  res_acc=0.7661  err_rate=0.0  pol_viol=0.2  (55.8s)
+
+ N11 rep=2  starting...
+  ok  intent_acc=0  res_acc=0.7949  err_rate=0.2  pol_viol=0.2  (25.2s)
+
+ N11 rep=3  starting...
+2026-05-06 02:13:38 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: ```json
+{
+  "topology_id": "001/02",
+  "connectivity": {
+    "plmn": {
+      "mcc": "001",
+      "mnc": "02"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "internet",
+        "description": "Broadband connectivity for general internet access and campus-wide connectivity."
+      },
+ 
+2026-05-06 02:13:48 | WARNING  | agents.network_planner         | Topology validation issues: ['Connection references unknown VNF: oai-ueransim-gnb']
+  ERR: Topology has issues: Connection references unknown VNF: oai-  
+intent_acc=0  res_acc=0.7949  err_rate=0.2  pol_viol=0.2  (37.3s)
+
+ N11 rep=4  starting...
+2026-05-06 02:14:16 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 1). Raw: {
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "999",
+      "mnc": "1"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "Video",
+        "description": "High throughput slice for video and media services"
+      },
+      {
+        "sst": 2,
+        "sd": "Io
+2026-05-06 02:14:28 | WARNING  | core.llm_core                  | JSON parse failed for network_planner (attempt 2). Raw: ```json
+{
+  "topology_id": "001/01",
+  "connectivity": {
+    "plmn": {
+      "mcc": "01",
+      "mnc": "01"
+    },
+    "slices": [
+      {
+        "sst": 1,
+        "sd": "001",
+        "description": "eMBB with high throughput and low latency"
+      },
+      {
+        "sst": 3,
+        "sd": "002",
+  ok  intent_acc=0  res_acc=0.7397  err_rate=0.0  pol_viol=0.2  (48.2s)
+─────────────────────────────────── Summary ────────────────────────────────────
+                     Experiment 3 — LLM comparison (means)                      
+┏━━━━━━━━┳━━━━━━━━┳━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━┳━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┓
+┃        ┃   size ┃     ┃        ┃        ┃        ┃         ┃        ┃ deplo… ┃
+┃ LLM    ┃    (B) ┃   n ┃ inten… ┃ res_a… ┃ err_r… ┃ pol_vi… ┃ interv ┃    (s) ┃
+┡━━━━━━━━╇━━━━━━━━╇━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━╇━━━━━━━━━╇━━━━━━━━╇━━━━━━━━┩
+│ Llama  │      3 │ 180 │  0.000 │  0.727 │  0.021 │   0.200 │  0.622 │  5.732 │
+│ 3.2 3B │        │     │        │        │        │         │        │        │
+│ DeepS… │      7 │ 180 │  0.000 │  0.702 │  0.164 │   0.192 │  0.478 │ 35.582 │
+│ 7B     │        │     │        │        │        │         │        │        │
+│ Qwen2… │      7 │ 180 │  0.000 │  0.766 │  0.072 │   0.199 │  0.489 │ 11.918 │
+│ 7B     │        │     │        │        │        │         │        │        │
+└────────┴────────┴─────┴────────┴────────┴────────┴─────────┴────────┴────────┘
+
+62 failed runs — check raw.jsonl for details.
+
+Results → /home/larbi/fyp/experiments/experiment_3/results/runs.csv
+Report  → python experiments/experiment_3/report.py --results 
+/home/larbi/fyp/experiments/experiment_3/results/runs.csv --out 
+/home/larbi/fyp/experiments/experiment_3/results/figures
