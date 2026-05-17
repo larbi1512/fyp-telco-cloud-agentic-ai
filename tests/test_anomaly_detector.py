@@ -118,7 +118,7 @@ class TestAnomalyDetectorAgent:
         mock_prom.ping.return_value = True
         mock_prom.url = "http://mock:9090"
         # 30 nominal samples around 30, last sample (current_raw) is 95 → big z
-        history = [30.0 + (i % 5) for i in range(29)] + [95.0]
+        history = [30.0 + (i % 5) for i in range(35)] + [95.0]
         mock_prom.range_query.return_value = _range_series(history)
         mock_prom_cls.return_value = mock_prom
 
@@ -214,7 +214,7 @@ class TestAnomalyDetectorAgent:
         mock_prom.ping.return_value = True
         mock_prom.url = "http://mock:9090"
         # Stable history, current value in band
-        history = [30.0 + (i % 5) for i in range(29)] + [31.0]
+        history = [30.0 + (i % 5) for i in range(35)] + [31.0]
         mock_prom.range_query.return_value = _range_series(history)
         mock_prom_cls.return_value = mock_prom
         mock_llm_cls.return_value.invoke.return_value = None
@@ -266,7 +266,7 @@ class TestAnomalyDetectorAgent:
         mock_prom = MagicMock()
         mock_prom.ping.return_value = True
         mock_prom.url = "http://mock:9090"
-        history = [30.0 + (i % 5) for i in range(29)] + [95.0]
+        history = [30.0 + (i % 5) for i in range(35)] + [95.0]
         mock_prom.range_query.return_value = _range_series(history)
         mock_prom_cls.return_value = mock_prom
         mock_llm_cls.return_value.invoke.side_effect = RuntimeError("LLM down")
@@ -296,7 +296,7 @@ class TestAnomalyDetectorAgent:
         mock_prom = MagicMock()
         mock_prom.ping.return_value = True
         mock_prom.url = "http://mock:9090"
-        history = [30.0 + (i % 5) for i in range(29)] + [95.0]
+        history = [30.0 + (i % 5) for i in range(35)] + [95.0]
         mock_prom.range_query.return_value = _range_series(history)
         mock_prom_cls.return_value = mock_prom
         mock_llm_cls.return_value.invoke.return_value = None
@@ -315,3 +315,31 @@ class TestAnomalyDetectorAgent:
         # The agent returns only newly minted alerts
         ids = [a["alert_id"] for a in update["anomaly_alerts"]]
         assert "old-1" not in ids
+
+    @patch("agents.anomaly_detector.LLMCore")
+    @patch("agents.anomaly_detector.PrometheusClient")
+    def test_dedup_suppresses_repeat_alert(self, mock_prom_cls, mock_llm_cls):
+        """Same (type, vnf, metric) within window must not be re-emitted."""
+        mock_prom = MagicMock()
+        mock_prom.ping.return_value = True
+        mock_prom.url = "http://mock:9090"
+        history = [30.0 + (i % 5) for i in range(35)] + [95.0]
+        mock_prom.range_query.return_value = _range_series(history)
+        mock_prom_cls.return_value = mock_prom
+        mock_llm_cls.return_value.invoke.return_value = None
+
+        metrics = [{
+            "vnf_name": "oai-amf",
+            "metric_name": "cpu_utilization",
+            "value": 95.0,
+            "unit": "%",
+            "threshold_status": "normal",
+            "timestamp": "2026-04-25T12:00:00",
+        }]
+
+        first = anomaly_detector_agent(_base_state(metrics))
+        assert any(a["type"] == "point_outlier" for a in first["anomaly_alerts"])
+
+        # Second cycle, same fault — must be suppressed
+        second = anomaly_detector_agent(_base_state(metrics))
+        assert second["anomaly_alerts"] == []

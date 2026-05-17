@@ -256,6 +256,7 @@ def score(artifact: dict[str, Any], intent: dict[str, Any]) -> dict[str, Any]:
         "complexity": intent.get("complexity"),
         "ue_band": intent.get("ue_band"),
         "scenario": intent.get("scenario"),
+        "category": intent.get("category"),
         "error": artifact.get("error"),
 
         # Six pre-deployment metrics (the headline)

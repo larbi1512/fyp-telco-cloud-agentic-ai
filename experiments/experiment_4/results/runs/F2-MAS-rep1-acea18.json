@@ -1,0 +1,1202 @@
+{
+  "run_id": "F2-MAS-rep1-acea18",
+  "scenario": "F2",
+  "system": "MAS",
+  "rep": 1,
+  "fault": {
+    "scenario": "F2",
+    "fault_type": "pod_crash",
+    "target_vnf": "oai-upf",
+    "loop_count": 1,
+    "deletions": [],
+    "started_at": "2026-05-06T20:10:21.863598+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-06T20:10:21.863614+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-06T20:08:38.582009+00:00",
+      "finished_at": "2026-05-06T20:08:58.679227+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:08:40.295880-9900442b",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr network_rx_mbps = 0.001 Mbps (z=3.5 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0006,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:08:40.295880-bd6062ca",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-smf network_rx_mbps = 0.0 Mbps (z=3.5 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0004,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:08:40.295880-a681b720",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-upf network_rx_mbps = 0.001 Mbps (z=6.7 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0008,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:08:40.295880-a681b720",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "The critical point outlier in oai-upf network_rx_mbps (0.001 Mbps) indicates a severe degradation in traffic processing capability. The z-score of 6.7 suggests an extreme deviation from baseline. While other VNFs like oai-udr and oai-smf also show low rx throughput, the oai-upf is the primary bottleneck. No pod restarts or configuration changes have been observed recently, and CPU/memory utilization is normal across all VNFs, ruling out resource exhaustion as the root cause.",
+        "confidence": 0.95,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-upf",
+            "action": "roll_deployment",
+            "params": {},
+            "reason": "Restarting the oai-upf deployment will clear any potential stale state or corrupted internal buffers that may be causing the zero throughput. This is a safe action with minimal blast radius."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-upf",
+            "action": "update_network_config",
+            "params": {
+              "key": "rx_buffer_size",
+              "value": "auto"
+            },
+            "reason": "Configuring the receive buffer size to auto-adjust can help resolve issues where fixed buffer sizes lead to packet drops or stalls under low traffic conditions."
+          }
+        ],
+        "expected_outcome": "The oai-upf should resume normal data plane operations with increased network_rx_mbps. Traffic flow should stabilize within 2-5 minutes post-restart.",
+        "rollback_plan": "If the restart fails to resolve the issue, rollback the oai-upf Helm chart to the previous revision to restore known stable configuration and deployment state.",
+        "validation_metric": "network_rx_mbps for oai-upf should return to baseline levels (> 0.0008 Mbps) within 5 minutes after restart."
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-upf",
+          "timestamp": "2026-05-06T20:08:43.647222"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T20:08:43.647261"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 2
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T20:09:13.694360+00:00",
+      "finished_at": "2026-05-06T20:09:32.647372+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:09:13.731851-a8ed93cd",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-upf cpu_utilization = 0.19 % (z=5.7 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.19,
+              "baseline": 0.0069,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:09:13.731851-c3d17086",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-ausf network_rx_mbps = 0.001 Mbps (z=4.8 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:09:13.731851-a681b720",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "The critical point outlier in oai-upf network_rx_mbps (0.001 Mbps) indicates a severe degradation in traffic processing capability. The z-score of 6.7 suggests an extreme deviation from baseline. Although previous restarts were attempted, they did not resolve the issue. Other VNFs such as oai-udr and oai-smf also exhibit low rx throughput, but oai-upf remains the primary bottleneck. CPU and memory utilization are normal across all VNFs, ruling out resource exhaustion. This points to a potential software bug or misconfiguration within the oai-upf service itself.",
+        "confidence": 0.95,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-upf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Previous restart attempts failed due to incorrect parameters; retrying with correct rollout mechanism may clear any stale state or transient issues."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-upf",
+            "action": "update_configmap",
+            "params": {
+              "config_map": "oai-upf-config"
+            },
+            "reason": "Given that the issue persists after restarts, it could be due to a misconfigured parameter affecting throughput. Updating the config map might resolve underlying configuration issues."
+          },
+          {
+            "order": 3,
+            "type": "vertical_scale",
+            "target": "oai-upf",
+            "action": "increase_cpu_limit",
+            "params": {
+              "cpu_limit": "2000m"
+            },
+            "reason": "Although CPU usage is currently low, increasing CPU allocation can help if there's a latent performance bottleneck or scheduling contention."
+          }
+        ],
+        "expected_outcome": "Network RX Mbps for oai-upf should return to normal baseline levels (>0.0008 Mbps). If not resolved by restart/config change, vertical scaling will provide more headroom for processing.",
+        "rollback_plan": "For restart: Revert to previous deployment version using Helm rollback. For config_change: Restore original configmap values via Helm upgrade. For vertical_scale: Revert CPU limit back to previous value.",
+        "validation_metric": "network_rx_mbps for oai-upf"
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-upf",
+          "timestamp": "2026-05-06T20:09:17.610419"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-06T20:09:17.610457"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 5,
+        "execution_results": 4
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T20:09:47.662497+00:00",
+      "finished_at": "2026-05-06T20:10:06.764518+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:09:47.675892-a681b720",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "The critical point outlier in oai-upf network_rx_mbps (0.001 Mbps) indicates a severe degradation in traffic processing capability with a z-score of 6.7. Previous restart attempts were partially successful but did not fully resolve the issue. Other VNFs like oai-udr and oai-smf also show low rx throughput, suggesting a systemic problem rather than isolated failure. CPU and memory utilization are normal across all VNFs, ruling out resource exhaustion. Based on historical data and current metrics, this is likely due to a persistent software bug or misconfiguration within the oai-upf service that requires deeper intervention.",
+        "confidence": 0.97,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-upf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Previous restarts showed partial success; a fresh rollout may clear any stale state or corrupted internal buffers causing the throughput degradation."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-upf",
+            "action": "update_configmap",
+            "params": {
+              "config_map": "oai-upf-config",
+              "updates": {
+                "upf_network_rx_buffer_size": "1048576"
+              }
+            },
+            "reason": "Low network throughput could be caused by insufficient buffer sizes in UPF configuration. Increasing buffer size may help stabilize traffic handling."
+          },
+          {
+            "order": 3,
+            "type": "vertical_scale",
+            "target": "oai-upf",
+            "action": "increase_resources",
+            "params": {
+              "cpu_limit": "2",
+              "memory_limit": "2Gi"
+            },
+            "reason": "Although CPU/Mem usage is currently low, increasing resources provides headroom for handling bursts and ensures stability during transient issues."
+          }
+        ],
+        "expected_outcome": "Network throughput for oai-upf should return to baseline levels (>100 Mbps). If not resolved after these steps, a rollback to a known stable version will be considered.",
+        "rollback_plan": "Revert the oai-upf Helm chart to the last known working revision using rollback command. Revert configmap changes by restoring original values if modified.",
+        "validation_metric": "network_rx_mbps for oai-upf should exceed 100 Mbps within 10 minutes post-action."
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-upf",
+          "timestamp": "2026-05-06T20:09:51.671491"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "patch_configmap failed for 'oai-upf-config': (404)\nReason: Not Found\nHTTP response headers: HTTPHeaderDict({'Audit-Id': '63ed9313-a528-44fd-b59a-4492263b9ad5', 'Cache-Control': 'no-cache, private', 'Content-Type': 'application/json', 'X-Kubernetes-Pf-Flowschema-Uid': '90ebb995-424c-4504-8bef-b2b6c9b6bc3f', 'X-Kubernetes-Pf-Prioritylevel-Uid': 'a18d93c7-90c9-4c21-87fe-2a8fe5a751e2', 'Date': 'Wed, 06 May 2026 20:09:51 GMT', 'Content-Length': '208'})\nHTTP response body: {\"kind\":\"Status\",\"apiVersion\":\"v1\",\"metadata\":{},\"status\":\"Failure\",\"message\":\"configmaps \\\"oai-upf-config\\\" not found\",\"reason\":\"NotFound\",\"details\":{\"name\":\"oai-upf-config\",\"kind\":\"configmaps\"},\"code\":404}\n\n",
+          "timestamp": "2026-05-06T20:09:51.678722"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 5,
+        "execution_results": 6
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-06T20:10:21.868238+00:00",
+      "finished_at": "2026-05-06T20:10:41.138180+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:10:21.907098-e7436360",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-smf memory_utilization = 2.4 % (z=35.8 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.4,
+              "baseline": 35622912.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:10:21.907098-a681b720",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "The critical point outlier in oai-upf network_rx_mbps (0.001 Mbps) with a z-score of 6.7 indicates a severe degradation in traffic processing capability. Multiple restart attempts have been made but did not fully resolve the issue. Other VNFs like oai-udr and oai-smf also show low rx throughput, suggesting a systemic problem rather than an isolated failure. CPU and memory utilization are normal across all VNFs, ruling out resource exhaustion. Historical data shows similar patterns where restarts alone were insufficient, pointing to a persistent software bug or misconfiguration within the oai-upf service.",
+        "confidence": 0.97,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-upf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Previous restarts were partially effective; a fresh rollout may clear any stale state or corrupted internal buffers causing the throughput degradation."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-upf",
+            "action": "update_configmap",
+            "params": {
+              "config_map_name": "oai-upf-config",
+              "key": "upf_network_config",
+              "value": "{\"rx_buffer_size\": \"1024KB\", \"tx_buffer_size\": \"1024KB\"}"
+            },
+            "reason": "The configmap lookup failed previously, indicating a missing or misconfigured resource. Correcting this configuration could address underlying missettings affecting network throughput."
+          },
+          {
+            "order": 3,
+            "type": "vertical_scale",
+            "target": "oai-upf",
+            "action": "increase_limits",
+            "params": {
+              "cpu_limit": "2",
+              "memory_limit": "2Gi"
+            },
+            "reason": "Although CPU/memory usage is currently low, increasing limits provides headroom for handling bursts and ensures no resource contention during recovery."
+          }
+        ],
+        "expected_outcome": "Network throughput for oai-upf should return to baseline levels (>100 Mbps). Restart and config change will reset state and apply necessary settings. Vertical scaling adds resilience against future load spikes.",
+        "rollback_plan": "Revert to previous Helm revision using rollback command to restore prior deployment state including configmap and resource limits. If configmap was deleted, recreate it from backup or known good version.",
+        "validation_metric": "network_rx_mbps for oai-upf should exceed 100 Mbps within 5 minutes post-action"
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-upf",
+          "timestamp": "2026-05-06T20:10:26.107814"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T20:10:26.107855"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 6,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:10:56.153318+00:00",
+      "finished_at": "2026-05-06T20:11:15.254583+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:10:56.195529-81a66d5c",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-udr memory_utilization = 3.07 % (z=101.0 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 3.07,
+              "baseline": 5527552.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:10:56.195529-a681b720",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "The critical point outlier in oai-upf network_rx_mbps (0.001 Mbps) with a z-score of 6.7 indicates a severe degradation in traffic processing capability. Multiple restart attempts have been made but did not fully resolve the issue. Other VNFs like oai-udr and oai-smf also show low rx throughput, suggesting a systemic problem rather than an isolated failure. CPU and memory utilization are normal across all VNFs, ruling out resource exhaustion. Historical data shows similar patterns where restarts alone were insufficient, pointing to a persistent software bug or misconfiguration within the oai-upf service.",
+        "confidence": 0.95,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "rollback",
+            "target": "oai-upf",
+            "action": "revert_helm_release",
+            "params": {
+              "revision": "prev"
+            },
+            "reason": "Multiple restarts have failed to resolve the issue; rollback to the previous stable Helm revision is the safest way to recover from a suspected misconfiguration or software bug."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-upf",
+            "action": "update_configmap",
+            "params": {
+              "config_map": "oai-upf-config",
+              "key": "upf_network_config",
+              "value": "default"
+            },
+            "reason": "The previous config change attempt failed due to missing configmap, but this step is necessary to ensure correct network configuration post-rollback."
+          },
+          {
+            "order": 3,
+            "type": "restart",
+            "target": "oai-upf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Post-rollback and config update, a fresh rollout restart ensures the new configuration is applied cleanly."
+          }
+        ],
+        "expected_outcome": "The oai-upf service should resume normal network throughput (network_rx_mbps > 100 Mbps) after reverting to a known good configuration and applying updated settings.",
+        "rollback_plan": "If the rollback fails or causes further issues, manually restore the previous Helm chart revision using kubectl rollout undo or revert to the last working deployment state via Kubernetes API.",
+        "validation_metric": "network_rx_mbps for oai-upf should return to baseline (> 100 Mbps) within 5 minutes of applying the rollback and config update."
+      },
+      "execution_results": [
+        {
+          "action_type": "rollback",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "helm rollback failed for 'oai-upf': invalid literal for int() with base 10: 'prev'",
+          "timestamp": "2026-05-06T20:11:00.184765"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-06T20:11:00.184787"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-upf",
+          "timestamp": "2026-05-06T20:11:00.217511"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 11
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:11:30.269735+00:00",
+      "finished_at": "2026-05-06T20:11:49.489632+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:11:30.283607-a681b720",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "The critical point outlier in oai-upf network_rx_mbps (0.001 Mbps) with a z-score of 6.7 indicates a severe degradation in traffic processing capability. Multiple restart attempts have been made but did not fully resolve the issue. Other VNFs like oai-udr and oai-smf also show low rx throughput, suggesting a systemic problem rather than an isolated failure. CPU and memory utilization are normal across all VNFs, ruling out resource exhaustion. Historical data shows similar patterns where restarts alone were insufficient, pointing to a persistent software bug or misconfiguration within the oai-upf service. The rollback attempt failed due to invalid parameter handling, indicating a need for a more robust recovery mechanism.",
+        "confidence": 0.95,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "rollback",
+            "target": "oai-upf",
+            "action": "helm rollback",
+            "params": {
+              "revision": "prev"
+            },
+            "reason": "Previous rollback attempts failed due to incorrect parameters; retrying with correct revision syntax after confirming previous stable version exists."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-upf",
+            "action": "update_configmap",
+            "params": {
+              "key": "network_rx_mbps_threshold",
+              "value": "0.1"
+            },
+            "reason": "To prevent further false positives and allow for better monitoring of actual traffic levels, adjusting the threshold in config map to reflect realistic baseline values."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "replica_count": 2
+            },
+            "reason": "Scaling out the oai-upf deployment can help distribute load and provide redundancy while we investigate root cause, especially since current throughput is near zero."
+          }
+        ],
+        "expected_outcome": "The oai-upf service should return to normal operation with increased throughput and reduced anomalies. If rollback succeeds, it will restore a known working configuration. Scaling ensures availability during troubleshooting.",
+        "rollback_plan": "If the rollback fails, revert to the last known good Helm release manually using 'helm list --short' to identify the correct revision number. For config change, revert the ConfigMap back to original value. For horizontal scale, reduce replica count to 1 if necessary.",
+        "validation_metric": "network_rx_mbps for oai-upf should exceed 10 Mbps within 5 minutes post-remediation"
+      },
+      "execution_results": [
+        {
+          "action_type": "rollback",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "helm rollback failed for 'oai-upf': invalid literal for int() with base 10: 'prev'",
+          "timestamp": "2026-05-06T20:11:34.447551"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-upf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T20:11:34.447571"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 13
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:12:04.504787+00:00",
+      "finished_at": "2026-05-06T20:12:19.829906+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:12:04.543297-00fd919a",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-smf network_rx_mbps = 0.0 Mbps (z=35.1 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0004,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:12:04.543297-532ec5e1",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-upf network_rx_mbps = 0.0 Mbps (z=60.2 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0008,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:12:04.730859-b605c6c8",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 1 \u2192 2 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:12:04.793240"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 9,
+        "execution_results": 14
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:12:34.845058+00:00",
+      "finished_at": "2026-05-06T20:12:50.293982+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:12:34.883072-8d35d708",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-upf cpu_utilization = 0.04 % (z=15.6 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.04,
+              "baseline": 0.0069,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:12:35.067331-0ddcfdbf",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 2 \u2192 3 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:12:35.257982"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 15
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:13:05.309150+00:00",
+      "finished_at": "2026-05-06T20:13:20.612300+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:13:05.516996-d404c1f7",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 3 \u2192 4 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:13:05.575578"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 16
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:13:35.627448+00:00",
+      "finished_at": "2026-05-06T20:13:51.013212+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:13:35.665083-1aa6c0c6",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-gnb cpu_utilization = 6.95 % (z=13.4 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 6.95,
+              "baseline": 0.1827,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:13:35.665083-f03656e9",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-ausf memory_utilization = 1.6 % (z=8.1 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.6,
+              "baseline": 3964928.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:13:35.853207-75ec87bb",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 4 \u2192 5 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:13:35.942264"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 12,
+        "execution_results": 17
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:14:06.028369+00:00",
+      "finished_at": "2026-05-06T20:14:21.344089+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:14:06.065390-144201d2",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr memory_utilization = 2.57 % (z=20.2 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.57,
+              "baseline": 5529600.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:14:06.243614-229179b2",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 5 \u2192 6 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:14:06.307245"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 13,
+        "execution_results": 18
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:14:36.359239+00:00",
+      "finished_at": "2026-05-06T20:14:51.640517+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:14:36.544088-60ee8ec1",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 6 \u2192 7 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:14:36.603754"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 13,
+        "execution_results": 19
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:15:06.655678+00:00",
+      "finished_at": "2026-05-06T20:15:22.000827+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:15:06.693814-de10368d",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-smf memory_utilization = 1.66 % (z=5.5 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.66,
+              "baseline": 35725312.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:15:06.693814-c30645ac",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr network_rx_mbps = 0.001 Mbps (z=19.8 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0006,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:15:06.693814-43b24785",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-smf network_rx_mbps = 0.0 Mbps (z=25.5 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0004,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:15:06.903002-7ce003e9",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 7 \u2192 8 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:15:06.964224"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 16,
+        "execution_results": 20
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:15:37.015971+00:00",
+      "finished_at": "2026-05-06T20:15:52.320093+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:15:37.054030-63b31a24",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-ausf network_rx_mbps = 0.001 Mbps (z=6.3 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:15:37.222638-970e9b32",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 8 \u2192 9 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:15:37.283196"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 17,
+        "execution_results": 21
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:16:07.335255+00:00",
+      "finished_at": "2026-05-06T20:16:22.681423+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:16:07.527130-f42fcb50",
+        "triggered_by": "2026-05-06T20:08:40.295880-a681b720",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-upf",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-upf",
+          "status": "success",
+          "details": "Scaled oai-upf from 9 \u2192 10 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:16:07.645179"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 17,
+        "execution_results": 22
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 0,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 2
+  },
+  "trigger_fingerprint": "point_outlier|oai-smf|memory_utilization",
+  "timing": {
+    "fault_started_at": "2026-05-06T20:10:21.863598+00:00",
+    "first_alert_at": "2026-05-06T20:10:21.868238+00:00",
+    "first_plan_at": "2026-05-06T20:10:21.868238+00:00",
+    "first_action_at": "2026-05-06T20:10:21.868238+00:00",
+    "recovered_at": "2026-05-06T20:11:30.269735+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 0.00464,
+    "plan_latency_s": 0.0,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 68.406137,
+    "remediation_success": true,
+    "false_positives_pre_fault": 2,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-upf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-06T20:16:37.696632+00:00"
+}

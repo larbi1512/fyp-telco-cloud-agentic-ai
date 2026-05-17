@@ -1,21 +1,3 @@
-"""
-VNF Configurator Agent — The Engineer.
-
-Generates Helm values.yaml configurations and the shared ConfigMap
-for each VNF based on the resourced topology from the Resource Allocator.
-
-Pipeline position: 3rd in pre-deployment chain
-  User Intent → Network Planner → Resource Allocator → [VNF Configurator] → Policy Validator
-
-Input:  OrchestratorState with topology + resource_allocation
-Output: OrchestratorState with config_artifacts (list[ConfigArtifact])
-
-Design decision:
-  Configuration GENERATION is deterministic (Python templates matching OAI Helm charts).
-  The LLM is used only for an optional VALIDATION pass (cross-VNF consistency check).
-  This ensures reliability — the agent never hallucinates IPs, ports, or PLMN values.
-"""
-
 from __future__ import annotations
 
 import logging

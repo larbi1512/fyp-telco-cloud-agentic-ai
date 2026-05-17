@@ -1,0 +1,1080 @@
+{
+  "run_id": "F3-MAS-rep1-39fcf4",
+  "scenario": "F3",
+  "system": "MAS",
+  "rep": 1,
+  "fault": {
+    "scenario": "F3",
+    "fault_type": "traffic_surge",
+    "iperf_pod": "f3-iperf-753cc6",
+    "duration_s": 60,
+    "streams": 50,
+    "started_at": "2026-05-06T20:51:57.289478+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-06T20:51:57.332012+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-06T20:50:25.447913+00:00",
+      "finished_at": "2026-05-06T20:50:41.253422+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-01d82cdb",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr cpu_utilization = 11.73 % (z=4.3 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 11.73,
+              "baseline": 0.0202,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-51311101",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-smf cpu_utilization = 2.07 % (z=3.7 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.07,
+              "baseline": 0.0544,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-91ec76fe",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-amf cpu_utilization = 2.96 % (z=74.1 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.96,
+              "baseline": 0.018,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-b385a087",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-smf memory_utilization = 1.64 % (z=8.7 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.64,
+              "baseline": 35749888.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-f120dc6f",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nssf memory_utilization = 1.84 % (z=31.7 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.84,
+              "baseline": 3686400.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-6253797c",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udm memory_utilization = 2.64 % (z=6.3 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.64,
+              "baseline": 31135744.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-55d5ce6b",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-amf memory_utilization = 1.66 % (z=179.1 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.66,
+              "baseline": 12552192.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:50:25.662497-24c6f8cb",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf network_rx_mbps = 0.0 Mbps (z=18.2 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0003,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:50:25.953994-1ce37e68",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Vertically scaled oai-smf/smf by factor 1.50",
+          "timestamp": "2026-05-06T20:50:26.202234"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 1
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T20:50:56.268546+00:00",
+      "finished_at": "2026-05-06T20:51:11.724597+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:50:56.490420-602828cf",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:50:56.672900"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 2
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T20:51:26.739722+00:00",
+      "finished_at": "2026-05-06T20:51:42.250314+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:51:26.780332-eff3d447",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-gnb cpu_utilization = 7.33 % (z=7.1 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 7.33,
+              "baseline": 0.1826,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:51:26.983877-bdf97f6c",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:51:27.164654"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 9,
+        "execution_results": 3
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-06T20:51:57.336510+00:00",
+      "finished_at": "2026-05-06T20:52:12.821317+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:51:57.377155-86631c41",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udm network_rx_mbps = 0.001 Mbps (z=10.0 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0053,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:51:57.597503-dcce8efb",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:51:57.783440"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 4
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:52:27.836459+00:00",
+      "finished_at": "2026-05-06T20:52:43.317160+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:52:28.049354-3891e077",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:52:28.233335"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 5
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:52:58.332321+00:00",
+      "finished_at": "2026-05-06T20:53:13.798530+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:52:58.377312-ca4817aa",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-nssf cpu_utilization = 2.75 % (z=3.4 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.75,
+              "baseline": 0.0047,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:52:58.574003-ffea7a13",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:52:58.759877"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 11,
+        "execution_results": 6
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:53:28.813668+00:00",
+      "finished_at": "2026-05-06T20:53:44.372205+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:53:28.854062-eb0fc680",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-smf cpu_utilization = 0.86 % (z=79.0 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.86,
+              "baseline": 0.0542,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:53:28.854062-9a1c4354",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udm cpu_utilization = 8.65 % (z=4.1 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 8.65,
+              "baseline": 0.2006,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:53:28.854062-955a483b",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nssf memory_utilization = 1.84 % (z=31.7 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.84,
+              "baseline": 3686400.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:53:29.102274-2c10f59c",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:53:29.335806"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 7
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:53:59.387358+00:00",
+      "finished_at": "2026-05-06T20:54:14.862210+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:53:59.635808-0c86c520",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:53:59.824417"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:54:29.877359+00:00",
+      "finished_at": "2026-05-06T20:54:45.340860+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:54:29.917078-a8098182",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-gnb cpu_utilization = 7.0 % (z=8.8 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 7.0,
+              "baseline": 0.1825,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:54:30.116082-2e5cf94b",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:54:30.305291"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 15,
+        "execution_results": 9
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:55:00.356008+00:00",
+      "finished_at": "2026-05-06T20:55:15.842505+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:55:00.395124-76adcc3a",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udm memory_utilization = 2.64 % (z=6.2 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.64,
+              "baseline": 31137792.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:55:00.548713-83d07dda",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:55:00.791541"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 16,
+        "execution_results": 10
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:55:30.857662+00:00",
+      "finished_at": "2026-05-06T20:55:46.304545+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:55:30.897225-74b9260d",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr network_rx_mbps = 0.001 Mbps (z=20.4 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0006,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:55:31.058912-15ea3f9c",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:55:31.246102"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 17,
+        "execution_results": 11
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:56:01.319692+00:00",
+      "finished_at": "2026-05-06T20:56:16.773193+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:56:01.490875-1b8d6888",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:56:01.734927"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 17,
+        "execution_results": 12
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:56:31.788352+00:00",
+      "finished_at": "2026-05-06T20:56:47.235774+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:56:31.829367-88058bca",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-nssf cpu_utilization = 2.74 % (z=3.9 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.74,
+              "baseline": 0.0047,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:56:31.829367-b7984a76",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nssf memory_utilization = 1.84 % (z=31.7 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.84,
+              "baseline": 3686400.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:56:32.008648-e3de9a2e",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:56:32.198023"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 19,
+        "execution_results": 13
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:57:02.250926+00:00",
+      "finished_at": "2026-05-06T20:57:17.714759+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:57:02.414507-9334e66b",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:57:02.661103"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 19,
+        "execution_results": 14
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:57:32.729927+00:00",
+      "finished_at": "2026-05-06T20:57:48.115922+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:57:32.892912-c36d49bb",
+        "triggered_by": "2026-05-06T20:50:25.662497-b385a087",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-smf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-smf' not found in Deployment 'oai-smf' (available: ['smf'])",
+          "timestamp": "2026-05-06T20:57:33.078568"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 19,
+        "execution_results": 15
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 0,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 2
+  },
+  "trigger_fingerprint": "point_outlier|oai-udm|network_rx_mbps",
+  "timing": {
+    "fault_started_at": "2026-05-06T20:51:57.289478+00:00",
+    "first_alert_at": "2026-05-06T20:51:57.336510+00:00",
+    "first_plan_at": "2026-05-06T20:51:57.336510+00:00",
+    "first_action_at": "2026-05-06T20:51:57.336510+00:00",
+    "recovered_at": "2026-05-06T20:52:58.332321+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 0.047032,
+    "plan_latency_s": 0.0,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 61.042843,
+    "remediation_success": true,
+    "false_positives_pre_fault": 2,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-upf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-06T20:58:03.176548+00:00"
+}

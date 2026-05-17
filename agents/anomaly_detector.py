@@ -38,18 +38,30 @@ _SUSTAINED_WINDOW = timedelta(minutes=5)
 _RESTART_WINDOW = timedelta(hours=1)
 _MAX_LLM_CALLS_PER_CYCLE = 5
 
+# Suppression cache: fingerprint -> last-fired UTC time. Same (type, vnf, metric)
+# is not re-emitted within the window, preventing unbounded alert growth across
+# cycles (Phase 5.2 documented limitation).
+_DEDUP_WINDOW = timedelta(minutes=3)
+_seen_alerts: dict[str, datetime] = {}
+
 
 # ──────────────────── Statistical helpers ──────────────────── #
+
+
+_MIN_BASELINE_SAMPLES = 30  # 15 min × 2 samples/min — enough for stable MAD
+_Z_SPARSE_BASELINE_CAP = 50.0  # above this, downgrade severity (untrustworthy baseline)
 
 
 def _robust_z(current: float, samples: list[float]) -> float | None:
     """
     Robust z-score using median + MAD.
 
-    Returns ``None`` if fewer than 10 samples are available, or if the
-    series is constant (MAD == 0).
+    Returns ``None`` if fewer than ``_MIN_BASELINE_SAMPLES`` samples are
+    available, or if the series is constant (MAD == 0). The 30-sample
+    minimum follows the MAD-stability guidance in Iglewicz & Hoaglin and
+    prevents extreme z-scores on sparse post-startup baselines.
     """
-    if len(samples) < 10:
+    if len(samples) < _MIN_BASELINE_SAMPLES:
         return None
     arr = np.asarray(samples, dtype=float)
     med = float(np.median(arr))
@@ -60,7 +72,16 @@ def _robust_z(current: float, samples: list[float]) -> float | None:
 
 
 def _z_to_severity(z: float) -> tuple[str, float] | None:
-    """Map a robust z-score to (severity, confidence). None below z=3."""
+    """
+    Map a robust z-score to (severity, confidence). None below z=3.
+
+    Above ``_Z_SPARSE_BASELINE_CAP`` the score is treated as evidence the
+    baseline is untrustworthy (Prometheus history not yet stable) and the
+    severity is downgraded one band — preventing astronomical z-scores
+    from polluting the alert stream.
+    """
+    if z > _Z_SPARSE_BASELINE_CAP:
+        return ("medium", 0.65)
     if z >= 6:
         return ("critical", 0.95)
     if z >= 4.5:
@@ -73,6 +94,40 @@ def _z_to_severity(z: float) -> tuple[str, float] | None:
 def _make_alert_id(vnf: str, metric: str, ts: str) -> str:
     digest = hashlib.sha1(f"{vnf}|{metric}|{ts}".encode()).hexdigest()[:8]
     return f"{ts}-{digest}"
+
+
+def _alert_fingerprint(alert: AnomalyAlert) -> str:
+    """Stable identity for dedup: alert type + first affected (vnf, metric)."""
+    metrics = alert.get("affected_metrics") or []
+    metric_name = metrics[0].get("name", "") if metrics else ""
+    description = alert.get("description", "")
+    vnf = description.split(" ", 1)[0] if description else ""
+    return f"{alert.get('type', '')}|{vnf}|{metric_name}"
+
+
+def _filter_suppressed(alerts: list[AnomalyAlert], now: datetime) -> tuple[list[AnomalyAlert], int]:
+    """
+    Drop alerts whose fingerprint fired within ``_DEDUP_WINDOW``. Update the
+    cache with the surviving alerts. Returns (kept_alerts, suppressed_count).
+    """
+    kept: list[AnomalyAlert] = []
+    suppressed = 0
+    cutoff = now - _DEDUP_WINDOW
+    for alert in alerts:
+        fp = _alert_fingerprint(alert)
+        last = _seen_alerts.get(fp)
+        if last is not None and last >= cutoff:
+            suppressed += 1
+            continue
+        _seen_alerts[fp] = now
+        kept.append(alert)
+
+    # Garbage-collect entries older than 2x the window so the cache cannot grow
+    # without bound across long monitoring sessions.
+    stale_cutoff = now - 2 * _DEDUP_WINDOW
+    for fp in [k for k, v in _seen_alerts.items() if v < stale_cutoff]:
+        del _seen_alerts[fp]
+    return kept, suppressed
 
 
 def _default_actions(metric_name: str, severity: str) -> list[str]:
@@ -482,7 +537,17 @@ def anomaly_detector_agent(state: OrchestratorState) -> dict[str, Any]:
             if alert is not None:
                 alerts.append(alert)
 
-    logger.info("Anomaly Detector: %d alerts before LLM enhancement", len(alerts))
+    logger.info("Anomaly Detector: %d raw alerts before dedup", len(alerts))
+
+    now = datetime.utcnow()
+    alerts, suppressed = _filter_suppressed(alerts, now)
+    if suppressed:
+        logger.info(
+            "Anomaly Detector: suppressed %d duplicate alert(s) within %s window",
+            suppressed, _DEDUP_WINDOW,
+        )
+
+    logger.info("Anomaly Detector: %d alerts after dedup, before LLM enhancement", len(alerts))
 
     for alert in alerts[:_MAX_LLM_CALLS_PER_CYCLE]:
         _enhance_with_llm(alert, metrics, history_snapshot)

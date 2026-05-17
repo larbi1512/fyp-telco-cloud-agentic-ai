@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 from datetime import datetime
 from typing import Any
 
@@ -322,6 +323,42 @@ def _validate_plan(
 # ──────────────────── LLM call ──────────────────── #
 
 
+_PLANNER_MAX_TOKENS = 1500  # plans are small JSON; keep room in the 8k-context budget
+
+
+def _relevant_vnfs(
+    trigger_payload: dict[str, Any],
+    alerts: list[AnomalyAlert],
+    sla_statuses: list[SLAStatus],
+    topology_vnfs: list[str],
+) -> set[str]:
+    """
+    Return the set of VNF names worth showing to the LLM.
+
+    Includes:
+      - the VNF named in the trigger payload (if any)
+      - VNFs mentioned in any active alert description
+      - VNFs implicated by any non-compliant SLA rule
+    Falls back to all topology VNFs when nothing is implicated.
+    """
+    relevant: set[str] = set()
+    if (vnf := trigger_payload.get("vnf_name")):
+        relevant.add(str(vnf))
+    for a in alerts or []:
+        desc = str(a.get("description", ""))
+        for v in topology_vnfs:
+            if v in desc:
+                relevant.add(v)
+    for s in sla_statuses or []:
+        if s.get("status") in ("breach", "warning"):
+            rule = str(s.get("rule", "")).lower()
+            for v in topology_vnfs:
+                # crude but effective: rule names embed VNF type (e.g. "upf_throughput")
+                if v.split("-")[-1] in rule:
+                    relevant.add(v)
+    return relevant or set(topology_vnfs)
+
+
 def _ask_llm(
     trigger_payload: dict[str, Any],
     metrics: list[MetricEvent],
@@ -329,7 +366,18 @@ def _ask_llm(
     sla_statuses: list[SLAStatus],
     recent_actions: list[dict[str, Any]],
     past_incidents: list[dict[str, Any]] | None = None,
+    topology_vnfs: list[str] | None = None,
 ) -> dict[str, Any] | None:
+    # Filter metrics to those whose VNF is implicated by the trigger to keep
+    # the prompt under the 8k-context-window budget on smaller LLM backends.
+    if topology_vnfs:
+        relevant = _relevant_vnfs(trigger_payload, alerts, sla_statuses, topology_vnfs)
+        filtered_metrics = [
+            m for m in metrics if m.get("vnf_name") in relevant
+        ] or metrics  # fall back to full set if filter dropped everything
+    else:
+        filtered_metrics = metrics
+
     try:
         llm = LLMCore()
         result = llm.invoke(
@@ -337,7 +385,7 @@ def _ask_llm(
             {
                 "alert_details": trigger_payload,
                 "system_context": {
-                    "current_metrics": metrics,
+                    "current_metrics": filtered_metrics,
                     "anomaly_alerts": alerts,
                     "sla_status": sla_statuses,
                 },
@@ -346,6 +394,7 @@ def _ask_llm(
                 "available_actions": _AVAILABLE_ACTIONS,
             },
             expect_json=True,
+            max_tokens=_PLANNER_MAX_TOKENS,
         )
     except Exception as exc:
         logger.warning("Planner LLM invocation failed: %s", exc)
@@ -421,6 +470,22 @@ def planner_reasoning_agent(state: OrchestratorState) -> dict[str, Any]:
     """
     logger.info("Planner / Reasoning Agent: starting")
 
+    # Experiment-only ablation: when MAS_BYPASS_REMEDIATION=1 is set, the
+    # detector pipeline still runs but the planner emits no plan, so the
+    # executors are short-circuited downstream. Used by Experiment 4's
+    # B_static baseline to compare MAS against "K8s alone" recovery.
+    if os.environ.get("MAS_BYPASS_REMEDIATION") == "1":
+        logger.info("Planner: MAS_BYPASS_REMEDIATION=1 — skipping plan production")
+        return {
+            "remediation_plan": None,
+            "current_agent": "planner_reasoning",
+            "phase": "post_deployment",
+            "messages": [{
+                "role": "agent",
+                "content": "**Planner / Reasoning** — bypassed (B_static baseline mode).",
+            }],
+        }
+
     metrics: list[MetricEvent] = list(state.get("current_metrics") or [])
     alerts: list[AnomalyAlert] = list(state.get("anomaly_alerts") or [])
     sla_statuses: list[SLAStatus] = list(state.get("sla_status") or [])
@@ -429,22 +494,28 @@ def planner_reasoning_agent(state: OrchestratorState) -> dict[str, Any]:
     past_incidents: list[dict[str, Any]] = []
 
     # ── Enrich context from Redis (best-effort) ──
+    redis_client = None
     if _REDIS_AVAILABLE:
         try:
-            _redis = _RedisClient()
-            if _redis.ping():
+            redis_client = _RedisClient()
+            if redis_client.ping():
                 # Supplement recent_actions with cross-session history
                 if len(_session_actions) < 5:
-                    cross = _redis.get_actions(limit=5 - len(_session_actions))
+                    cross = redis_client.get_actions(limit=5 - len(_session_actions))
                     recent_actions = _session_actions + cross
-                past_incidents = _redis.get_incidents(limit=10)
+                # Cap at 3 — anything larger pushes the planner prompt past
+                # the 8k-token context limit on smaller LLM backends.
+                past_incidents = redis_client.get_incidents(limit=3)
                 logger.debug(
                     "Planner: loaded %d past incidents + %d cross-session actions from Redis",
                     len(past_incidents),
                     len(recent_actions) - len(_session_actions),
                 )
+            else:
+                redis_client = None
         except Exception as exc:
             logger.warning("Planner: Redis read failed (non-critical): %s", exc)
+            redis_client = None
 
     topology_vnfs = _topology_vnf_names(state)
 
@@ -463,7 +534,10 @@ def planner_reasoning_agent(state: OrchestratorState) -> dict[str, Any]:
     else:
         triggered_by = f"sla:{trigger_payload.get('rule', 'unknown_rule')}"
 
-    raw = _ask_llm(trigger_payload, metrics, alerts, sla_statuses, recent_actions, past_incidents)
+    raw = _ask_llm(
+        trigger_payload, metrics, alerts, sla_statuses,
+        recent_actions, past_incidents, topology_vnfs,
+    )
 
     plan: RemediationPlan | None = None
     source = "llm"
@@ -505,8 +579,35 @@ def planner_reasoning_agent(state: OrchestratorState) -> dict[str, Any]:
         plan["plan_id"] = _make_plan_id(triggered_by, timestamp)
     if not plan.get("triggered_by"):
         plan["triggered_by"] = triggered_by
+    plan["source"] = source
 
     summary = _build_summary(plan, source)
+
+    # ── Record the incident for cross-cycle reasoning ──
+    # Outcome is "pending" — Auto-Scaler / Fault Recovery agents log their own
+    # action results separately via push_action. Future work (Phase 6) can
+    # update this entry with the verified outcome via incident_id correlation.
+    if redis_client is not None:
+        try:
+            first_action = plan["recommended_actions"][0] if plan["recommended_actions"] else {}
+            triggered_action = (
+                f"{first_action.get('type', 'unknown')}:{first_action.get('target', '')}"
+            )
+            incident_alert = {
+                "trigger_kind": trigger_kind,
+                "triggered_by": triggered_by,
+                "diagnosis": plan.get("diagnosis", ""),
+                "plan_id": plan.get("plan_id", ""),
+                "confidence": plan.get("confidence", 0.0),
+                "source": source,
+            }
+            redis_client.push_incident(
+                alert=incident_alert,
+                triggered_action=triggered_action,
+                outcome="pending",
+            )
+        except Exception as exc:
+            logger.warning("Planner: incident write failed (non-critical): %s", exc)
 
     return {
         "remediation_plan": plan,

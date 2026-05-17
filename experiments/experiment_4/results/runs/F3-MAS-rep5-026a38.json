@@ -1,0 +1,487 @@
+{
+  "run_id": "F3-MAS-rep5-026a38",
+  "scenario": "F3",
+  "system": "MAS",
+  "rep": 5,
+  "fault": {
+    "scenario": "F3",
+    "fault_type": "traffic_surge",
+    "iperf_pod": "f3-iperf-c9645a",
+    "duration_s": 60,
+    "streams": 50,
+    "started_at": "2026-05-06T21:23:14.281619+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-06T21:23:14.320726+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-06T21:21:48.106003+00:00",
+      "finished_at": "2026-05-06T21:21:50.073965+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 0,
+        "execution_results": 0
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T21:22:05.089075+00:00",
+      "finished_at": "2026-05-06T21:22:24.594269+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T21:22:06.848570-3f90c894",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-ausf cpu_utilization = 8.27 % (z=3.4 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 8.27,
+              "baseline": 0.0195,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T21:22:06.848570-737fdcf5",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-ausf network_rx_mbps = 0.001 Mbps (z=5.0 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:22:06.848570-737fdcf5",
+        "triggered_by": "2026-05-06T21:22:06.848570-737fdcf5",
+        "diagnosis": "The oai-ausf VNF is experiencing a significant drop in network_rx_mbps (0.001 Mbps vs baseline 0.0005 Mbps), indicating a potential network connectivity issue or traffic routing problem. The CPU utilization is normal (8.27%), suggesting it's not a resource constraint. This is likely a configuration or fault issue rather than a scaling problem.",
+        "confidence": 0.85,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-ausf",
+            "action": "inspect_upf_throughput",
+            "params": {},
+            "reason": "The alert suggests inspecting UPF throughput which may be related to the network_rx_mbps anomaly. Changing config to enable detailed logging or adjust traffic handling."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-ausf",
+            "action": "roll_deployment",
+            "params": {},
+            "reason": "To clear any stale network state or misconfigurations that might be causing the low RX throughput. Restarting will reinitialize the network stack."
+          }
+        ],
+        "expected_outcome": "Network RX throughput for oai-ausf should return to normal baseline levels after restarting and verifying UPF connectivity.",
+        "rollback_plan": "If the restart causes further issues, rollback to the previous Helm release of oai-ausf to restore prior configuration and deployment state.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-ausf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T21:22:09.517867"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-ausf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-ausf",
+          "timestamp": "2026-05-06T21:22:09.554784"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 2,
+        "execution_results": 2
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T21:22:39.609396+00:00",
+      "finished_at": "2026-05-06T21:22:59.242258+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:22:06.848570-737fdcf5",
+        "triggered_by": "2026-05-06T21:22:06.848570-737fdcf5",
+        "diagnosis": "The oai-ausf VNF is experiencing a significant drop in network_rx_mbps (0.001 Mbps vs baseline 0.0005 Mbps), indicating a potential network connectivity issue or traffic routing problem. CPU utilization is normal (8.27%), ruling out resource constraints. Previous attempts to resolve via config_change failed due to missing parameters, but restarts were successful. This suggests a transient fault that may require a configuration fix or restart to resolve.",
+        "confidence": 0.85,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-ausf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Previous restarts were successful; this can clear any transient state causing the network RX drop."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-ausf",
+            "action": "update_configmap",
+            "params": {
+              "config_map": "oai-ausf-config",
+              "key": "network_rx_threshold",
+              "value": "0.001"
+            },
+            "reason": "To ensure proper handling of low throughput scenarios and prevent future false positives. Requires valid config map."
+          }
+        ],
+        "expected_outcome": "Network RX Mbps should return to expected baseline levels after restart and config update. If not, further investigation into traffic source or UPF connectivity is required.",
+        "rollback_plan": "If the config change causes issues, rollback to the previous Helm revision of oai-ausf to restore prior configuration. If restart fails, revert to previous deployment state using Kubernetes rollout history.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-ausf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-ausf",
+          "timestamp": "2026-05-06T21:22:44.204183"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-ausf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-06T21:22:44.204222"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 2,
+        "execution_results": 4
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-06T21:23:14.325379+00:00",
+      "finished_at": "2026-05-06T21:23:34.030859+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T21:23:15.560272-ccf6bc47",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf memory_utilization = 1.67 % (z=39.0 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.67,
+              "baseline": 49729536.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:22:06.848570-737fdcf5",
+        "triggered_by": "2026-05-06T21:22:06.848570-737fdcf5",
+        "diagnosis": "The oai-ausf VNF is experiencing a significant drop in network_rx_mbps (0.001 Mbps vs baseline 0.0005 Mbps), indicating a potential network connectivity issue or traffic routing problem. CPU utilization is normal (8.27%), ruling out resource constraints. Previous attempts to resolve via config_change failed due to missing parameters, but restarts were successful. This suggests a transient fault that requires a restart to clear stale state, followed by a configuration fix to prevent recurrence.",
+        "confidence": 0.92,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-ausf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Previous restarts have been successful in resolving similar transient faults. Restarting clears any stale network state or connection issues."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-ausf",
+            "action": "update_configmap",
+            "params": {
+              "config_map": "oai-ausf-config",
+              "updates": {
+                "network_interface": "eth0",
+                "traffic_routing": "default"
+              }
+            },
+            "reason": "To address root cause of network_rx_mbps anomaly, ensure correct network interface and routing settings are applied after restart."
+          }
+        ],
+        "expected_outcome": "Network RX Mbps for oai-ausf should return to baseline levels (~0.0005 Mbps) within 5 minutes post-restart and config change. CPU and memory utilization should remain stable.",
+        "rollback_plan": "If the config_change fails or causes further degradation, rollback to the previous Helm revision of oai-ausf to restore prior working configuration. If restart was unsuccessful, revert to previous deployment state using Kubernetes rollout history.",
+        "validation_metric": "network_rx_mbps for oai-ausf should normalize to baseline value within 5 minutes after restart and config update."
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-ausf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-ausf",
+          "timestamp": "2026-05-06T21:23:18.986384"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-ausf",
+          "status": "failed",
+          "details": "patch_configmap failed for 'oai-ausf-config': (404)\nReason: Not Found\nHTTP response headers: HTTPHeaderDict({'Audit-Id': '0fc3705d-6999-407e-9ce6-c48be6322a62', 'Cache-Control': 'no-cache, private', 'Content-Type': 'application/json', 'X-Kubernetes-Pf-Flowschema-Uid': '90ebb995-424c-4504-8bef-b2b6c9b6bc3f', 'X-Kubernetes-Pf-Prioritylevel-Uid': 'a18d93c7-90c9-4c21-87fe-2a8fe5a751e2', 'Date': 'Wed, 06 May 2026 21:23:18 GMT', 'Content-Length': '210'})\nHTTP response body: {\"kind\":\"Status\",\"apiVersion\":\"v1\",\"metadata\":{},\"status\":\"Failure\",\"message\":\"configmaps \\\"oai-ausf-config\\\" not found\",\"reason\":\"NotFound\",\"details\":{\"name\":\"oai-ausf-config\",\"kind\":\"configmaps\"},\"code\":404}\n\n",
+          "timestamp": "2026-05-06T21:23:18.992980"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 6
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:23:49.046019+00:00",
+      "finished_at": "2026-05-06T21:24:09.221254+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:22:06.848570-737fdcf5",
+        "triggered_by": "2026-05-06T21:22:06.848570-737fdcf5",
+        "diagnosis": "The oai-ausf VNF is experiencing a significant drop in network_rx_mbps (0.001 Mbps vs baseline 0.0005 Mbps), indicating a potential network connectivity issue or traffic routing problem. CPU utilization is normal (5.32%), ruling out resource constraints. Previous restarts were partially successful but failed to fully resolve the issue. The current state shows sustained low throughput which impacts service availability and SLA compliance.",
+        "confidence": 0.92,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-ausf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Restart is the most effective immediate action based on historical precedent where previous restarts cleared transient faults. The current anomaly persists despite prior restarts."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-ausf",
+            "action": "update_configmap",
+            "params": {
+              "configmap_name": "oai-ausf-config",
+              "key": "network_rx_mbps_threshold",
+              "value": "0.005"
+            },
+            "reason": "Configuration change is needed to stabilize the network interface behavior after repeated restarts. The configmap was previously not found, so we will attempt to recreate it if necessary."
+          }
+        ],
+        "expected_outcome": "Network RX Mbps should return to normal baseline levels (>0.0005 Mbps) within 5 minutes post-restart. If config change succeeds, the threshold adjustment will help prevent similar anomalies.",
+        "rollback_plan": "If the restart fails to restore performance, rollback the oai-ausf deployment to the last known stable revision using Helm rollback command. If config change fails, revert any applied configmap changes or delete the configmap entirely.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-ausf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-ausf",
+          "timestamp": "2026-05-06T21:23:54.180907"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-ausf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T21:23:54.180946"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:24:24.236403+00:00",
+      "finished_at": "2026-05-06T21:24:43.868907+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:22:06.848570-737fdcf5",
+        "triggered_by": "2026-05-06T21:22:06.848570-737fdcf5",
+        "diagnosis": "The oai-ausf VNF is experiencing a significant drop in network_rx_mbps (0.001 Mbps vs baseline 0.0005 Mbps), indicating a potential network connectivity issue or traffic routing problem. CPU utilization is normal (4.27%), ruling out resource constraints. Previous restarts were partially successful but failed to fully resolve the issue. The current state shows sustained low throughput which impacts service availability and SLA compliance.",
+        "confidence": 0.92,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-ausf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Previous restart attempts have shown partial success; restarting again to clear any stale state or transient faults that may be causing the network throughput anomaly."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-ausf",
+            "action": "update_configmap",
+            "params": {
+              "config_map": "oai-ausf-config",
+              "key": "network_rx_mbps_threshold",
+              "value": "0.005"
+            },
+            "reason": "To prevent recurrence of similar issues, adjust the network threshold configuration after confirming the root cause is related to traffic routing or connectivity rather than a hardware or infrastructure issue."
+          }
+        ],
+        "expected_outcome": "The oai-ausf VNF should resume normal network throughput levels after the restart, and the updated configuration will help detect future anomalies more effectively.",
+        "rollback_plan": "If the restart fails to resolve the issue, revert to the previous deployment version using rollback to restore the prior stable configuration and avoid further degradation.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-ausf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-ausf",
+          "timestamp": "2026-05-06T21:24:28.820109"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-ausf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-06T21:24:28.820147"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 10
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:24:58.884058+00:00",
+      "finished_at": "2026-05-06T21:25:18.866346+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:22:06.848570-737fdcf5",
+        "triggered_by": "2026-05-06T21:22:06.848570-737fdcf5",
+        "diagnosis": "The oai-ausf VNF is experiencing a significant drop in network_rx_mbps (0.001 Mbps vs baseline 0.0005 Mbps), indicating a potential network connectivity issue or traffic routing problem. CPU utilization is normal (3.29%), ruling out resource constraints. Previous restarts were partially successful but failed to fully resolve the issue. The current state shows sustained low throughput which impacts service availability and SLA compliance.",
+        "confidence": 0.92,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-ausf",
+            "action": "rollout restart",
+            "params": {},
+            "reason": "Previous restart attempts were partially successful; a new rollout restart may clear any stale network state or connection issues."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-ausf",
+            "action": "update_network_config",
+            "params": {
+              "config_map": "oai-ausf-config",
+              "key": "network_rx_mbps",
+              "value": "0.001"
+            },
+            "reason": "To ensure configuration alignment with current network conditions and prevent further degradation."
+          }
+        ],
+        "expected_outcome": "Network throughput for oai-ausf should return to baseline levels, restoring service availability and SLA compliance.",
+        "rollback_plan": "Revert the config change by restoring the previous version of the oai-ausf-config ConfigMap. If needed, rollback the deployment to the prior Helm revision.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-ausf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-ausf",
+          "timestamp": "2026-05-06T21:25:03.828647"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-ausf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-06T21:25:03.828687"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 12
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 0,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 2
+  },
+  "trigger_fingerprint": "point_outlier|oai-amf|memory_utilization",
+  "timing": {
+    "fault_started_at": "2026-05-06T21:23:14.281619+00:00",
+    "first_alert_at": "2026-05-06T21:23:14.325379+00:00",
+    "first_plan_at": "2026-05-06T21:23:14.325379+00:00",
+    "first_action_at": "2026-05-06T21:23:14.325379+00:00",
+    "recovered_at": "2026-05-06T21:24:24.236403+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 0.04376,
+    "plan_latency_s": 0.0,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 69.954784,
+    "remediation_success": true,
+    "false_positives_pre_fault": 1,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-upf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-06T21:25:19.004474+00:00"
+}

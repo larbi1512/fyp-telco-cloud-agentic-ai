@@ -4,10 +4,10 @@ Plot generation for Experiment 2 — per-metric bars with 95% CI error bars,
 per-metric box plots across systems, and per-(metric × scenario) heatmap.
 
 Inputs:
-  - experiments/experiment_2/results/full/runs.csv
-  - experiments/experiment_2/analysis/summary_table.csv  (for CIs)
+  - experiments/experiment_2/results/main/runs_merged.csv
+  - experiments/experiment_2/analysis/main/summary_table.csv  (for CIs)
 
-Outputs (under experiments/experiment_2/analysis/plots/):
+Outputs (under experiments/experiment_2/analysis/main/plots/):
   - bars_<metric>.png        (one per metric)
   - box_<metric>.png         (one per metric)
   - heatmap_scenario.png     (single image, all 6 metrics × 4 scenarios × 5 systems)
@@ -37,13 +37,14 @@ METRICS: list[tuple[str, str, str]] = [
     ("policy_violation_rate",    "Policy violation rate",       "lower"),
 ]
 
-SYSTEMS = ["mas", "b1", "b2", "b3", "b4"]
+SYSTEMS = ["mas", "b1", "b2", "b3", "b4", "b4r"]
 SYSTEM_LABELS = {
     "mas": "MAS\n(LangGraph)",
     "b1": "B1\nManual",
     "b2": "B2\nOSM stub",
     "b3": "B3\nStatic+HPA",
     "b4": "B4\nSingle-LLM",
+    "b4r": "B4r\nSingle-LLM\n+ repair",
 }
 SYSTEM_COLORS = {
     "mas": "#2c3e9f",
@@ -51,6 +52,7 @@ SYSTEM_COLORS = {
     "b2": "#6b0f1a",
     "b3": "#1e6e3e",
     "b4": "#9b4f12",
+    "b4r": "#c97a2d",
 }
 
 
@@ -78,6 +80,14 @@ def load_summary(path: Path) -> dict[tuple[str, str], dict[str, float]]:
     return out
 
 
+# Systems that do NOT actually deploy in the experiment harness.
+# For deploy-gated metrics (intent_to_deploy_accuracy, deployment_time_s),
+# these bars should be hatched and asterisked to make the structural caveat
+# explicit in the figure rather than only in the report's caveats paragraph.
+NON_DEPLOYING_SYSTEMS = {"b1", "b2", "b4"}
+DEPLOY_GATED_METRICS = {"intent_to_deploy_accuracy", "deployment_time_s"}
+
+
 def bar_plot(
     summary: dict[tuple[str, str], dict[str, float]],
     metric_key: str, metric_label: str, direction: str,
@@ -93,6 +103,8 @@ def bar_plot(
         lo.append(v["mean"] - v["ci_lo"])
         hi.append(v["ci_hi"] - v["mean"])
 
+    deploy_gated = metric_key in DEPLOY_GATED_METRICS
+
     fig, ax = plt.subplots(figsize=(7, 4))
     xs = np.arange(len(SYSTEMS))
     bars = ax.bar(
@@ -100,8 +112,21 @@ def bar_plot(
         color=[SYSTEM_COLORS[s] for s in SYSTEMS],
         edgecolor="black", linewidth=0.5,
     )
+    # Mark non-deploying baselines with hatching on deploy-gated metrics.
+    if deploy_gated:
+        for bar, s in zip(bars, SYSTEMS):
+            if s in NON_DEPLOYING_SYSTEMS:
+                bar.set_hatch("//")
+                bar.set_alpha(0.55)
     ax.set_xticks(xs)
-    ax.set_xticklabels([SYSTEM_LABELS[s] for s in SYSTEMS], fontsize=9)
+    # Asterisk non-deploying systems on deploy-gated plots
+    labels = []
+    for s in SYSTEMS:
+        lbl = SYSTEM_LABELS[s]
+        if deploy_gated and s in NON_DEPLOYING_SYSTEMS:
+            lbl = lbl + "*"
+        labels.append(lbl)
+    ax.set_xticklabels(labels, fontsize=9)
     ax.set_ylabel(metric_label)
     arrow = " ↓ lower is better" if direction == "lower" else " ↑ higher is better"
     ax.set_title(f"{metric_label}{arrow}", fontsize=11)
@@ -111,7 +136,17 @@ def bar_plot(
             bar.get_x() + bar.get_width() / 2, bar.get_height(),
             f"{m:.3f}", ha="center", va="bottom", fontsize=8,
         )
-    fig.tight_layout()
+    # Footnote for deploy-gated metrics
+    if deploy_gated:
+        fig.text(
+            0.5, 0.005,
+            "* B1/B2/B4 emit artifacts only; they do not run `helm install`, "
+            "so deployment_success = 0 by design.",
+            ha="center", va="bottom", fontsize=7.5, style="italic", color="#444",
+        )
+        fig.tight_layout(rect=(0, 0.04, 1, 1))
+    else:
+        fig.tight_layout()
     fig.savefig(out_path, dpi=140)
     plt.close(fig)
 
@@ -198,10 +233,65 @@ def scenario_heatmap(rows: list[dict[str, Any]], out_path: Path) -> None:
     plt.close(fig)
 
 
+def plot_per_vnf_resource(csv_path: Path, out_path: Path) -> None:
+    """Horizontal grouped bars: per-VNF CPU and memory relative error
+    with bootstrap-95%-CI whiskers. Sorted by total error (best on top)."""
+    with csv_path.open() as f:
+        rows = list(csv.DictReader(f))
+    if not rows:
+        return
+
+    rows.sort(key=lambda r: float(r["cpu_rel_err_mean"]) + float(r["mem_rel_err_mean"]))
+    vnfs = [r["vnf"].upper() for r in rows]
+    cpu_mean = [float(r["cpu_rel_err_mean"]) for r in rows]
+    cpu_lo = [float(r["cpu_rel_err_ci_lo"]) for r in rows]
+    cpu_hi = [float(r["cpu_rel_err_ci_hi"]) for r in rows]
+    mem_mean = [float(r["mem_rel_err_mean"]) for r in rows]
+    mem_lo = [float(r["mem_rel_err_ci_lo"]) for r in rows]
+    mem_hi = [float(r["mem_rel_err_ci_hi"]) for r in rows]
+
+    cpu_err = [[m - lo for m, lo in zip(cpu_mean, cpu_lo)],
+               [hi - m for m, hi in zip(cpu_mean, cpu_hi)]]
+    mem_err = [[m - lo for m, lo in zip(mem_mean, mem_lo)],
+               [hi - m for m, hi in zip(mem_mean, mem_hi)]]
+
+    y = np.arange(len(vnfs))
+    h = 0.4
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    ax.barh(y - h / 2, cpu_mean, h, xerr=cpu_err, capsize=3,
+            label="CPU rel. error", color="#4C78A8")
+    ax.barh(y + h / 2, mem_mean, h, xerr=mem_err, capsize=3,
+            label="Memory rel. error", color="#F58518")
+
+    ax.set_yticks(y)
+    ax.set_yticklabels(vnfs)
+    ax.invert_yaxis()
+    ax.set_xlabel("Relative error vs resource oracle (mean ± 95% bootstrap CI)")
+    n_vals = [int(r["n_measurements"]) for r in rows]
+    if min(n_vals) == max(n_vals):
+        n_label = f"n={n_vals[0]}"
+    else:
+        n_label = f"n={min(n_vals)}–{max(n_vals)}"
+    ax.set_title(f"Per-VNF resource accuracy (MAS, {n_label} measurements per VNF)")
+    ax.axvline(0, color="black", linewidth=0.5)
+    ax.legend(loc="lower right")
+    ax.grid(axis="x", linestyle="--", alpha=0.4)
+
+    for i, r in enumerate(rows):
+        acc = float(r["vnf_accuracy"])
+        ax.text(max(cpu_hi[i], mem_hi[i]) + 0.01, i,
+                f"acc={acc:.3f}", va="center", fontsize=8, color="#444")
+
+    fig.tight_layout()
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runs", type=Path,
-                        default=Path("experiments/experiment_2/results/full/runs.csv"))
+                        default=Path("experiments/experiment_2/results/main/runs_merged.csv"))
     parser.add_argument("--summary", type=Path,
                         default=Path("experiments/experiment_2/analysis/summary_table.csv"))
     parser.add_argument("--out", type=Path,
@@ -218,6 +308,15 @@ def main() -> None:
         box_plot(rows, key, label, direction,
                  args.out / f"box_{key}.png")
     scenario_heatmap(rows, args.out / "heatmap_scenario.png")
+
+    # Look for per_vnf_resource.csv alongside the summary table (same analysis
+    # output dir) first, then fall back to the legacy default location.
+    for candidate in (args.summary.parent / "per_vnf_resource.csv",
+                      Path("experiments/experiment_2/analysis/per_vnf_resource.csv")):
+        if candidate.exists():
+            plot_per_vnf_resource(candidate, args.out / "per_vnf_resource.png")
+            break
+
     print(f"plots written to {args.out}")
     for p in sorted(args.out.glob("*.png")):
         print(f"  {p.name}")
