@@ -1,0 +1,595 @@
+{
+  "run_id": "F3-B_static-rep4-0de5c7",
+  "scenario": "F3",
+  "system": "B_static",
+  "rep": 4,
+  "fault": {
+    "scenario": "F3",
+    "fault_type": "traffic_surge",
+    "iperf_pod": "f3-iperf-9ed73c",
+    "duration_s": 60,
+    "streams": 50,
+    "started_at": "2026-05-06T22:28:02.289943+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-06T22:28:02.327274+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-06T22:27:12.000302+00:00",
+      "finished_at": "2026-05-06T22:27:13.561351+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 0,
+        "execution_results": 0
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T22:27:28.576463+00:00",
+      "finished_at": "2026-05-06T22:27:30.552160+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T22:27:30.314456-3032a4bf",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-amf cpu_utilization = 2.72 % (z=5.8 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.72,
+              "baseline": 0.0884,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:27:30.314456-cc8f77da",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-smf cpu_utilization = 1.92 % (z=5.8 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 1.92,
+              "baseline": 0.0309,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:27:30.314456-9dc817a4",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr cpu_utilization = 11.81 % (z=3.5 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 11.81,
+              "baseline": 0.0197,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:27:30.314456-33990e8d",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udm memory_utilization = 1.07 % (z=3.4 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.07,
+              "baseline": 5357568.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:27:30.314456-dd488f90",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udm network_rx_mbps = 0.001 Mbps (z=6.6 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0011,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:27:30.314456-7d72e47e",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-upf network_rx_mbps = 0.001 Mbps (z=3.8 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 6,
+        "execution_results": 0
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T22:27:45.567269+00:00",
+      "finished_at": "2026-05-06T22:27:47.250837+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 6,
+        "execution_results": 0
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-06T22:28:02.331870+00:00",
+      "finished_at": "2026-05-06T22:28:04.212057+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 6,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:28:19.227164+00:00",
+      "finished_at": "2026-05-06T22:28:21.084304+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 6,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:28:36.099416+00:00",
+      "finished_at": "2026-05-06T22:28:37.567488+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T22:28:37.413053-d1c3a418",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-amf network_rx_mbps = 0.0 Mbps (z=3.7 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0014,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:28:52.582585+00:00",
+      "finished_at": "2026-05-06T22:28:54.600586+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T22:28:54.405403-eda0ba6c",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf memory_utilization = 1.66 % (z=41.5 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.66,
+              "baseline": 49778688.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:28:54.405403-b14dd3a7",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-upf memory_utilization = 0.28 % (z=34.4 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.28,
+              "baseline": 4229120.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:28:54.405403-48fee000",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr network_rx_mbps = 0.001 Mbps (z=15.9 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0006,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:29:09.615684+00:00",
+      "finished_at": "2026-05-06T22:29:11.487546+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T22:29:11.268319-856b60df",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-upf cpu_utilization = 0.21 % (z=3.6 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.21,
+              "baseline": 0.0065,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:29:11.268319-bb26d932",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-smf memory_utilization = 0.85 % (z=10.8 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.85,
+              "baseline": 17465344.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:29:11.268319-5ebe6810",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "f3 network_rx_mbps = 0.0 Mbps (z=9.9 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 13,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:29:26.502651+00:00",
+      "finished_at": "2026-05-06T22:29:28.466517+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T22:29:28.305651-daa77526",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "f3 cpu_utilization = 0.0 % (z=3.4 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.0,
+              "baseline": 0.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        }
+      ],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:29:43.481620+00:00",
+      "finished_at": "2026-05-06T22:29:44.851246+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:29:59.866355+00:00",
+      "finished_at": "2026-05-06T22:30:01.893604+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:30:16.908710+00:00",
+      "finished_at": "2026-05-06T22:30:18.941332+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:30:33.956437+00:00",
+      "finished_at": "2026-05-06T22:30:35.765900+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:30:50.781024+00:00",
+      "finished_at": "2026-05-06T22:30:52.547899+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T22:31:07.563006+00:00",
+      "finished_at": "2026-05-06T22:31:09.240813+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T22:31:09.069603-2351a353",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-amf cpu_utilization = 2.9 % (z=4.7 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.9,
+              "baseline": 0.0886,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T22:31:09.069603-cb51bdde",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr cpu_utilization = 11.32 % (z=3.3 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 11.32,
+              "baseline": 0.0196,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        }
+      ],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 16,
+        "execution_results": 0
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 2,
+    "first_plan": null,
+    "first_action": null,
+    "recovered": null
+  },
+  "trigger_fingerprint": "point_outlier|oai-amf|network_rx_mbps",
+  "timing": {
+    "fault_started_at": "2026-05-06T22:28:02.289943+00:00",
+    "first_alert_at": "2026-05-06T22:28:36.099416+00:00",
+    "first_plan_at": null,
+    "first_action_at": null,
+    "recovered_at": null
+  },
+  "metrics": {
+    "detection_latency_s": 33.809473,
+    "plan_latency_s": null,
+    "action_latency_s": null,
+    "recovery_time_s": null,
+    "remediation_success": false,
+    "false_positives_pre_fault": 1,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-upf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-06T22:31:24.298741+00:00"
+}

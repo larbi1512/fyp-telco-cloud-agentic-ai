@@ -114,6 +114,7 @@ class LLMCore:
         variables: dict[str, Any],
         expect_json: bool = True,
         max_retries: int = 2,
+        max_tokens: int | None = None,
     ) -> dict[str, Any] | str:
         """
         Invoke the LLM with an agent-specific prompt.
@@ -123,6 +124,10 @@ class LLMCore:
             variables:   Dict of values to interpolate into the prompt
             expect_json: If True, parse the response as JSON (with retry)
             max_retries: Number of retries if JSON parsing fails
+            max_tokens:  Optional per-call output cap. Overrides the
+                         default max_tokens (vLLM) / num_predict (Ollama).
+                         Useful for agents like the Planner whose JSON
+                         outputs are small and whose prompts are large.
 
         Returns:
             Parsed JSON dict or raw string depending on expect_json.
@@ -134,11 +139,29 @@ class LLMCore:
             HumanMessage(content=user_prompt),
         ]
 
+        # Resolve the model handle to use for this invocation. When the
+        # caller supplies max_tokens we override the token limit.
+        # For Ollama, bind() passes kwargs to Client.chat() which rejects
+        # num_predict — so we create a fresh ChatOllama with num_predict set.
+        # For vLLM (ChatOpenAI), bind(max_tokens=...) works fine.
+        if max_tokens is not None:
+            if LLM_BACKEND == "ollama":
+                model_for_call = ChatOllama(
+                    base_url=OLLAMA_BASE_URL,
+                    model=OLLAMA_MODEL,
+                    temperature=OLLAMA_TEMPERATURE,
+                    num_predict=max_tokens,
+                )
+            else:
+                model_for_call = self._model.bind(max_tokens=max_tokens)
+        else:
+            model_for_call = self._model
+
         for attempt in range(1, max_retries + 2):
             logger.info(
                 "LLM invoke [%s] attempt %d/%d", agent_name, attempt, max_retries + 1
             )
-            response = self._model.invoke(messages)
+            response = model_for_call.invoke(messages)
             raw_text: str = response.content
 
             if not expect_json:

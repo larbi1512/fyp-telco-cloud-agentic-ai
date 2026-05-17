@@ -44,6 +44,19 @@ Pre-deployment MAS pipeline evaluated with 5 different LLMs across 36 intents ×
 | GPT-OSS 120B | Medium | 85 | 0.80 ± 0.40 |
 | GPT-OSS 120B | Complex | 60 | 0.57 ± 0.50 |
 
+## Pairwise Statistical Tests (Config Intent Accuracy)
+
+Paired-by-intent comparisons (n_pairs ≤ 36). Bonferroni α' = 0.0083 across 6 comparisons. Significance flag: ✓ if `p_bonf < α`, ✗ otherwise.
+
+| Comparison | n | mean(A) | mean(B) | mean diff | Cohen's d | p (paired t) | p (Wilcoxon) | p (Bonf.) | Sig. |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|:-:|
+| 3B vs 7B (Qwen2.5) | 36 | 0.167 | 0.383 | -0.217 | -0.48 | 0.006532 | 0.01174 | 0.03919 | ✓ |
+| 7B vs 14B (Qwen2.5) — threshold claim | 36 | 0.383 | 0.694 | -0.311 | -0.69 | 0.0002009 | 0.0008845 | 0.001205 | ✓ |
+| 7B Qwen2.5 vs 7B DeepSeek-R1 — reasoning premium | 36 | 0.383 | 0.394 | -0.011 | -0.03 | 0.8647 | 0.8614 | 1 | ✗ |
+| 14B vs 22B (Mistral) — plateau | 36 | 0.694 | 0.700 | -0.006 | -0.01 | 0.9381 | 0.972 | 1 | ✗ |
+| 14B vs 30B (Qwen3-Coder) — plateau | 36 | 0.694 | 0.700 | -0.006 | -0.01 | 0.9423 | 1 | 1 | ✗ |
+| 14B vs 120B (GPT-OSS) — diminishing returns | 36 | 0.694 | 0.622 | +0.072 | +0.14 | 0.4177 | 0.2982 | 1 | ✗ |
+
 ## Figures
 
 ### Figure 1 — Grouped bar chart (mean ± std per metric)

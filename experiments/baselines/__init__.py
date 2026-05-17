@@ -8,3 +8,4 @@ from experiments.baselines import b1_manual      # noqa: F401
 from experiments.baselines import b2_osm_stub    # noqa: F401
 from experiments.baselines import b3_static_hpa  # noqa: F401
 from experiments.baselines import b4_single_llm  # noqa: F401
+from experiments.baselines import b4_with_repair  # noqa: F401

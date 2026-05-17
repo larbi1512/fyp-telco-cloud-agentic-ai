@@ -13,7 +13,7 @@ from typing import Any, Iterable
 
 # Columns written to runs.csv. Anything else stays only in raw.jsonl.
 CSV_COLUMNS: list[str] = [
-    "system", "intent_id", "rep", "complexity", "ue_band", "scenario",
+    "system", "intent_id", "rep", "complexity", "ue_band", "scenario", "category",
     "deployment_time_s", "config_error_rate", "resource_accuracy",
     "interventions", "intent_to_deploy_accuracy", "policy_violation_rate",
     "error",

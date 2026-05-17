@@ -36,6 +36,11 @@ logger = logging.getLogger(__name__)
 
 _DURATION_RE = re.compile(r"^(\d+)\s*([smhd])$")
 
+# Traffic floor (Mbps): below this, the upf_throughput SLA rule is reported
+# as `unknown` rather than `breach`. Throughput compliance is only meaningful
+# under load; control-plane chatter alone is well below 1 Mbps.
+_TRAFFIC_FLOOR_MBPS = 1.0
+
 
 def _parse_duration(s: str) -> timedelta:
     """Parse a Prometheus-style duration like '5m', '1h', '30s', '2d'."""
@@ -102,6 +107,43 @@ def _build_query(metric: str, namespace: str, window: str) -> str | None:
             f'{{namespace="{ns}"}}[{w}])) '
             f'/ sum(rate(upf_packets_total'
             f'{{namespace="{ns}"}}[{w}]))) * 100'
+        )
+
+    return None
+
+
+def _build_fallback_query(metric: str, namespace: str, window: str) -> str | None:
+    """
+    Fallback PromQL when the primary OAI control-plane metric is not
+    exported. Uses infrastructure-level proxies that approximate the SLA
+    intent. Used only when the primary query returns no samples.
+
+    - amf_registration_success_pct → AMF pod readiness % (`up`)
+    - upf_packet_loss_pct          → container_network packet drops on UPF pods
+    - pdu_session_setup_ms         → SMF restart-derived health proxy (1 if no recent restarts, else 0)
+    - latency_p99_ms               → no usable infra proxy; remains unknown
+    """
+    ns = namespace
+    w = window or "5m"
+
+    if metric == "amf_registration_success_pct":
+        return f'avg(up{{namespace="{ns}", pod=~"oai-amf.*"}}) * 100'
+
+    if metric == "upf_packet_loss_pct":
+        return (
+            f'(sum(rate(container_network_transmit_packets_dropped_total'
+            f'{{namespace="{ns}", pod=~"oai-upf.*"}}[{w}])) '
+            f'/ clamp_min(sum(rate(container_network_transmit_packets_total'
+            f'{{namespace="{ns}", pod=~"oai-upf.*"}}[{w}])), 1)) * 100'
+        )
+
+    if metric == "pdu_session_setup_ms":
+        # No latency proxy at infra level; report 0ms when SMF healthy, large
+        # number when SMF restarting. This is intentionally coarse and is
+        # documented as a fallback in the thesis.
+        return (
+            f'(sum(increase(kube_pod_container_status_restarts_total'
+            f'{{namespace="{ns}", pod=~"oai-smf.*"}}[{w}])) > bool 0) * 9999'
         )
 
     return None
@@ -266,31 +308,61 @@ def _evaluate_rule(
         "status": "unknown",
         "time_to_breach_min": None,
         "compliance_pct": 0.0,
+        "data_source": "none",  # type: ignore[typeddict-unknown-key]
     }
 
-    promql = _build_query(metric, namespace, window)
-    if promql is None:
+    primary = _build_query(metric, namespace, window)
+    fallback = _build_fallback_query(metric, namespace, window)
+    if primary is None and fallback is None:
         logger.debug("SLA rule %s: no PromQL builder for metric %s", name, metric)
         return base
 
-    try:
-        instant = prom.instant_query(promql)
-    except Exception as exc:
-        logger.warning("SLA rule %s: instant query failed: %s", name, exc)
-        return base
+    promql, source = (primary, "primary") if primary else (fallback, "fallback")
 
-    if not instant:
-        return base
+    def _try_instant(q: str) -> float | None:
+        try:
+            inst = prom.instant_query(q)
+        except Exception as exc:
+            logger.warning("SLA rule %s: instant query failed: %s", name, exc)
+            return None
+        if not inst:
+            return None
+        try:
+            v = float(inst[0].get("value", [None, "nan"])[1])
+        except (ValueError, TypeError):
+            return None
+        return None if v != v else v
 
-    try:
-        current = float(instant[0].get("value", [None, "nan"])[1])
-    except (ValueError, TypeError):
-        return base
-    if current != current:  # NaN
+    current = _try_instant(promql) if promql else None
+    if current is None and primary and fallback:
+        # Primary metric absent (probes not exported); try infra-level fallback.
+        promql, source = fallback, "fallback"
+        current = _try_instant(promql)
+        if current is not None:
+            logger.info("SLA rule %s: using fallback metric for %s", name, metric)
+
+    if current is None:
+        base["data_source"] = "none"  # type: ignore[typeddict-unknown-key]
         return base
 
     base["current_value"] = round(current, 4)
+
+    # Traffic-active gate: throughput compliance is only meaningful under load.
+    # If the live throughput is below the evaluation floor, the workload is
+    # idle (control-plane chatter only) and the rule is reported as `unknown`
+    # rather than `breach`, preventing the Planner from chasing a metric the
+    # workload cannot satisfy.
+    if metric == "upf_throughput_mbps" and current < _TRAFFIC_FLOOR_MBPS:
+        base["status"] = "unknown"
+        base["data_source"] = "traffic_below_floor"  # type: ignore[typeddict-unknown-key]
+        logger.debug(
+            "SLA rule %s: throughput %.4f < %.1f Mbps → reporting as unknown",
+            name, current, _TRAFFIC_FLOOR_MBPS,
+        )
+        return base
+
     base["status"] = _classify(current, threshold, operator)
+    base["data_source"] = source  # type: ignore[typeddict-unknown-key]
 
     win_delta = _parse_duration(window)
     try:

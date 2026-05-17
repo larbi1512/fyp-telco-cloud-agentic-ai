@@ -1,5 +1,5 @@
 """
-Regression test — loads the results/full_bmin/runs.csv artefact from the
+Regression test — loads the results/main/runs_merged.csv artefact from the
 900-run experiment and asserts the MAS attains the reported headline numbers.
 
 This test does NOT re-run the experiment; it is a reproducibility anchor
@@ -17,16 +17,16 @@ from pathlib import Path
 
 import pandas as pd
 
-RESULTS_CSV = Path(__file__).resolve().parent / "results" / "post_hpa" / "runs_merged.csv"
+RESULTS_CSV = Path(__file__).resolve().parent / "results" / "main" / "runs_merged.csv"
 
-# Thresholds derived from the 900-run post_hpa experiment (MAS with HPA fix).
-# These represent conservative lower bounds (not exact means) so minor float
-# differences across platforms do not cause false failures.
+# Thresholds derived from the 900-run main experiment.
+# Conservative lower bounds (not exact means) so minor float differences
+# across platforms do not cause false failures.
 THRESHOLDS = {
     "mas": {
-        "intent_to_deploy_accuracy": 0.65,   # mean was 0.683
-        "resource_accuracy": 0.70,           # mean was 0.726
-        "config_error_rate": 0.20,           # must be ≤ this; mean was 0.150
+        "intent_to_deploy_accuracy": 0.85,   # mean was 0.889
+        "resource_accuracy": 0.74,           # mean was 0.766
+        "config_error_rate": 0.05,           # must be ≤ this; mean was 0.000
         "policy_violation_rate": 0.25,       # must be ≤ this; mean was 0.200
     }
 }

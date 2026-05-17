@@ -1,0 +1,1187 @@
+{
+  "run_id": "F1-MAS-rep4-6b8771",
+  "scenario": "F1",
+  "system": "MAS",
+  "rep": 4,
+  "fault": {
+    "scenario": "F1",
+    "fault_type": "cpu_spike",
+    "target_vnf": "oai-amf",
+    "target_pod": "oai-amf-59b54c6484-4mrp9",
+    "target_node": "vm09",
+    "stress_pod": "f1-cpu-stress-f9bcd4",
+    "duration_s": 60,
+    "started_at": "2026-05-06T19:56:28.419504+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-06T19:56:28.469388+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-06T19:55:19.486441+00:00",
+      "finished_at": "2026-05-06T19:55:21.317811+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 0,
+        "execution_results": 0
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T19:55:36.332931+00:00",
+      "finished_at": "2026-05-06T19:55:38.311713+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": null,
+      "execution_results": [],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 0,
+        "execution_results": 0
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T19:55:53.326828+00:00",
+      "finished_at": "2026-05-06T19:56:13.289559+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T19:55:54.953254-8825a3e1",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-amf network_rx_mbps = 0.0 Mbps (z=3.1 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.001,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:55:54.953254-8825a3e1",
+        "triggered_by": "2026-05-06T19:55:54.953254-8825a3e1",
+        "diagnosis": "The oai-amf VNF is experiencing a point outlier anomaly where network_rx_mbps has dropped to 0.0 Mbps, which is statistically significant (z=3.1) compared to its 15-minute baseline (0.001 Mbps). The CPU and memory utilization metrics are normal, indicating that the VNF is not overloaded. There are no recent pod restarts, suggesting the issue is not due to transient failures. The repeated horizontal scaling attempts indicate that scaling is not addressing the root cause. Based on similar past incidents and suggested actions, this appears to be a network connectivity or traffic source issue rather than a resource or configuration problem.",
+        "confidence": 0.85,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-amf",
+            "action": "roll_deployment",
+            "params": {},
+            "reason": "Restarting the deployment will clear any stale network state or connection issues that may have caused the zero RX throughput. This is a safe action with minimal blast radius."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-amf",
+            "action": "update_network_config",
+            "params": {
+              "key": "network_interface",
+              "value": "auto"
+            },
+            "reason": "Updating the network interface configuration may resolve potential misconfigurations that could lead to zero RX throughput. This is a low-risk configuration change."
+          }
+        ],
+        "expected_outcome": "The oai-amf VNF should resume normal network traffic after the restart and configuration update, restoring network_rx_mbps to expected levels.",
+        "rollback_plan": "If the restart causes further issues, rollback to the previous Helm release to restore the prior stable configuration. If the config change fails, revert the ConfigMap to its previous value.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-amf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-amf",
+          "timestamp": "2026-05-06T19:55:58.170707"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-amf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T19:55:58.170753"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 1,
+        "execution_results": 2
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-06T19:56:28.474241+00:00",
+      "finished_at": "2026-05-06T19:56:48.480310+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T19:56:29.941036-d2aad36d",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-upf cpu_utilization = 0.2 % (z=3.5 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.2,
+              "baseline": 0.0072,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:56:29.941036-bbfef977",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-amf memory_utilization = 0.63 % (z=260.3 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.63,
+              "baseline": 38422528.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:56:29.941036-a6141215",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-udm network_rx_mbps = 0.001 Mbps (z=6.0 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:56:29.941036-a6141215",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "The oai-udm VNF is experiencing a point outlier anomaly where network_rx_mbps has dropped to 0.001 Mbps, which is statistically significant (z=6.0) compared to its 15-minute baseline (0.0005 Mbps). The CPU and memory utilization metrics are normal, indicating that the VNF is not overloaded. There are no recent pod restarts, suggesting the issue is not due to transient failures. Based on similar past incidents involving oai-amf with identical symptoms, this appears to be a network connectivity or traffic source issue rather than a resource or configuration problem.",
+        "confidence": 0.9,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-udm",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Restarting the oai-udm VNF can help clear any stale network connections or states that may be causing the zero throughput. This aligns with successful remediation patterns from similar past incidents."
+          },
+          {
+            "order": 2,
+            "type": "config_change",
+            "target": "oai-udm",
+            "action": "update_configmap",
+            "params": {
+              "key": "network_interface",
+              "value": "eth0"
+            },
+            "reason": "To ensure correct network interface binding, updating the config map for oai-udm might resolve potential misconfigurations affecting network reception."
+          }
+        ],
+        "expected_outcome": "The oai-udm VNF should resume normal network traffic flow after the restart and configuration update, restoring network_rx_mbps to expected levels.",
+        "rollback_plan": "If the restart fails to resolve the issue, revert the configmap change by restoring the previous version of the configuration. If both fail, rollback the oai-udm Helm release to the prior stable revision.",
+        "validation_metric": "network_rx_mbps for oai-udm should return to baseline values (> 0.0005 Mbps) within 5 minutes post-action."
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udm",
+          "timestamp": "2026-05-06T19:56:33.444032"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-udm",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T19:56:33.444072"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 4,
+        "execution_results": 4
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T19:57:03.495441+00:00",
+      "finished_at": "2026-05-06T19:57:22.947339+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T19:57:04.959398-cc4bc0d0",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-amf cpu_utilization = 2.22 % (z=3.5 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.22,
+              "baseline": 0.0631,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:57:04.959398-0e60b520",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udm cpu_utilization = 7.71 % (z=3.6 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 7.71,
+              "baseline": 0.0204,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:57:04.959398-7a167bd0",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-upf memory_utilization = 0.59 % (z=235.2 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.59,
+              "baseline": 4503552.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:57:04.959398-8acc31a3",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr network_rx_mbps = 0.001 Mbps (z=3.4 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0006,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:57:04.959398-8f1dcc50",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-upf network_rx_mbps = 0.001 Mbps (z=4.6 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0008,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:56:29.941036-a6141215",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "The oai-udm VNF is experiencing a point outlier anomaly where network_rx_mbps has dropped to 0.001 Mbps, which is statistically significant (z=6.0) compared to its 15-minute baseline (0.0005 Mbps). The CPU and memory utilization metrics are normal, indicating that the VNF is not overloaded. There are no recent pod restarts, suggesting the issue is not due to transient failures. Based on similar past incidents involving oai-amf with identical symptoms, this appears to be a network connectivity or traffic source issue rather than a resource or configuration problem.",
+        "confidence": 0.85,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "restart",
+            "target": "oai-udm",
+            "action": "rollout restart",
+            "params": {},
+            "reason": "Previous restart attempts for oai-udm were partially successful; retrying to clear potential stale network state or connection issues."
+          }
+        ],
+        "expected_outcome": "Network RX Mbps for oai-udm should return to normal baseline levels after restart clears any transient network state issues.",
+        "rollback_plan": "If the restart fails to resolve the issue, rollback the oai-udm deployment to the previous Helm revision to restore known stable configuration.",
+        "validation_metric": "network_rx_mbps for oai-udm should normalize above 0.0005 Mbps within 5 minutes post-restart."
+      },
+      "execution_results": [
+        {
+          "action_type": "restart",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udm",
+          "timestamp": "2026-05-06T19:57:07.910845"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 9,
+        "execution_results": 5
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T19:57:37.962484+00:00",
+      "finished_at": "2026-05-06T19:57:55.058404+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T19:57:39.681519-23d24a3b",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-ausf memory_utilization = 1.57 % (z=7.2 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.57,
+              "baseline": 3895296.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:57:39.681519-dbdcad3b",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr memory_utilization = 2.51 % (z=10.1 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.51,
+              "baseline": 5455872.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:57:39.681519-a9c5a186",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-ausf network_rx_mbps = 0.001 Mbps (z=9.6 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:57:39.892992-c1d8496c",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 1 \u2192 2 replicas (delta=1)",
+          "timestamp": "2026-05-06T19:57:40.022474"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 12,
+        "execution_results": 6
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T19:58:10.073540+00:00",
+      "finished_at": "2026-05-06T19:58:26.811544+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:58:11.696669-da73eb85",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 2 \u2192 3 replicas (delta=1)",
+          "timestamp": "2026-05-06T19:58:11.776066"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 12,
+        "execution_results": 7
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T19:58:41.826686+00:00",
+      "finished_at": "2026-05-06T19:58:58.719389+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:58:43.569532-cb7c01e4",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 3 \u2192 4 replicas (delta=1)",
+          "timestamp": "2026-05-06T19:58:43.683143"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 12,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T19:59:13.734544+00:00",
+      "finished_at": "2026-05-06T19:59:30.949367+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T19:59:15.581193-0d822394",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-smf memory_utilization = 1.59 % (z=8.5 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.59,
+              "baseline": 35403776.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:59:15.581193-4643fc33",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf network_rx_mbps = 0.0 Mbps (z=24.2 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.001,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:59:15.769654-2a3ab6e6",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 4 \u2192 5 replicas (delta=1)",
+          "timestamp": "2026-05-06T19:59:15.913156"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 14,
+        "execution_results": 9
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T19:59:45.964520+00:00",
+      "finished_at": "2026-05-06T20:00:02.969159+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T19:59:47.685413-dcaa77b7",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-amf memory_utilization = 0.96 % (z=111.5 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.96,
+              "baseline": 38486016.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T19:59:47.685413-81ed8565",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-udm network_rx_mbps = 0.0 Mbps (z=67.7 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T19:59:47.871679-4a3b5fff",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 5 \u2192 6 replicas (delta=1)",
+          "timestamp": "2026-05-06T19:59:47.932660"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 16,
+        "execution_results": 10
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:00:17.984326+00:00",
+      "finished_at": "2026-05-06T20:00:35.219564+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:00:19.906142-597b1131",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf cpu_utilization = 0.2 % (z=6.6 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.2,
+              "baseline": 0.0619,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:00:19.906142-7750eb87",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udm cpu_utilization = 2.01 % (z=14.4 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.01,
+              "baseline": 0.0198,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:00:19.906142-5b19d325",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-udr network_rx_mbps = 0.001 Mbps (z=5.2 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0006,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:00:20.119073-8e583ec6",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 6 \u2192 7 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:00:20.182241"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 19,
+        "execution_results": 11
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:00:50.229441+00:00",
+      "finished_at": "2026-05-06T20:01:07.502524+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:00:52.243254-289aad26",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-ausf memory_utilization = 1.57 % (z=3.9 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.57,
+              "baseline": 3901440.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:00:52.243254-fd15186b",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "oai-udr memory_utilization = 2.51 % (z=5.4 vs 15m baseline), severity=high",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.51,
+              "baseline": 5459968.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:00:52.402621-a01f35bf",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 7 \u2192 8 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:00:52.466898"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 21,
+        "execution_results": 12
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:01:22.517689+00:00",
+      "finished_at": "2026-05-06T20:01:39.488431+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:01:24.328148-a2f2ba23",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 8 \u2192 9 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:01:24.451605"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 21,
+        "execution_results": 13
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:01:54.503583+00:00",
+      "finished_at": "2026-05-06T20:02:11.015213+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:01:55.744987-7020d90e",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr cpu_utilization = 11.54 % (z=3.7 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 11.54,
+              "baseline": 0.0204,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:01:55.884888-25a782d0",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "Scaled oai-udm from 9 \u2192 10 replicas (delta=1)",
+          "timestamp": "2026-05-06T20:01:55.986974"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 22,
+        "execution_results": 14
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T20:02:26.030377+00:00",
+      "finished_at": "2026-05-06T20:02:42.855060+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:02:27.530026-657cf381",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-ausf cpu_utilization = 8.59 % (z=4.1 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 8.59,
+              "baseline": 0.0206,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:02:27.530026-2e46a50b",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-smf cpu_utilization = 1.96 % (z=3.4 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 1.96,
+              "baseline": 0.0562,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:02:27.530026-fdd8562d",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-ausf network_rx_mbps = 0.001 Mbps (z=4.4 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0005,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:02:27.530026-fd8525a5",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf network_rx_mbps = 0.0 Mbps (z=20.1 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.001,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:02:27.727909-90372f28",
+        "triggered_by": "2026-05-06T19:56:29.941036-a6141215",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "horizontal_scale",
+            "target": "oai-udm",
+            "action": "scale_replicas",
+            "params": {
+              "delta": 1
+            },
+            "reason": "Compute saturation on a horizontally-scalable VNF"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "network_rx_mbps"
+      },
+      "execution_results": [
+        {
+          "action_type": "horizontal_scale",
+          "target": "oai-udm",
+          "status": "success",
+          "details": "No change needed \u2014 already at 10 replicas (requested delta=1, clamped to bounds [1, 10])",
+          "timestamp": "2026-05-06T20:02:27.783139"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 26,
+        "execution_results": 15
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 0,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 2
+  },
+  "trigger_fingerprint": "point_outlier|oai-upf|cpu_utilization",
+  "timing": {
+    "fault_started_at": "2026-05-06T19:56:28.419504+00:00",
+    "first_alert_at": "2026-05-06T19:56:28.474241+00:00",
+    "first_plan_at": "2026-05-06T19:56:28.474241+00:00",
+    "first_action_at": "2026-05-06T19:56:28.474241+00:00",
+    "recovered_at": "2026-05-06T19:57:37.962484+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 0.054737,
+    "plan_latency_s": 0.0,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 69.54298,
+    "remediation_success": true,
+    "false_positives_pre_fault": 1,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-amf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-06T20:02:57.941491+00:00"
+}

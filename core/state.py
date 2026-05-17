@@ -111,6 +111,7 @@ class RemediationPlan(TypedDict, total=False):
     expected_outcome: str
     rollback_plan: str
     validation_metric: str
+    source: Literal["llm", "heuristic"]
 
 
 class ExecutionResult(TypedDict, total=False):

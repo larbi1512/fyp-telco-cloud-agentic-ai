@@ -105,7 +105,7 @@ def initial_state() -> dict:
 
 
 def test_post_deployment_graph_compiles():
-    """Graph builds and exposes the 6 expected nodes."""
+    """Graph builds and exposes the 6 expected nodes plus the HITL gate."""
     from core.graph import build_post_deployment_graph
 
     graph, memory = build_post_deployment_graph()
@@ -117,11 +117,74 @@ def test_post_deployment_graph_compiles():
         "anomaly_detector",
         "sla_compliance",
         "planner_reasoning",
+        "remediation_review_gate",
+        "user_decision_remediation",
         "auto_scaler",
         "fault_recovery",
     }
     nodes = set(graph.get_graph().nodes.keys())
     assert expected.issubset(nodes), f"missing nodes: {expected - nodes}"
+
+
+# ──────────────────────────── HITL gate logic ──────────────────────────── #
+
+
+class TestRemediationApprovalGate:
+    """Unit tests for the _should_require_remediation_approval decision."""
+
+    def test_no_plan_does_not_require_approval(self):
+        from core.graph import _should_require_remediation_approval
+        needs, _ = _should_require_remediation_approval(None)
+        assert needs is False
+
+    def test_rollback_action_requires_approval(self):
+        from core.graph import _should_require_remediation_approval
+        plan = {
+            "confidence": 0.9,
+            "recommended_actions": [{"type": "rollback", "target": "oai-amf"}],
+        }
+        needs, reason = _should_require_remediation_approval(plan)
+        assert needs is True
+        assert "rollback" in reason
+
+    def test_config_change_action_requires_approval(self):
+        from core.graph import _should_require_remediation_approval
+        plan = {
+            "confidence": 0.9,
+            "recommended_actions": [{"type": "config_change", "target": "oai-smf"}],
+        }
+        needs, _ = _should_require_remediation_approval(plan)
+        assert needs is True
+
+    def test_low_confidence_requires_approval(self):
+        from core.graph import _should_require_remediation_approval
+        plan = {
+            "confidence": 0.40,
+            "recommended_actions": [{"type": "horizontal_scale", "target": "oai-upf"}],
+        }
+        needs, reason = _should_require_remediation_approval(plan)
+        assert needs is True
+        assert "confidence" in reason
+
+    def test_safe_action_with_high_confidence_auto_approves(self):
+        from core.graph import _should_require_remediation_approval
+        plan = {
+            "confidence": 0.85,
+            "recommended_actions": [{"type": "horizontal_scale", "target": "oai-upf"}],
+        }
+        needs, _ = _should_require_remediation_approval(plan)
+        assert needs is False
+
+    def test_env_var_overrides_to_auto_approve(self, monkeypatch):
+        from core.graph import _should_require_remediation_approval
+        monkeypatch.setenv("HITL_REMEDIATION_AUTO_APPROVE", "1")
+        plan = {
+            "confidence": 0.4,
+            "recommended_actions": [{"type": "rollback", "target": "oai-amf"}],
+        }
+        needs, reason = _should_require_remediation_approval(plan)
+        assert needs is False
+        assert "auto-approve" in reason
 
 
 # ──────────────────────────── Quiet cycle ──────────────────────────── #

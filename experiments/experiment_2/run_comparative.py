@@ -13,12 +13,12 @@ Usage examples:
       --systems mas,b1,b2,b3,b4 \\
       --intent-ids S01,M01,M03,C03 \\
       --reps 1 --no-deploy \\
-      --out experiments/experiment_2/results/smoke
+      --out experiments/experiment_2/results/main
 
   # Full run (5 × 36 × 5) with real deployment for MAS and B3:
   python experiments/experiment_2/run_comparative.py \\
       --systems mas,b1,b2,b3,b4 --reps 5 --deploy \\
-      --out experiments/experiment_2/results/full
+      --out experiments/experiment_2/results/main
 """
 
 from __future__ import annotations
@@ -52,7 +52,7 @@ console = Console()
 
 # Systems that perform real cluster work when deploy=True. B1/B2/B4 do not
 # deploy — their wall-clock and artifacts come from the emulators / LLM only.
-DEPLOYING_SYSTEMS = {"mas", "b3"}
+DEPLOYING_SYSTEMS = {"mas", "b3", "b4r"}
 
 DEFAULT_DATASET = (
     Path(__file__).resolve().parents[1] / "datasets" / "intents_v2.json"

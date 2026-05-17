@@ -281,6 +281,29 @@ def run_monitor(interval: int = 30) -> None:
                 time.sleep(interval)
                 continue
 
+            # ── HITL on remediation: the graph pauses at user_decision_remediation
+            #    every time a plan exists (interrupt_before is unconditional).
+            #    If the gate marked requires_approval=True we ask the operator;
+            #    otherwise we silently resume with the auto-approval already set.
+            if result.get("current_agent") == "remediation_review":
+                if result.get("requires_approval"):
+                    display_remediation_plan(result.get("remediation_plan"))
+                    approved = ask_approval(
+                        "Approve this remediation plan?  "
+                        "(rollback / config_change / low-confidence actions)"
+                    )
+                    graph.update_state(
+                        config,
+                        {"user_approved": approved, "requires_approval": False},
+                    )
+                try:
+                    result = graph.invoke(None, config)
+                except Exception as exc:
+                    display_error(f"Resume after HITL failed: {exc}")
+                    logger.exception("HITL resume failed")
+                    time.sleep(interval)
+                    continue
+
             # ── Display cycle outputs ──
             display_metrics_summary(result.get("current_metrics") or [])
             display_anomaly_alerts(result.get("anomaly_alerts") or [])

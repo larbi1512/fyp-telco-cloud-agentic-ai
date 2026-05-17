@@ -1,0 +1,1280 @@
+{
+  "run_id": "F1-MAS-rep4-a70589",
+  "scenario": "F1",
+  "system": "MAS",
+  "rep": 4,
+  "fault": {
+    "scenario": "F1",
+    "fault_type": "cpu_spike",
+    "target_vnf": "oai-amf",
+    "target_pod": "oai-amf-56db4d8b48-6n6pk",
+    "target_node": "vm09",
+    "stress_pod": "f1-cpu-stress-c6ca12",
+    "duration_s": 60,
+    "started_at": "2026-05-10T11:58:04.537332+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-10T11:58:04.622193+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-10T11:54:29.119172+00:00",
+      "finished_at": "2026-05-10T11:55:10.762354+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T11:54:33.585328-904e6e4c",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "CPU utilization of oai-nrf reported as 0.0\u202f% (z\u2011score 3.1) while the 15\u2011minute baseline is 0.025\u202f%. Memory utilization is also 0.0\u202f% and network Rx is near\u2011zero, suggesting the NRF is not generating load or metrics are missing.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.0,
+              "baseline": 0.0252,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible metric collection failure or the NRF pod is idle/paused (e.g., no registration traffic). The zero values across CPU, memory, and network while other VNFs are active point to a reporting issue rather than a true resource starvation.",
+          "suggested_actions": [
+            "Check the oai-nrf pod status (kubectl get pod, describe) for Ready/Running state.",
+            "Inspect NRF logs for errors or indications of a crash/stop.",
+            "Verify Prometheus (or other collector) scrape configuration for the NRF endpoint.",
+            "If the pod is healthy but metrics are missing, restart the NRF pod to re\u2011initialize exporters.",
+            "Confirm upstream traffic to NRF (e.g., registration requests) to rule out genuine idle state."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:54:33.585328-ade20c08",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "Observed memory utilization for oai-udr is 2.24\u202f% which deviates sharply from the expected baseline (\u224843\u202fM\u202f% due to a unit mismatch). The anomaly detector flagged this as a critical outlier.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.24,
+              "baseline": 43024384.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Metric collection/configuration error \u2013 the baseline appears to be in raw bytes while the current value is reported as a percentage, causing a false\u2011positive outlier. Alternatively, a recent change in the pod's memory limit or a reporting bug in the OAI\u2011UDR exporter could produce the mismatch.",
+          "suggested_actions": [
+            "Validate the monitoring configuration for oai-udr memory metrics (units, scaling, conversion).",
+            "Check the pod spec for memory limits/requests and compare with actual usage via `kubectl top pod` or cAdvisor.",
+            "Inspect oai-udr logs for any memory\u2011related warnings or OOM events.",
+            "Correlate with other resource metrics (CPU, network, pod restarts) \u2013 they appear normal, supporting a measurement issue.",
+            "If the metric is confirmed correct, consider adjusting alert thresholds to avoid false critical alerts."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T11:55:00-udr-metric-fix",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "False\u2011positive memory utilization outlier for oai-udr caused by a monitoring configuration mismatch (baseline stored in raw bytes while current value is reported as a percentage). No actual resource pressure observed.",
+        "confidence": 0.92,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update ConfigMap memory_metric_units",
+            "params": {
+              "configMapName": "oai-udr-monitoring",
+              "key": "memory_utilization_unit",
+              "newValue": "bytes",
+              "description": "Align exporter output unit with the baseline stored in the monitoring system."
+            },
+            "reason": "Correct the unit conversion so that memory utilization is reported in the same unit as the baseline, eliminating the false outlier."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout restart deployment",
+            "params": {
+              "deploymentName": "oai-udr"
+            },
+            "reason": "Force the pod to reload the updated ConfigMap and re\u2011initialize the exporter with the corrected unit settings."
+          }
+        ],
+        "expected_outcome": "Memory utilization metric for oai-udr is reported in bytes (or correctly converted to %), matching actual usage observed via `kubectl top pod`. No further critical memory outlier alerts are generated.",
+        "rollback_plan": "If the metric remains incorrect or the pod becomes unstable, revert the ConfigMap to its previous value (restore key 'memory_utilization_unit' to the original setting) and perform a rollout restart again. If instability persists, execute a rollback of the oai-udr Helm release to the prior revision.",
+        "validation_metric": "memory_utilization value reported by Prometheus matches the value shown by `kubectl top pod` (within 5% tolerance) for at least 5 consecutive minutes and no new memory outlier alerts are raised.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T11:54:55.684733"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T11:54:55.723957"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 2,
+        "execution_results": 2
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-10T11:55:25.777524+00:00",
+      "finished_at": "2026-05-10T11:56:36.066158+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T11:55:30.154062-a249fdcb",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "CPU utilization of oai-udr spiked to 11.19\u202f% (z\u2011score\u202f5.8) while the 15\u2011minute baseline is ~0.22\u202f%. This is a sudden, isolated increase compared to all other VNFs.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 11.19,
+              "baseline": 0.2189,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "A sudden load increase on the UDR (e.g., burst of subscription data queries) or a metric collection artifact causing an abnormal spike; other VNFs show normal CPU, indicating the issue is localized to oai-udr.",
+          "suggested_actions": [
+            "Check recent request/transaction rates to the UDR (e.g., HTTP logs, DB query volume).",
+            "Inspect oai-udr pod logs for errors or throttling warnings.",
+            "Verify that the CPU limit/requests are correctly configured; consider raising the limit if it is too low.",
+            "If load spike is legitimate, trigger a horizontal pod autoscaler or manually scale out the oai-udr deployment.",
+            "Validate metric collection pipeline for possible outlier mis\u2011measurement."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:55:30.154062-b6acd902",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "CPU utilization of oai-udm rose to 8.95\u202f% (z\u2011score\u202f=\u202f4.8) compared with its 15\u2011minute baseline of 0.0226\u202f%. While still below the typical 10\u201112\u202f% observed on peer VNFs, the sudden jump is statistically significant.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 8.95,
+              "baseline": 0.0226,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Recent traffic increase to the UDM (e.g., surge in subscription authentication or policy requests) or a change in resource limits caused the CPU to spike from an idle baseline. The anomaly is isolated to oai-udm; other VNFs show stable ~11\u202f% usage, indicating a VNF\u2011specific load change rather than a cluster\u2011wide issue.",
+          "suggested_actions": [
+            "Correlate with recent signaling metrics (e.g., NAS, S6a) to confirm traffic surge.",
+            "Review UDM scaling policy and consider scaling out replicas or adjusting CPU limits.",
+            "Check recent configuration changes or deployments that might have altered processing paths.",
+            "Monitor the metric for the next 10\u201115\u202fminutes to see if the spike persists or returns to baseline."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:55:30.154062-e3e5d3e8",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "CPU utilization of oai-ausf spiked to 8.74\u202f% (z\u2011score\u202f=\u202f3.1) compared to its 15\u2011minute baseline of 0.022\u202f%. This is a statistically significant deviation but still below hard thresholds.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 8.74,
+              "baseline": 0.022,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible transient signaling storm or burst of authentication requests targeting the AUSF, causing a short\u2011term CPU spike. Alternative hypothesis: metric collection artifact or mis\u2011configured resource limits leading to an inflated reading.",
+          "suggested_actions": [
+            "Correlate AUSF CPU spike with authentication request rate (e.g., count of NAS authentication messages) over the same interval.",
+            "Check AUSF logs for error spikes, queue buildups, or retry loops.",
+            "If sustained, consider scaling out AUSF replicas or increasing its CPU request/limit.",
+            "Validate metric collection pipeline for accuracy (e.g., scrape interval, pod label mismatches)."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:55:30.154062-fc040105",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "CPU utilization of oai-nssf spiked to 2.75\u202f% (z\u2011score\u202f3.2) compared to an unusually low 15\u2011minute baseline of 0.014\u202f%. Other VNFs show typical utilization around 8\u201112\u202f% at the same time.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.75,
+              "baseline": 0.0142,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible monitoring baseline distortion after a recent scaling event or pod migration, causing the 15\u2011minute baseline to be artificially low. The observed value is still within normal operational range for NSSF, so the outlier is likely a statistical artifact rather than a true performance issue.",
+          "suggested_actions": [
+            "Verify recent scaling or redeployment events for the oai\u2011nssf pod and confirm that resource requests/limits are correctly set.",
+            "Re\u2011calculate the baseline using a longer window (e.g., 1\u202fhour) or include more historical samples to smooth transient changes.",
+            "Cross\u2011check CPU metrics from the node exporter / cAdvisor to rule out metric collection glitches.",
+            "If the spike persists after baseline adjustment, consider increasing the CPU request/limit for the NSSF instance."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:55:30.154062-a88adc37",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-amf memory utilization reported at 6.09\u202f% which is a statistical outlier compared to the 15\u2011minute baseline (z\u2011score\u202f\u2248\u202f393.9). Other VNFs show memory usage well below 5\u202f% and the AMF CPU load remains low.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 6.09,
+              "baseline": 38694912.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible transient memory spike in the AMF caused by a short\u2011term signaling burst (e.g., UE registration surge) or a metric collection/normalisation error leading to an inflated baseline value.",
+          "suggested_actions": [
+            "Correlate with AMF logs and signaling counters for the last 5\u201110\u202fminutes to see if a registration storm occurred.",
+            "Validate the metric collection pipeline for oai-amf memory_utilization (unit conversion, aggregation window).",
+            "If the spike is real, consider scaling the AMF pod memory limit or triggering a temporary resource boost.",
+            "Add a short\u2011term monitoring window (e.g., 1\u2011minute granularity) to confirm whether the anomaly persists."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:55:30.154062-8a217ab9",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr network_rx_mbps = 0.0 Mbps (z=8.5 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0082,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T11:56:01.517157-f8830222",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Vertically scaled oai-udr/udr by factor 1.50",
+          "timestamp": "2026-05-10T11:56:21.028524"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 3
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-10T11:56:51.081323+00:00",
+      "finished_at": "2026-05-10T11:57:49.406374+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T11:56:55.681424-545dc3e8",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf CPU utilization dropped to 2.91\u202f% (z\u2011score\u202f7.3) while the 15\u2011minute baseline is ~0.03\u202f%, flagged as critical.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.91,
+              "baseline": 0.0276,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Upstream signaling traffic to the AMF is severely reduced or blocked (e.g., NRF/UDM connectivity issue, mis\u2011routed UE attach requests, or a signaling storm that has been throttled), causing the AMF to be idle and exhibit an abnormally low CPU usage.",
+          "suggested_actions": [
+            "Inspect AMF logs for error messages or connection timeouts to NRF, UDM, AUSF, and NSSF.",
+            "Verify network connectivity and service mesh routes between AMF and its upstream VNFs (NRF, UDM, AUSF, NSSF).",
+            "Check for recent configuration changes or scaling policies that might have limited AMF pod resources.",
+            "Correlate with UE attach/registration metrics to confirm traffic drop.",
+            "If upstream services are healthy, consider restarting the AMF pod to clear potential deadlock."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:56:55.681424-d59b90a1",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "NRF network receive throughput dropped to 0.009\u202fMbps (z\u2011score\u202f20.6) while baseline is 0.0105\u202fMbps. All other VNFs show near\u2011zero traffic, indicating the NRF is not receiving expected control\u2011plane traffic.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.009,
+              "baseline": 0.0105,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible loss of control\u2011plane connectivity to the NRF (e.g., broken service\u2011registration path, mis\u2011routed traffic, or NIC/interface failure), leading to negligible inbound traffic.",
+          "suggested_actions": [
+            "Verify NRF pod network interface status and IP connectivity (ping/trace to UPF, AMF, and other core VNFs).",
+            "Check NRF logs for registration errors or timeouts.",
+            "Inspect Kubernetes network policies / CNI configuration for the NRF namespace.",
+            "Confirm that upstream UPF and AMF are correctly routing registration and discovery messages to the NRF.",
+            "If NIC/Pod is unhealthy, restart the NRF pod and monitor traffic recovery."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:56:55.681424-5bfe3055",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf network_rx_mbps dropped to 0.001\u202fMbps (z\u2011score 28.4) far below the 15\u2011minute baseline of 0.0024\u202fMbps. This is a critical deviation indicating near\u2011zero inbound traffic to the AMF.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0024,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "System\u2011wide traffic starvation: upstream UE traffic or UPF forwarding appears to be halted, causing all core VNFs (AMF, UDR, AUSF, etc.) to report near\u2011zero receive rates. Possible causes include a broken back\u2011haul link, mis\u2011routed IP tables, or UPF congestion/flow\u2011rule failure.",
+          "suggested_actions": [
+            "Verify physical/virtual network interface status on the UPF and AMF pods (link up, no errors).",
+            "Inspect UPF flow tables and counters for dropped or stalled sessions.",
+            "Check UE attachment state and NR\u2011UE traffic generation (e.g., run a traffic generator or ping test).",
+            "Review recent configuration changes or deployments that might have altered routing or firewall rules.",
+            "If upstream link is down, trigger failover or contact transport team."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T11:57:14.642939-d8332136",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Vertically scaled oai-udr/udr by factor 1.50",
+          "timestamp": "2026-05-10T11:57:34.382842"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 11,
+        "execution_results": 4
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-10T11:58:04.627047+00:00",
+      "finished_at": "2026-05-10T11:58:53.595661+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T11:58:08.558902-b6da9800",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "CPU utilization of oai-nr-ue dropped to 0.01\u202f% (z\u2011score\u202f=\u202f3.9) while all other VNFs show normal usage (1\u201110\u202f%).",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.01,
+              "baseline": 0.0001,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "The UE VNF is idle or its metric collector is mis\u2011reporting. Possible reasons include: no active UE sessions, a paused container, or a monitoring agent glitch.",
+          "suggested_actions": [
+            "Verify that oai-nr-ue has active traffic (check session counters, UE attach/detach logs).",
+            "Inspect the pod status and logs for signs of OOM, pause, or crash\u2011loop.",
+            "Cross\u2011check CPU metrics from the node exporter or cAdvisor to rule out collection errors.",
+            "If the UE VNF is intentionally idle, consider scaling it down or consolidating resources."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:58:08.558902-3568a5fc",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "Memory utilization reported for oai-udr is 1.66\u202f% while the anomaly engine flags it as a critical outlier (z=28.1) due to a mismatch between the current value (percentage) and the baseline (raw bytes).",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.66,
+              "baseline": 43008000.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Metric collection/normalisation error \u2013 the baseline is stored in bytes while the current reading is a percentage, causing an inflated z\u2011score and a false critical alert.",
+          "suggested_actions": [
+            "Verify the exporter configuration for oai-udr memory metrics and ensure both baseline and current values use the same unit (e.g., % or bytes).",
+            "Re\u2011calibrate the anomaly detection model to use correctly scaled baselines for memory utilization.",
+            "Check the pod's memory limit and usage via kubectl to confirm actual consumption.",
+            "Temporarily suppress the alert until the metric pipeline is fixed."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T11:58:19.071841-78f69a69",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Vertically scaled oai-udr/udr by factor 1.50",
+          "timestamp": "2026-05-10T11:58:38.557213"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 13,
+        "execution_results": 5
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T11:59:08.610850+00:00",
+      "finished_at": "2026-05-10T12:00:13.918168+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T11:59:13.034743-78f70e18",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "CPU utilization of oai-udr spiked to 1.88\u202f% (z\u2011score\u202f13) compared to a 15\u2011minute baseline of 0.217\u202f%. Although the absolute value is low, the statistical deviation is extreme.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 1.88,
+              "baseline": 0.217,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "The baseline for oai-udr CPU appears to be unusually low, likely due to a recent period of near\u2011idle operation. A short burst of background processing (e.g., cache warm\u2011up, log rotation, or a transient increase in request rate) caused the metric to deviate sharply, triggering a statistical outlier. Mis\u2011configured baseline window or sampling granularity may also contribute.",
+          "suggested_actions": [
+            "Validate the baseline calculation window and ensure it reflects a representative workload period.",
+            "Correlate with request/transaction logs for oai-udr around the timestamp to identify any transient traffic spike.",
+            "Check container/pod logs for background jobs (e.g., cache refresh, health\u2011check bursts) that could cause a brief CPU increase.",
+            "If the spike persists, consider modestly increasing the CPU limit or adding a replica; otherwise, adjust anomaly thresholds to avoid false\u2011critical alerts."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:59:13.034743-71fb1526",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "NRF VNF reports zero memory utilization while baseline indicates normal usage; CPU also at 0%, suggesting the pod is not running or metrics collection has failed.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.0,
+              "baseline": 4665344.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "NRF pod likely crashed, is in a non\u2011running state, or the metrics exporter is mis\u2011configured, resulting in zero values for memory and CPU.",
+          "suggested_actions": [
+            "Run `kubectl get pod -n <namespace> -l app=oai-nrf` to verify pod status (e.g., CrashLoopBackOff, Pending).",
+            "Inspect container logs (`kubectl logs <pod> -c <container>`) for OOM kills or other errors.",
+            "Check the NRF deployment's resource limits and requests for misconfiguration (e.g., limit set to 0).",
+            "Restart or redeploy the NRF pod if it is unhealthy.",
+            "Validate that the Prometheus/metrics exporter sidecar is correctly configured and reachable."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:59:13.034743-b30b70ba",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "Observed memory utilization for oai-amf is 6.09\u202f% while the stored 15\u2011minute baseline appears to be 38,707,200\u202f% (likely a unit or scaling error). No other VNF shows abnormal memory or CPU usage.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 6.09,
+              "baseline": 38707200.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Metric collection or baseline calculation error (unit mismatch or overflow) causing a spurious outlier flag; unlikely to be a real memory pressure event on the AMF.",
+          "suggested_actions": [
+            "Validate the monitoring pipeline for oai-amf memory metrics (ensure correct unit conversion and scaling).",
+            "Re\u2011compute the 15\u2011minute baseline using the same units as the live metric.",
+            "Cross\u2011check AMF logs and /proc/meminfo inside the pod to confirm actual memory usage.",
+            "If the metric is confirmed correct, investigate a possible short\u2011lived memory spike or leak in the AMF process."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T11:59:13.034743-1e227da7",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "oai-udr network_rx_mbps = 0.0 Mbps (z=124.9 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.0,
+              "baseline": 0.0082,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Sudden drop to zero inbound traffic on the UDR interface, likely caused by upstream UPF or AMF not forwarding subscriber data requests (possible signaling disruption or interface mis\u2011configuration). CPU and memory usage remain low, indicating the VNF is idle rather than crashed.",
+          "suggested_actions": [
+            "Verify UPF-to-UDR connectivity (check VNF network policies, routes, and interface status).",
+            "Inspect AMF signaling logs for missing UDR queries or failed registration procedures.",
+            "Collect interface counters (rx/tx packets, errors) on the UDR pod to detect drops or link failures.",
+            "Cross\u2011check recent configuration changes to the UDR or related network functions.",
+            "If interface is down, restart the UDR pod or re\u2011apply the network attachment definition."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T11:59:39.085545-ae992e59",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T11:59:58.880875"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 17,
+        "execution_results": 6
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:00:28.933367+00:00",
+      "finished_at": "2026-05-10T12:01:25.285192+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T12:00:33.274709-524eceaf",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf CPU utilization reported at 3.15\u202f% (z\u2011score 31.3) while the 15\u2011minute baseline is 0.0276\u202f%. This value is far outside normal operating range for the AMF pod.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 3.15,
+              "baseline": 0.0276,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible metric collection anomaly or aggressive CPU throttling on the oai\u2011amf pod. The baseline appears unusually low, indicating either a recent deployment/reset that reset the baseline statistics or a mis\u2011configured cgroup limit causing the pod to be starved of CPU cycles.",
+          "suggested_actions": [
+            "Validate the Prometheus/metrics exporter for oai\u2011amf to ensure correct CPU reporting.",
+            "Inspect the pod's cgroup limits and Kubernetes resource requests/limits for CPU; adjust if limits are too low.",
+            "Check kernel and container logs for CPU throttling or OOM events.",
+            "If the metric is correct, consider scaling out the AMF (add replica) or increasing its CPU request/limit."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T12:00:33.274709-f7c7b0d5",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nrf network_rx_mbps dropped to 0.006\u202fMbps (z=42.8) far below the 15\u2011minute baseline of 0.0104\u202fMbps. Critical severity.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.006,
+              "baseline": 0.0104,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible upstream traffic interruption or mis\u2011routing to the NRF (e.g., UPF congestion, interface failure, or firewall rule change) causing the NRF to receive far less user\u2011plane traffic than expected.",
+          "suggested_actions": [
+            "Inspect the network interface of the NRF pod (packet counters, error rates).",
+            "Verify connectivity and throughput between the UPF and NRF (e.g., ping, traceroute, flow stats).",
+            "Check recent configuration changes or firewall/NAT rules that could block traffic to the NRF.",
+            "Review NRF logs for error messages or registration failures.",
+            "If no obvious issue, restart the NRF pod and monitor the metric for recovery."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T12:00:33.274709-d57e6a3c",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-amf network_rx_mbps dropped to 0.001\u202fMbps (z=35.3) far below the 15\u2011minute baseline of 0.0025\u202fMbps. Severity marked as critical.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0025,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible upstream traffic starvation or UPF forwarding failure causing the AMF to receive near\u2011zero user\u2011plane traffic. Could also be a mis\u2011configured network interface or a sudden drop in attached UE sessions.",
+          "suggested_actions": [
+            "Inspect the AMF network interface counters (rx/tx errors, link status).",
+            "Check UPF throughput and queue depth for congestion or drop statistics.",
+            "Verify that the NRF and NSSF are reachable from the AMF (ping/health\u2011check).",
+            "Correlate with UE attachment logs to see if UE sessions have dropped.",
+            "Review recent configuration changes or scaling events affecting the AMF/UPF."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:00:50.485665-7fd95f6c",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:01:10.247071"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 20,
+        "execution_results": 7
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:01:40.300385+00:00",
+      "finished_at": "2026-05-10T12:02:17.977634+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:01:43.882961-1d69b38e",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:02:02.939457"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 20,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:02:32.992832+00:00",
+      "finished_at": "2026-05-10T12:03:32.267867+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T12:02:36.689650-f563e21d",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "CPU utilization of oai-udr rose to 1.13% (z=4.7) compared to its 15\u2011minute baseline of 0.2023%, flagged as high severity.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 1.13,
+              "baseline": 0.2023,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Recent traffic increase, a change in CPU request/limit, or metric drift after a recent pod restart/scaling event caused a short\u2011term spike in CPU usage for oai-udr.",
+          "suggested_actions": [
+            "Inspect the oai-udr pod specification for recent changes to CPU requests or limits.",
+            "Check Kubernetes events for pod restarts or scaling actions in the last few minutes.",
+            "Correlate with UDR request rate or transaction metrics to verify if load actually increased.",
+            "If the spike persists, consider scaling out additional oai-udr replicas or increasing its CPU allocation."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T12:02:36.689650-9f1167de",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "Memory utilization reported for oai-udm is 1.57% which deviates sharply from the 15\u2011minute baseline (z\u2011score 38.4). The baseline appears to be expressed in raw bytes, causing a unit mismatch.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.57,
+              "baseline": 3715072.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Metric collection or baseline calculation error (unit mismatch) leading to a false positive outlier; possible mis\u2011configured memory limit monitoring for oai\u2011udm.",
+          "suggested_actions": [
+            "Validate the memory_utilization metric source and ensure it reports in % consistently.",
+            "Re\u2011compute the 15\u2011minute baseline using the correct unit (percentage).",
+            "Check oai\u2011udm pod memory limits and usage via kubectl top pod.",
+            "If the metric is correct, consider adjusting alert thresholds to avoid spurious critical alerts."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T12:02:36.689650-5ec2ba26",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "The UDR VNF reports an abnormally low inbound network throughput (0.004\u202fMbps) far below its 15\u2011minute baseline (\u22480.0083\u202fMbps). This deviation (z\u224811.4) is flagged as critical.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.004,
+              "baseline": 0.0083,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible upstream traffic starvation or UPF congestion causing the UDR to receive almost no data. Alternative hypotheses include a broken network interface on the UDR pod, mis\u2011routed service mesh paths, or a sudden drop in UE traffic generation.",
+          "suggested_actions": [
+            "Verify that UE traffic generators are active and producing data streams.",
+            "Inspect UPF metrics (e.g., tx/rx queues, packet drops, CPU load) for signs of congestion or back\u2011pressure.",
+            "Check the network interface and pod logs of the oai-udr for errors or link status changes.",
+            "Validate service\u2011mesh / sidecar routing rules between UPF and UDR (e.g., Istio, Linkerd).",
+            "Correlate with other VNFs' network_rx_mbps to see if the drop is isolated to UDR or systemic."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:02:57.473937-a8cbb9a1",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:03:17.207988"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 23,
+        "execution_results": 9
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:03:47.283061+00:00",
+      "finished_at": "2026-05-10T12:04:36.824694+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T12:03:50.887529-11f7a3e9",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-nssf cpu_utilization = 2.75 % (z=4.3 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.75,
+              "baseline": 0.0141,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "The NSSF pod was recently scaled up or restarted, causing its short\u2011term baseline (15\u2011minute window) to be near zero. The current modest CPU usage (2.75\u202f%) appears as a statistical outlier even though it is within normal operating range for the VNF.",
+          "suggested_actions": [
+            "Review recent scaling/restart events for oai-nssf and verify pod count",
+            "Recalculate the CPU utilization baseline over a longer window (e.g., 1\u202fhour) to smooth transient changes",
+            "Continue monitoring the metric for a sustained trend before triggering scaling actions"
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T12:03:50.887529-63a93f0b",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "Network receive throughput for oai-nrf dropped to 0.005\u202fMbps (z\u2011score\u202f4.1) while baseline is 0.0097\u202fMbps. CPU and memory utilization of NRF are at 0\u202f%, indicating no processing activity.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.005,
+              "baseline": 0.0097,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible upstream traffic starvation: either the UE or other VNFs are not generating traffic, or the NRF's network interface is mis\u2011configured/blocked, leading to near\u2011zero inbound packets.",
+          "suggested_actions": [
+            "Verify that UE (oai-nr-ue) is attached and generating traffic; check its registration and data session state.",
+            "Inspect NRF service registration logs for missed or failed registration attempts.",
+            "Confirm network policies (NetworkPolicy, Service, Ingress) allow traffic to the NRF pod.",
+            "Check for any recent changes to the underlying CNI or firewall rules that could block inbound traffic to the NRF.",
+            "If traffic source is external, ensure the traffic generator or test client is active."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:04:01.917937-9e40c5f9",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:04:21.786557"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 25,
+        "execution_results": 10
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:04:51.839902+00:00",
+      "finished_at": "2026-05-10T12:05:30.424963+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T12:04:55.652349-544fbd00",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-nrf memory_utilization reported as 0.0\u202f% while the 15\u2011minute baseline is ~4.7\u202fM\u202f% (z\u2011score 4.2). Other VNFs show normal memory usage and CPU is also 0\u202f% for NRF.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.0,
+              "baseline": 4747264.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Likely a metric collection or reporting issue for the NRF pod (e.g., exporter failure, mis\u2011configured resource limits, or the NRF process is idle/crashed), causing a false zero reading rather than an actual memory starvation.",
+          "suggested_actions": [
+            "Check the oai-nrf pod logs for errors or crashes.",
+            "Verify that the memory limit/requests for the NRF container are correctly set and not zero.",
+            "Confirm the Prometheus/metrics exporter sidecar is running and exposing memory metrics.",
+            "Restart the oai-nrf pod to re\u2011initialize the process and metric collection.",
+            "If the issue persists, inspect the underlying node for OOM events or cgroup anomalies."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:05:01.379633-1fdd8be0",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:05:15.387462"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 26,
+        "execution_results": 11
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:05:45.440171+00:00",
+      "finished_at": "2026-05-10T12:06:28.339210+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T12:05:49.177086-967c226f",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "Memory utilization of oai-ausf spiked to 13.54% (z=3.4) while other VNFs remain below 7%, indicating a statistical outlier relative to the 15\u2011minute baseline.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 13.54,
+              "baseline": 34041856.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible memory leak or sudden increase in authentication request load on the AUSF VNF, causing memory consumption to rise sharply compared to its recent baseline and peer VNFs.",
+          "suggested_actions": [
+            "Collect recent AUSF logs and GC statistics to look for memory allocation patterns or errors.",
+            "Verify if a recent configuration or software update was applied to AUSF.",
+            "Temporarily increase the memory limit/requests for the AUSF pod to avoid OOM termination.",
+            "If a leak is suspected, restart the AUSF pod and monitor memory trend for recurrence."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:05:54.156375-c9a664e6",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:06:13.301175"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 27,
+        "execution_results": 12
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:06:43.354401+00:00",
+      "finished_at": "2026-05-10T12:07:22.448615+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:06:47.504699-b51b9529",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:07:07.410793"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 27,
+        "execution_results": 13
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:07:37.463847+00:00",
+      "finished_at": "2026-05-10T12:08:16.156191+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:07:41.393803-4e1cacdb",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:08:01.117368"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 27,
+        "execution_results": 14
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T12:08:31.171409+00:00",
+      "finished_at": "2026-05-10T12:09:09.708486+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T12:08:34.914154-aff0ae2c",
+        "triggered_by": "2026-05-10T11:54:33.585328-ade20c08",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-udr",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-udr' not found in Deployment 'oai-udr' (available: ['udr'])",
+          "timestamp": "2026-05-10T12:08:54.670714"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 27,
+        "execution_results": 15
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 0,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 3
+  },
+  "trigger_fingerprint": "point_outlier|CPU|cpu_utilization",
+  "timing": {
+    "fault_started_at": "2026-05-10T11:58:04.537332+00:00",
+    "first_alert_at": "2026-05-10T11:58:04.627047+00:00",
+    "first_plan_at": "2026-05-10T11:58:04.627047+00:00",
+    "first_action_at": "2026-05-10T11:58:04.627047+00:00",
+    "recovered_at": "2026-05-10T12:01:40.300385+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 0.089715,
+    "plan_latency_s": 0.0,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 215.763053,
+    "remediation_success": true,
+    "false_positives_pre_fault": 3,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-amf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-10T12:09:09.776248+00:00"
+}

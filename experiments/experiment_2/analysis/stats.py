@@ -3,7 +3,7 @@
 Statistical analysis for Experiment 2 — pre-deployment comparative study.
 
 Inputs:
-  - experiments/experiment_2/results/full/runs.csv  (the M6 output)
+  - experiments/experiment_2/results/main/runs_merged.csv  (the M6 output)
 
 Outputs (all under experiments/experiment_2/analysis/):
   - summary_table.csv  : per-(system, metric) mean, sd, 95% CI (bootstrap), n
@@ -16,7 +16,7 @@ Outputs (all under experiments/experiment_2/analysis/):
 Statistical design (per the experiment plan):
   - Pair tests by intent_id (each row = mean over 5 reps for that
     (system, intent) cell). 36 intents → effective paired n = 36.
-  - Bonferroni: 4 baselines × 6 metrics = 24 comparisons → α' = 0.05/24 ≈ 0.0021.
+  - Bonferroni: 5 baselines × 6 metrics = 30 comparisons → α' = 0.05/30 ≈ 0.0017.
   - Bootstrap 10k resamples for 95% CIs of per-system metric means.
 """
 
@@ -46,8 +46,8 @@ METRICS: list[tuple[str, str, str]] = [
     ("policy_violation_rate",    "Policy violation rate",       "lower"),
 ]
 
-SYSTEMS = ["mas", "b1", "b2", "b3", "b4"]
-BASELINES = ["b1", "b2", "b3", "b4"]
+SYSTEMS = ["mas", "b1", "b2", "b3", "b4", "b4r"]
+BASELINES = ["b1", "b2", "b3", "b4", "b4r"]
 N_BOOTSTRAP = 10_000
 ALPHA = 0.05
 N_COMPARISONS = len(BASELINES) * len(METRICS)
@@ -187,10 +187,9 @@ def render_report(
         "5G core orchestration against four baselines (B1 manual emulator, "
         "B2 OSM literature stub, B3 static-HPA, B4 single-agent LLM) across six "
         "pre-deployment metrics. Auto-generated from "
-        "[runs.csv](../results/full/runs.csv).\n"
+        "[runs_merged.csv](../../results/main/runs_merged.csv).\n"
     )
-    lines.append(f"**N = {n_runs} runs** ({n_errors} system-level errors retained "
-                 "as informative failure modes).  ")
+    lines.append(f"**N = {n_runs} runs** ({n_errors} system-level errors).  ")
     lines.append(f"**Statistical threshold**: α = {ALPHA}, Bonferroni-corrected "
                  f"α' = {ALPHA_BONF:.4f} across {N_COMPARISONS} comparisons "
                  f"(4 baselines × 6 metrics).\n")
@@ -226,7 +225,11 @@ def render_report(
                  "✗ otherwise.\n")
     lines.append("| Metric | Baseline | n_pairs | mean_diff | Cohen's d | p (paired t) | p (Mann-Whitney) | p (Bonf.) | Sig. |")
     lines.append("|---|---|---:|---:|---:|---:|---:|---:|:-:|")
+    if not pairwise_rows or all((r.get("n_pairs", 0) == 0) for r in pairwise_rows):
+        lines.append("| — | — | 0 | n/a | n/a | n/a | n/a | n/a | — |\n_(no baselines present in this dataset — pairwise comparison skipped)_\n")
     for r in pairwise_rows:
+        if r.get("n_pairs", 0) == 0:
+            continue
         sig = "✓" if (not math.isnan(r["p_bonf"])) and r["p_bonf"] < ALPHA else "✗"
         lines.append(
             "| " + r["metric_label"]
@@ -248,6 +251,8 @@ def render_report(
 
     wins, losses = [], []
     for r in pairwise_rows:
+        if r.get("n_pairs", 0) == 0:
+            continue
         if math.isnan(r["p_bonf"]) or r["p_bonf"] >= ALPHA:
             continue
         if abs(r["cohen_d"]) < 0.5:
@@ -332,12 +337,238 @@ def render_report(
     return "\n".join(lines)
 
 
+# ── Task E: per-intent failure breakdown (from raw.jsonl) ───────────────────
+
+
+def _iter_jsonl(path: Path):
+    if not path.exists():
+        return
+    with open(path) as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                yield json.loads(line)
+            except json.JSONDecodeError:
+                continue
+
+
+def per_intent_failure_breakdown(
+    jsonl_path: Path, system: str = "mas",
+) -> tuple[list[dict[str, Any]], dict[str, dict[str, int]]]:
+    """For each MAS row in raw.jsonl, decompose `intent_to_deploy_accuracy` into
+    its four sub-conditions and count per-intent failures.
+
+    Returns (per_intent_rows, per_complexity_scenario_counts)
+      - per_intent_rows: list of dicts, one per intent_id, with failure rate
+        and per-subcondition failure counts plus top critic-rejection reason
+      - per_complexity_scenario_counts: nested dict {complexity: {scenario: counts}}
+    """
+    by_intent: dict[str, dict[str, Any]] = {}
+    cs_counts: dict[tuple[str, str], dict[str, int]] = {}
+
+    SUBCONDS = ("deployment_success", "coverage_ok", "policy_go", "critic_approved")
+
+    for rec in _iter_jsonl(jsonl_path):
+        if rec.get("system") != system:
+            continue
+        intent_id = rec.get("intent_id") or "?"
+        complexity = rec.get("complexity") or "?"
+        scenario = rec.get("scenario") or "?"
+        comps = (rec.get("components") or {}).get("intent_accuracy_components") or {}
+        critic_reasons = ((rec.get("components") or {}).get("critic") or {}).get("reasons") or []
+
+        all_pass = all(bool(comps.get(k)) for k in SUBCONDS)
+
+        slot = by_intent.setdefault(intent_id, {
+            "intent_id": intent_id,
+            "complexity": complexity,
+            "scenario": scenario,
+            "n_reps": 0, "n_failures": 0,
+            **{f"fail_{k}": 0 for k in SUBCONDS},
+            "_critic_reasons": [],
+        })
+        slot["n_reps"] += 1
+        if not all_pass:
+            slot["n_failures"] += 1
+        for k in SUBCONDS:
+            if not bool(comps.get(k)):
+                slot[f"fail_{k}"] += 1
+        if critic_reasons:
+            slot["_critic_reasons"].extend(str(r) for r in critic_reasons)
+
+        bucket = cs_counts.setdefault((complexity, scenario), {"n_reps": 0, "n_failures": 0})
+        bucket["n_reps"] += 1
+        if not all_pass:
+            bucket["n_failures"] += 1
+
+    # Finalize per-intent rows: pick top failed sub-condition + top critic reason
+    rows_out: list[dict[str, Any]] = []
+    for intent_id, slot in sorted(by_intent.items()):
+        # Top failed sub-condition
+        fail_counts = {k: slot[f"fail_{k}"] for k in SUBCONDS}
+        max_fail = max(fail_counts.values()) if fail_counts else 0
+        top = ", ".join(k for k, v in fail_counts.items() if v == max_fail and v > 0) or "—"
+
+        reasons = slot.pop("_critic_reasons")
+        reason_counts: dict[str, int] = {}
+        for r in reasons:
+            reason_counts[r] = reason_counts.get(r, 0) + 1
+        top_reason = max(reason_counts.items(), key=lambda kv: kv[1])[0] if reason_counts else "—"
+
+        n = slot["n_reps"]
+        slot["failure_rate"] = (slot["n_failures"] / n) if n else 0.0
+        slot["top_failed_subcond"] = top
+        slot["top_critic_reason"] = top_reason
+        rows_out.append(slot)
+    rows_out.sort(key=lambda r: (-r["failure_rate"], r["intent_id"]))
+
+    cs_out = {(c, s): counts for (c, s), counts in cs_counts.items()}
+    return rows_out, cs_out
+
+
+def render_per_intent_md(rows: list[dict[str, Any]],
+                         cs: dict[tuple[str, str], dict[str, int]]) -> str:
+    if not rows:
+        return "_No MAS rows found in raw.jsonl._"
+    lines: list[str] = []
+
+    n_total = sum(r["n_reps"] for r in rows)
+    n_failed = sum(r["n_failures"] for r in rows)
+    overall_fr = n_failed / n_total if n_total else 0.0
+    lines.append(
+        f"### Aggregate failure rate (sanity check)\n\n"
+        f"- Total MAS runs: **{n_total}** across {len(rows)} intents\n"
+        f"- Failed runs (any sub-condition false): **{n_failed}** ({overall_fr:.1%})\n"
+        f"- Implied intent-to-deploy accuracy: **{1 - overall_fr:.3f}**\n"
+    )
+
+    # Top-N worst intents
+    top_n = min(10, len(rows))
+    lines.append(f"\n### Top {top_n} intents by failure rate\n")
+    lines.append("| Rank | Intent | Complexity | Scenario | Reps | Fails | Rate | Top failed sub-cond | Top critic reason |")
+    lines.append("|---:|---|---|---|---:|---:|---:|---|---|")
+    for i, r in enumerate(rows[:top_n], 1):
+        lines.append(
+            f"| {i} | {r['intent_id']} | {r['complexity']} | {r['scenario']} "
+            f"| {r['n_reps']} | {r['n_failures']} | {r['failure_rate']:.1%} "
+            f"| {r['top_failed_subcond']} | {r['top_critic_reason']} |"
+        )
+
+    # Per-complexity × per-scenario grid
+    complexities = sorted({c for c, _ in cs})
+    scenarios = sorted({s for _, s in cs})
+    lines.append("\n### Failure rate by complexity × scenario\n")
+    lines.append("| Complexity \\ Scenario | " + " | ".join(scenarios) + " | All |")
+    lines.append("|---|" + "---:|" * (len(scenarios) + 1))
+    for c in complexities:
+        cells = []
+        c_total = 0
+        c_fails = 0
+        for s in scenarios:
+            b = cs.get((c, s))
+            if not b:
+                cells.append("—")
+                continue
+            fr = (b["n_failures"] / b["n_reps"]) if b["n_reps"] else 0.0
+            cells.append(f"{fr:.1%} ({b['n_failures']}/{b['n_reps']})")
+            c_total += b["n_reps"]
+            c_fails += b["n_failures"]
+        all_fr = (c_fails / c_total) if c_total else 0.0
+        cells.append(f"**{all_fr:.1%}** ({c_fails}/{c_total})")
+        lines.append(f"| {c} | " + " | ".join(cells) + " |")
+
+    return "\n".join(lines)
+
+
+# ── Task F: per-VNF resource accuracy breakdown (from raw.jsonl) ─────────────
+
+
+def per_vnf_resource_breakdown(
+    jsonl_path: Path, system: str = "mas",
+) -> list[dict[str, Any]]:
+    """Aggregate per-VNF cpu/mem relative errors across all MAS rows.
+
+    Returns list of dicts, one per VNF, with mean ± bootstrap-95%-CI on cpu_rel_err
+    and mem_rel_err, plus n_measurements.
+    """
+    by_vnf: dict[str, dict[str, list[float]]] = {}
+
+    for rec in _iter_jsonl(jsonl_path):
+        if rec.get("system") != system:
+            continue
+        rad = (rec.get("components") or {}).get("resource_accuracy_detail") or {}
+        for d in rad.get("deltas") or []:
+            vnf = d.get("vnf") or "?"
+            cpu_e = d.get("cpu_rel_err")
+            mem_e = d.get("mem_rel_err")
+            slot = by_vnf.setdefault(vnf, {"cpu": [], "mem": []})
+            if isinstance(cpu_e, (int, float)) and not math.isnan(float(cpu_e)):
+                slot["cpu"].append(float(cpu_e))
+            if isinstance(mem_e, (int, float)) and not math.isnan(float(mem_e)):
+                slot["mem"].append(float(mem_e))
+
+    rows: list[dict[str, Any]] = []
+    for vnf, m in sorted(by_vnf.items()):
+        cpu = m["cpu"]; mem = m["mem"]
+        cpu_mean = float(np.mean(cpu)) if cpu else math.nan
+        mem_mean = float(np.mean(mem)) if mem else math.nan
+        cpu_ci = bootstrap_ci(cpu) if len(cpu) >= 2 else (math.nan, math.nan)
+        mem_ci = bootstrap_ci(mem) if len(mem) >= 2 else (math.nan, math.nan)
+        rows.append({
+            "vnf": vnf,
+            "n_measurements": len(cpu),
+            "cpu_rel_err_mean": cpu_mean,
+            "cpu_rel_err_ci_lo": cpu_ci[0],
+            "cpu_rel_err_ci_hi": cpu_ci[1],
+            "mem_rel_err_mean": mem_mean,
+            "mem_rel_err_ci_lo": mem_ci[0],
+            "mem_rel_err_ci_hi": mem_ci[1],
+            # "Per-VNF accuracy" matches the headline aggregate definition:
+            # 1 - mean(cpu_err + mem_err) / 2, clipped at [0, 1]
+            "vnf_accuracy": max(0.0, min(1.0,
+                1.0 - (np.nan_to_num(cpu_mean, nan=0.0) + np.nan_to_num(mem_mean, nan=0.0)) / 2.0
+            )),
+        })
+    return rows
+
+
+def render_per_vnf_md(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "_No per-VNF data found._"
+    lines = [
+        "### Per-VNF resource sizing accuracy",
+        "",
+        "Per-VNF mean relative error (CPU and memory) against the resource oracle, "
+        "with bootstrap-95% CIs. Sorted by VNF name.",
+        "",
+        "| VNF | N | CPU rel err (mean [95% CI]) | Mem rel err (mean [95% CI]) | Implied accuracy |",
+        "|---|---:|---|---|---:|",
+    ]
+    for r in rows:
+        cpu_str = (
+            f"{r['cpu_rel_err_mean']:.3f} [{r['cpu_rel_err_ci_lo']:.3f}, {r['cpu_rel_err_ci_hi']:.3f}]"
+            if not math.isnan(r["cpu_rel_err_mean"]) else "—"
+        )
+        mem_str = (
+            f"{r['mem_rel_err_mean']:.3f} [{r['mem_rel_err_ci_lo']:.3f}, {r['mem_rel_err_ci_hi']:.3f}]"
+            if not math.isnan(r["mem_rel_err_mean"]) else "—"
+        )
+        lines.append(
+            f"| {r['vnf']} | {r['n_measurements']} | {cpu_str} | {mem_str} | {r['vnf_accuracy']:.3f} |"
+        )
+    return "\n".join(lines)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runs", type=Path,
-                        default=Path("experiments/experiment_2/results/full/runs.csv"))
+                        default=Path("experiments/experiment_2/results/main/runs_merged.csv"))
     parser.add_argument("--out", type=Path,
                         default=Path("experiments/experiment_2/analysis"))
+    parser.add_argument("--jsonl", type=Path, default=None,
+                        help="raw.jsonl path for Tasks E and F (defaults to <runs.parent>/raw.jsonl)")
     args = parser.parse_args()
 
     args.out.mkdir(parents=True, exist_ok=True)
@@ -416,8 +647,60 @@ def main() -> None:
         scenario_rows,
     )
 
+    # ── Tasks E & F: per-intent and per-VNF analyses (from raw.jsonl) ───────
+    jsonl_path = args.jsonl if args.jsonl is not None else (args.runs.parent / "raw.jsonl")
+    extra_md_sections: list[str] = []
+
+    intent_rows, cs_counts = per_intent_failure_breakdown(jsonl_path, system="mas")
+    if intent_rows:
+        # Persist as CSV (one row per intent)
+        intent_csv_path = args.out / "per_intent_failures.csv"
+        intent_fields = [
+            "intent_id", "complexity", "scenario",
+            "n_reps", "n_failures", "failure_rate",
+            "fail_deployment_success", "fail_coverage_ok",
+            "fail_policy_go", "fail_critic_approved",
+            "top_failed_subcond", "top_critic_reason",
+        ]
+        with open(intent_csv_path, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=intent_fields)
+            w.writeheader()
+            for r in intent_rows:
+                w.writerow({k: r.get(k) for k in intent_fields})
+        print(f"per_intent_failures.csv : {len(intent_rows)} rows ({jsonl_path.name})")
+        extra_md_sections.append(
+            "## 7. Per-intent failure breakdown (MAS only)\n\n"
+            + render_per_intent_md(intent_rows, cs_counts)
+        )
+    else:
+        print(f"per_intent_failures.csv : skipped (no MAS rows in {jsonl_path})")
+
+    vnf_rows = per_vnf_resource_breakdown(jsonl_path, system="mas")
+    if vnf_rows:
+        vnf_csv_path = args.out / "per_vnf_resource.csv"
+        vnf_fields = [
+            "vnf", "n_measurements",
+            "cpu_rel_err_mean", "cpu_rel_err_ci_lo", "cpu_rel_err_ci_hi",
+            "mem_rel_err_mean", "mem_rel_err_ci_lo", "mem_rel_err_ci_hi",
+            "vnf_accuracy",
+        ]
+        with open(vnf_csv_path, "w", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=vnf_fields)
+            w.writeheader()
+            for r in vnf_rows:
+                w.writerow({k: r.get(k) for k in vnf_fields})
+        print(f"per_vnf_resource.csv    : {len(vnf_rows)} rows")
+        extra_md_sections.append(
+            "## 8. Per-VNF resource accuracy breakdown (MAS only)\n\n"
+            + render_per_vnf_md(vnf_rows)
+        )
+    else:
+        print(f"per_vnf_resource.csv    : skipped (no MAS rows in {jsonl_path})")
+
     # ── Render REPORT.md ────────────────────────────────────────────────────
     report = render_report(summary_rows, pairwise_rows, scenario_rows, n_runs, n_errors)
+    if extra_md_sections:
+        report += "\n\n" + "\n\n".join(extra_md_sections) + "\n"
     (args.out / "REPORT.md").write_text(report)
 
     print(f"summary_table.csv : {len(summary_rows)} rows")

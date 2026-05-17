@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FYP — 5G Network Orchestration via Multi-Agent System</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f172a;
+    color: #e2e8f0;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .deck { width: 100%; height: 100vh; position: relative; }
+
+  .slide {
+    display: none;
+    position: absolute;
+    inset: 0;
+    padding: 48px 64px;
+    flex-direction: column;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+  .slide.active { display: flex; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── Typography ── */
+  h1 { font-size: 2.6rem; font-weight: 700; line-height: 1.15; color: #f8fafc; }
+  h2 { font-size: 1.9rem; font-weight: 600; color: #f8fafc; margin-bottom: 28px; }
+  h3 { font-size: 1.1rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+  p  { font-size: 1.05rem; color: #cbd5e1; line-height: 1.65; }
+  .subtitle { font-size: 1.2rem; color: #94a3b8; margin-top: 12px; }
+  .tag { display: inline-block; background: #1e3a5f; color: #60a5fa; border: 1px solid #2563eb44; border-radius: 6px; padding: 3px 10px; font-size: .8rem; font-weight: 600; margin-right: 6px; }
+
+  /* ── Accent colours ── */
+  .blue  { color: #60a5fa; }
+  .green { color: #34d399; }
+  .amber { color: #fbbf24; }
+  .rose  { color: #f87171; }
+  .violet{ color: #a78bfa; }
+
+  /* ── Layout helpers ── */
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .cols3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+  .cols4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+  .mt { margin-top: 24px; }
+  .mt-sm { margin-top: 14px; }
+
+  /* ── Cards ── */
+  .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .card-accent {
+    background: #0f2847;
+    border: 1px solid #2563eb55;
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .card h3 { margin-bottom: 10px; }
+  .card p, .card li { font-size: .97rem; }
+
+  /* ── Pipeline ── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: nowrap;
+    margin-top: 20px;
+  }
+  .pipe-node {
+    background: #1e3a5f;
+    border: 1px solid #2563eb55;
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-align: center;
+    font-size: .82rem;
+    font-weight: 600;
+    color: #93c5fd;
+    white-space: nowrap;
+    flex: 1;
+  }
+  .pipe-arrow {
+    color: #475569;
+    font-size: 1.2rem;
+    padding: 0 4px;
+    flex-shrink: 0;
+  }
+  .pipe-node.green-node { background: #052e16; border-color: #16a34a55; color: #4ade80; }
+  .pipe-node.amber-node { background: #3b1800; border-color: #d9770055; color: #fbbf24; }
+  .pipe-node.hitl { background: #2d1b69; border-color: #7c3aed55; color: #a78bfa; }
+
+  /* ── Tables ── */
+  table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+  th { background: #1e3a5f; color: #93c5fd; padding: 8px 12px; text-align: left; font-weight: 600; }
+  td { padding: 7px 12px; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+  tr:hover td { background: #1e293b; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .best { color: #34d399; font-weight: 700; }
+  .bad  { color: #f87171; }
+
+  /* ── Metric big numbers ── */
+  .big-num {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .big-label { font-size: .85rem; color: #64748b; margin-top: 4px; }
+
+  /* ── Figure ── */
+  .fig-wrap { text-align: center; }
+  .fig-wrap img { max-height: 320px; max-width: 100%; border-radius: 8px; border: 1px solid #334155; }
+  .fig-caption { font-size: .8rem; color: #64748b; margin-top: 8px; }
+
+  /* ── Bullet list ── */
+  ul.bullets { list-style: none; padding: 0; }
+  ul.bullets li { padding: 6px 0 6px 20px; position: relative; font-size: 1rem; color: #cbd5e1; }
+  ul.bullets li::before { content: "›"; position: absolute; left: 0; color: #60a5fa; font-weight: 700; }
+
+  /* ── Nav ── */
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #1e293bcc;
+    backdrop-filter: blur(8px);
+    border: 1px solid #334155;
+    border-radius: 40px;
+    padding: 8px 20px;
+    z-index: 100;
+  }
+  .nav button {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color .15s, background .15s;
+  }
+  .nav button:hover { color: #f8fafc; background: #334155; }
+  #slide-counter { font-size: .85rem; color: #64748b; min-width: 56px; text-align: center; }
+
+  /* ── Title slide ── */
+  .slide-title { background: linear-gradient(135deg, #0f172a 0%, #0f2847 100%); }
+  .slide-title h1 { font-size: 2.8rem; }
+  .divider { width: 60px; height: 4px; background: #2563eb; border-radius: 2px; margin: 20px 0; }
+
+  /* ── Progress bar ── */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: #2563eb;
+    transition: width .3s ease;
+    z-index: 200;
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- ─── SLIDE 1: TITLE ─── -->
+  <div class="slide slide-title active">
+    <div>
+      <span class="tag">FYP — ENSIA 2026</span>
+      <span class="tag">5G Orchestration</span>
+    </div>
+    <h1 class="mt" style="max-width:780px">
+      5G Network Orchestration<br>
+      <span class="blue">via Multi-Agent System</span>
+    </h1>
+    <div class="divider"></div>
+    <p class="subtitle">A LangGraph-based MAS that automates the full lifecycle of a 5G Core<br>
+      — from natural-language intent to autonomous fault remediation.</p>
+    <div class="cols4" style="margin-top:40px; max-width:700px">
+      <div class="card"><h3>Agents</h3><p class="big-num blue">11</p></div>
+      <div class="card"><h3>Tests</h3><p class="big-num green">225</p></div>
+      <div class="card"><h3>Experiments</h3><p class="big-num amber">4</p></div>
+      <div class="card"><h3>Test Runs</h3><p class="big-num violet">1,470+</p></div>
+    </div>
+    <p class="mt" style="color:#475569; font-size:.85rem">Larbi Saidchikh · Supervisor Meeting · May 2026</p>
+  </div>
+
+  <!-- ─── SLIDE 2: PROBLEM & MOTIVATION ─── -->
+  <div class="slide">
+    <h2>Problem & Motivation</h2>
+    <div class="cols2">
+      <div>
+        <div class="card">
+          <h3>The Challenge</h3>
+          <ul class="bullets mt-sm">
+            <li>5G Core deployment requires configuring 8–10 interdependent VNFs against strict 3GPP rules</li>
+            <li>Manual operator workflows are slow, error-prone, and don't scale to dynamic load</li>
+            <li>Existing tools (OSM, static HPA) require hand-crafted configs — no intent understanding</li>
+            <li>Runtime faults (pod crashes, CPU spikes, traffic surges) require human intervention</li>
+          </ul>
+        </div>
+        <div class="card mt">
+          <h3>The Goal</h3>
+          <p>Build an autonomous system that takes a <span class="blue">natural-language intent</span> and handles everything: plan → configure → deploy → monitor → self-heal.</p>
+        </div>
+      </div>
+      <div class="card-accent" style="display:flex;flex-direction:column;justify-content:center;gap:16px">
+        <div>
+          <p style="font-size:1.1rem;color:#94a3b8;margin-bottom:8px">Instead of:</p>
+          <p class="rose" style="font-size:1rem">"Configure AMF with 2 CPU cores, 512Mi RAM, PLMN 208/95, N1/N2 interfaces…"</p>
+        </div>
+        <div style="color:#475569;font-size:1.5rem;text-align:center">↓</div>
+        <div>
+          <p style="font-size:1.1rem;color:#94a3b8;margin-bottom:8px">The system accepts:</p>
+          <p class="green" style="font-size:1rem">"Deploy a 5G core for 500 UEs with 2 Gbps throughput and eMBB slicing."</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 3: SYSTEM OVERVIEW ─── -->
+  <div class="slide">
+    <h2>System Architecture — Two Pipelines</h2>
+    <div class="cols2" style="gap:24px">
+      <div class="card">
+        <h3 class="blue">Pre-Deployment Pipeline</h3>
+        <p style="font-size:.9rem;margin-bottom:12px">Triggered once per deployment intent</p>
+        <div class="pipeline" style="flex-direction:column;gap:6px;align-items:stretch">
+          <div class="pipe-node">Network Planner<br><span style="font-weight:400;color:#64748b;font-size:.75rem">Intent → VNF topology</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node">Resource Allocator<br><span style="font-weight:400;color:#64748b;font-size:.75rem">CPU / RAM per VNF</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node hitl">HITL — Topology Review</div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node">VNF Configurator<br><span style="font-weight:400;color:#64748b;font-size:.75rem">Helm values.yaml</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node">Policy Validator<br><span style="font-weight:400;color:#64748b;font-size:.75rem">Rules + K8s dry-run</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node hitl">HITL — Deploy Approval</div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node green-node">Deployer<br><span style="font-weight:400;font-size:.75rem">helm install → remote K8s</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3 class="green">Post-Deployment Loop</h3>
+        <p style="font-size:.9rem;margin-bottom:12px">Runs continuously every 15–30 s</p>
+        <div class="pipeline" style="flex-direction:column;gap:6px;align-items:stretch">
+          <div class="pipe-node green-node">KPI Monitor<br><span style="font-weight:400;font-size:.75rem">Prometheus → MetricEvents</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node green-node">Anomaly Detector<br><span style="font-weight:400;font-size:.75rem">z-score + sustained + restart</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node green-node">SLA Compliance<br><span style="font-weight:400;font-size:.75rem">Rule eval + breach prediction</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node amber-node">Planner Reasoning<br><span style="font-weight:400;font-size:.75rem">LLM + deterministic fallback</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node amber-node">Auto-Scaler<br><span style="font-weight:400;font-size:.75rem">horizontal / vertical scale</span></div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node amber-node">Fault Recovery<br><span style="font-weight:400;font-size:.75rem">restart / rollback / config patch</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 4: INFRASTRUCTURE ─── -->
+  <div class="slide">
+    <h2>Infrastructure Setup</h2>
+    <div class="cols2">
+      <div>
+        <div class="card">
+          <h3>Two-VM Architecture</h3>
+          <table class="mt-sm">
+            <tr><th>Component</th><th>Details</th></tr>
+            <tr><td class="blue">Agentic VM</td><td>Python 3.10, LangGraph, Ollama / vLLM, Redis</td></tr>
+            <tr><td class="green">K8s VM</td><td>Kubernetes 1.30, OAI 5G Core VNFs, UERANSIM, Prometheus, Grafana</td></tr>
+            <tr><td class="amber">Communication</td><td>Remote kubectl, Prometheus HTTP API, Helm CLI</td></tr>
+          </table>
+        </div>
+        <div class="card mt">
+          <h3>OAI 5G Core VNFs (10)</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+            <span class="tag">AMF</span><span class="tag">SMF</span><span class="tag">UPF</span>
+            <span class="tag">NRF</span><span class="tag">NSSF</span><span class="tag">AUSF</span>
+            <span class="tag">UDM</span><span class="tag">UDR</span><span class="tag">gNB</span>
+            <span class="tag">UERANSIM</span>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center">
+        <h3>Shared State — Redis</h3>
+        <table class="mt-sm">
+          <tr><th>Key</th><th>Writers</th><th>Readers</th></tr>
+          <tr><td><code style="color:#60a5fa">topology:latest</code></td><td>Deployer</td><td>Monitoring</td></tr>
+          <tr><td><code style="color:#60a5fa">resource_allocation</code></td><td>Deployer</td><td>Monitoring</td></tr>
+          <tr><td><code style="color:#60a5fa">incidents</code> (cap 500)</td><td>Fault Recovery</td><td>Planner</td></tr>
+          <tr><td><code style="color:#60a5fa">actions</code> (cap 500)</td><td>Executors</td><td>Planner</td></tr>
+        </table>
+        <p class="mt-sm" style="font-size:.85rem;color:#64748b">Redis is best-effort — all writes are wrapped in try/except. System runs identically when Redis is down.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 5: EXPERIMENT 1 ─── -->
+  <div class="slide">
+    <div>
+      <span class="tag">Experiment 1</span>
+      <span class="tag blue">Intent Translation Accuracy</span>
+    </div>
+    <h2 class="mt-sm">How well does the MAS translate natural language into a valid 5G topology?</h2>
+    <div class="cols2">
+      <div>
+        <div class="card">
+          <h3>Setup</h3>
+          <ul class="bullets mt-sm">
+            <li><strong>25 prompts</strong> across 3 complexity levels (Simple / Medium / Complex)</li>
+            <li>End-to-end: intent → topology → resources → Helm → deploy</li>
+            <li>HITL bypassed via auto-approval node for automated evaluation</li>
+          </ul>
+        </div>
+        <div class="card mt">
+          <h3>Hybrid Scoring — Two Tiers</h3>
+          <ul class="bullets mt-sm">
+            <li><span class="blue">Tier 1 — Deterministic:</span> VNF Coverage (Jaccard), Structural Completeness, Resource Validity, Policy Pass Rate, Deployment Success</li>
+            <li><span class="amber">Tier 2 — LLM-as-Judge:</span> Completeness, Correctness, Resource Appropriateness, Slice Alignment, SLA Fitness (scored 1–5)</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <div class="card-accent" style="margin-bottom:20px">
+          <h3>Results — Composite Score</h3>
+          <div class="cols3 mt-sm">
+            <div style="text-align:center">
+              <p class="big-num blue">0.62</p>
+              <p class="big-label">Simple<br>(6 prompts)</p>
+            </div>
+            <div style="text-align:center">
+              <p class="big-num blue">0.61</p>
+              <p class="big-label">Medium<br>(10 prompts)</p>
+            </div>
+            <div style="text-align:center">
+              <p class="big-num amber">0.55</p>
+              <p class="big-label">Complex<br>(9 prompts)</p>
+            </div>
+          </div>
+          <div style="text-align:center;margin-top:16px;padding-top:16px;border-top:1px solid #334155">
+            <p class="big-num green">0.59</p>
+            <p class="big-label">Overall Mean (25 prompts)</p>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Key Observation</h3>
+          <p>Accuracy degrades with complexity — complex intents with ambiguous multi-domain requirements (e.g. "smart hospital with surgical robots") are harder. Identifies where the system needs improvement.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 6: EXPERIMENT 2 ─── -->
+  <div class="slide">
+    <div>
+      <span class="tag">Experiment 2</span>
+      <span class="tag blue">MAS vs. 4 Baselines</span>
+    </div>
+    <h2 class="mt-sm">Does the multi-agent approach beat alternatives?</h2>
+    <div class="cols2">
+      <div>
+        <div class="card">
+          <h3>Design</h3>
+          <ul class="bullets mt-sm">
+            <li><strong>36 intents × 5 reps = 180 runs per system</strong></li>
+            <li>3 complexity levels × 4 scenarios (steady, fault-HA, bursty, sinusoidal)</li>
+            <li>Full end-to-end including Helm deploy to live K8s cluster</li>
+          </ul>
+        </div>
+        <div class="card mt">
+          <h3>The 4 Baselines</h3>
+          <table class="mt-sm">
+            <tr><th>ID</th><th>Approach</th></tr>
+            <tr><td class="bad">B1</td><td>Manual operator — hand-written configs</td></tr>
+            <tr><td class="bad">B2</td><td>OSM stub — legacy MANO orchestrator</td></tr>
+            <tr><td class="bad">B3</td><td>Static HPA — rule-based auto-scaler only</td></tr>
+            <tr><td class="bad">B4</td><td>Single LLM agent — no decomposition</td></tr>
+          </table>
+        </div>
+      </div>
+      <div>
+        <div class="card-accent">
+          <h3>Intent-to-Deploy Accuracy</h3>
+          <table class="mt-sm">
+            <tr><th>System</th><th class="num">Accuracy</th><th class="num">n</th></tr>
+            <tr><td class="bad">B1 Manual</td><td class="num bad">0.000</td><td class="num">180</td></tr>
+            <tr><td class="bad">B2 OSM</td><td class="num bad">0.000</td><td class="num">180</td></tr>
+            <tr><td class="bad">B3 Static HPA</td><td class="num bad">0.000</td><td class="num">180</td></tr>
+            <tr><td class="bad">B4 Single LLM</td><td class="num bad">0.000</td><td class="num">180</td></tr>
+            <tr><td class="best">MAS (ours)</td><td class="num best">0.683</td><td class="num">180</td></tr>
+          </table>
+          <p class="mt-sm" style="font-size:.85rem;color:#64748b">All baselines score 0 because they cannot satisfy the joint condition: deployment success + VNF coverage + policy pass + critic approval.</p>
+        </div>
+        <div class="card mt">
+          <h3>The 31.7% gap — explainable</h3>
+          <p style="font-size:.9rem">7 specific intents account for most failures: <span class="amber">slice-count mismatch</span> (3), <span class="rose">missing core VNFs</span> (1), <span class="violet">coverage threshold too strict</span> (3). Three deterministic fixes could lift accuracy to ~0.78–0.85.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 7: EXPERIMENT 3 ─── -->
+  <div class="slide">
+    <div>
+      <span class="tag">Experiment 3</span>
+      <span class="tag blue">LLM Size vs. Accuracy</span>
+    </div>
+    <h2 class="mt-sm">What is the minimum LLM size to run the MAS effectively?</h2>
+    <div class="cols2">
+      <div class="card">
+        <h3>Setup</h3>
+        <ul class="bullets mt-sm">
+          <li>Same 36 intents × 5 reps = <strong>180 runs per model</strong></li>
+          <li>8 models tested: 3B → 4B → 7B (×2) → 14B → 22B → 30B → 120B</li>
+          <li>Config-only mode (no Helm deploy) — pipeline and scoring unchanged</li>
+          <li>All models hosted locally on GPU server (97 GB VRAM)</li>
+        </ul>
+        <table class="mt">
+          <tr><th>Model</th><th>Size</th><th class="num">Config Intent Acc ↑</th><th class="num">Plan Time (s) ↓</th></tr>
+          <tr><td>Llama 3.2</td><td>3B</td><td class="num bad">0.167</td><td class="num best">5.7</td></tr>
+          <tr><td>Gemma 3</td><td>4B</td><td class="num">0.411</td><td class="num">11.0</td></tr>
+          <tr><td>Qwen2.5</td><td>7B</td><td class="num">0.383</td><td class="num">11.9</td></tr>
+          <tr><td><strong class="green">Qwen2.5</strong></td><td class="green"><strong>14B ★</strong></td><td class="num best">0.694</td><td class="num best">18.6</td></tr>
+          <tr><td>Mistral 3.1</td><td>22B</td><td class="num best">0.700</td><td class="num">33.4</td></tr>
+          <tr><td>Qwen3-Coder</td><td>30B</td><td class="num best">0.700</td><td class="num">19.9</td></tr>
+          <tr><td>GPT-OSS</td><td>120B</td><td class="num amber">0.622</td><td class="num bad">158.9</td></tr>
+        </table>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:20px">
+        <div class="card-accent">
+          <h3>The 14B Sweet Spot</h3>
+          <p style="margin-top:8px">Qwen2.5 14B is <strong class="green">8.5× faster</strong> than 120B (18.6s vs 158.9s) with <strong class="green">higher accuracy</strong> (0.694 vs 0.622).</p>
+          <p class="mt-sm" style="font-size:.9rem;color:#94a3b8">Statistically confirmed: paired Bonferroni p &lt; 0.001 vs 7B. No significant difference vs 22B / 30B / 120B (all p = 1).</p>
+        </div>
+        <div class="card">
+          <h3>Key Findings</h3>
+          <ul class="bullets mt-sm">
+            <li><span class="rose">Sharp cliff below 14B</span> — models under 14B score 0.17–0.41, a gap of &gt;0.28 points</li>
+            <li><span class="amber">Plateau above 14B</span> — 22B / 30B / 120B add no measurable benefit</li>
+            <li><span class="violet">DeepSeek-R1 reasoning</span> helps on complex intents only (+20×) but adds 3× latency</li>
+            <li><span class="blue">Resource accuracy is stable</span> (0.65–0.77) regardless of model — the Resource Allocator is deterministic</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 8: EXPERIMENT 4 SETUP ─── -->
+  <div class="slide">
+    <div>
+      <span class="tag">Experiment 4</span>
+      <span class="tag blue">Closed-Loop Runtime Evaluation</span>
+    </div>
+    <h2 class="mt-sm">Does the closed loop actually close when faults hit the live cluster?</h2>
+    <div class="cols2">
+      <div>
+        <div class="card">
+          <h3>Three Fault Scenarios</h3>
+          <table class="mt-sm">
+            <tr><th>ID</th><th>Fault</th><th>Target</th><th>Mechanism</th></tr>
+            <tr><td class="amber">F1</td><td>CPU spike</td><td>AMF</td><td><code style="font-size:.8rem">stress-ng</code> pod on same node, 4 cores × 60 s</td></tr>
+            <tr><td class="rose">F2</td><td>Pod crash</td><td>UPF</td><td><code style="font-size:.8rem">kubectl delete pod --force</code></td></tr>
+            <tr><td class="violet">F3</td><td>Traffic surge</td><td>UPF</td><td><code style="font-size:.8rem">iperf3</code> client, 50 parallel streams × 60 s</td></tr>
+          </table>
+        </div>
+        <div class="card mt">
+          <h3>Two Systems Compared</h3>
+          <ul class="bullets mt-sm">
+            <li><span class="green">MAS</span> — full pipeline, gate auto-approves (autonomous)</li>
+            <li><span class="rose">B_static</span> — detector runs, but <strong>Planner + executors suppressed</strong>. Kubernetes HPA is the only recovery.</li>
+          </ul>
+          <p class="mt-sm" style="font-size:.88rem;color:#64748b">5 reps × 3 scenarios × 2 systems = 30 runs. Each run: 2 baseline cycles → fault inject → 12 recovery cycles (15 s each).</p>
+        </div>
+      </div>
+      <div class="card">
+        <h3>One Run Lifecycle</h3>
+        <div class="pipeline" style="flex-direction:column;gap:8px;align-items:stretch;margin-top:12px">
+          <div class="pipe-node">1. Bootstrap — load topology from Redis</div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node">2. Baseline cycles × 2 — measure normal alert rate</div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node amber-node">3. Inject fault (F1 / F2 / F3)</div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node">4. Recovery cycles × 12 — capture alerts, plan, actions per cycle</div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node green-node">5. Recovery declared when 2 consecutive clean cycles after executor action</div>
+          <div style="text-align:center;color:#475569">↓</div>
+          <div class="pipe-node">6. Write JSON artifact → aggregate to runs.csv</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 9: EXPERIMENT 4 RESULTS ─── -->
+  <div class="slide">
+    <div>
+      <span class="tag">Experiment 4</span>
+      <span class="tag green">Results</span>
+    </div>
+    <h2 class="mt-sm">Headline: MAS 100% remediation success vs B_static 0%</h2>
+    <div class="cols2">
+      <div>
+        <div class="card-accent" style="text-align:center;padding:28px">
+          <h3>Remediation Success Rate</h3>
+          <div class="cols2 mt" style="gap:16px">
+            <div>
+              <p class="big-num green" style="font-size:3.5rem">15/15</p>
+              <p style="color:#34d399;font-weight:700;margin-top:4px">MAS — Full Pipeline</p>
+              <p style="color:#64748b;font-size:.85rem">All 3 scenarios × 5 reps</p>
+            </div>
+            <div>
+              <p class="big-num rose" style="font-size:3.5rem">0/15</p>
+              <p style="color:#f87171;font-weight:700;margin-top:4px">B_static — No Planner</p>
+              <p style="color:#64748b;font-size:.85rem">HPA only, loop never closes</p>
+            </div>
+          </div>
+          <p class="mt" style="color:#64748b;font-size:.85rem">Fisher exact p &lt; 10⁻⁶ — statistically unambiguous</p>
+        </div>
+        <div class="card mt">
+          <h3>Recovery Time (MAS only)</h3>
+          <table class="mt-sm">
+            <tr><th>Scenario</th><th class="num">Detection (s)</th><th class="num">Recovery (s)</th></tr>
+            <tr><td class="amber">F1 — CPU spike</td><td class="num">6.4 ± 14.2</td><td class="num green">71.1 ± 13.8</td></tr>
+            <tr><td class="rose">F2 — Pod crash</td><td class="num">39.1 ± 37.4</td><td class="num green">82.5 ± 13.3</td></tr>
+            <tr><td class="violet">F3 — Traffic surge</td><td class="num">13.8 ± 30.8</td><td class="num green">78.7 ± 31.7</td></tr>
+          </table>
+          <p class="mt-sm" style="font-size:.85rem;color:#64748b">All 3 scenarios recover in <strong class="green">~70–85 seconds</strong> — stable settling time regardless of fault type.</p>
+        </div>
+      </div>
+      <div class="fig-wrap" style="display:flex;flex-direction:column;gap:16px">
+        <div class="card" style="padding:12px">
+          <img src="experiments/experiment_4/figures/heatmap_success.png" alt="Success heatmap" style="max-height:170px;max-width:100%;border-radius:6px">
+          <p class="fig-caption">Fig 1 — Success heatmap: MAS=100%, B_static=0% across all cells</p>
+        </div>
+        <div class="card" style="padding:12px">
+          <img src="experiments/experiment_4/figures/bar_recovery_time.png" alt="Recovery time" style="max-height:170px;max-width:100%;border-radius:6px">
+          <p class="fig-caption">Fig 2 — Recovery time per scenario (MAS only, ~70–85 s)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 10: ALERT TIMELINE ─── -->
+  <div class="slide">
+    <div>
+      <span class="tag">Experiment 4</span>
+      <span class="tag green">Temporal Dynamics</span>
+    </div>
+    <h2 class="mt-sm">The closed-loop signature — alert timeline</h2>
+    <div class="cols2" style="align-items:start">
+      <div class="fig-wrap">
+        <img src="experiments/experiment_4/figures/alert_timeline_faceted.png" alt="Alert timeline" style="max-height:360px">
+        <p class="fig-caption">Cycle-by-cycle alert count — one line per rep, bold = mean. Red = fault inject. Top row = B_static, Bottom = MAS.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <h3 class="blue">How to read this figure</h3>
+          <ul class="bullets mt-sm">
+            <li><strong>X-axis:</strong> monitoring cycle index (each cycle = ~15 s)</li>
+            <li><strong>Y-axis:</strong> number of anomaly alerts in that cycle</li>
+            <li><strong class="rose">Red dashed line:</strong> fault injection moment</li>
+            <li>Top row = B_static &nbsp;|&nbsp; Bottom row = MAS</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Three visible patterns</h3>
+          <ul class="bullets mt-sm">
+            <li><span class="blue">Before fault:</span> ~2 alerts/cycle background noise — same in both systems (shared detector)</li>
+            <li><span class="amber">At fault inject:</span> alert spike in all 6 panels — both systems detect correctly</li>
+            <li><span class="green">After fault (MAS):</span> alerts drop to baseline within ~3 cycles of executor action — the loop closes</li>
+            <li><span class="rose">After fault (B_static):</span> alerts stay elevated indefinitely — no executor, no closure</li>
+          </ul>
+        </div>
+        <div class="card-accent">
+          <p style="font-size:.95rem">This is the <strong class="green">most communicative single figure</strong> in the experiment — it shows detection → planning → action → settling in one image.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 11: ADDITIONAL ANALYSES ─── -->
+  <div class="slide">
+    <div>
+      <span class="tag">Deep Dive</span>
+      <span class="tag amber">6 Additional Analyses</span>
+    </div>
+    <h2 class="mt-sm">Thesis-strengthening analyses from existing data</h2>
+    <div class="cols2">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <h3>LLM vs Heuristic Split in Exp 4</h3>
+          <p><span class="green">22.4% LLM</span> / <span class="blue">77.6% heuristic</span> across all plans. LLM share grows with complexity: F1 10% → F2 20% → F3 39%. The system is architecture-driven, not LLM-dependent.</p>
+        </div>
+        <div class="card">
+          <h3>Detection Latency (Exp 4)</h3>
+          <p>First alert is always the trigger fingerprint (Δ = 0 across all 30 runs). Latency dominated by Prometheus 30s scrape jitter, not architecture — no meaningful MAS vs B_static difference expected or found.</p>
+        </div>
+        <div class="card">
+          <h3>LLM Pairwise Stats (Exp 3)</h3>
+          <p>14B threshold statistically confirmed: <span class="green">Cohen's d = −0.69, p_bonf &lt; 0.001</span> vs 7B. Plateau past 14B confirmed: all 14B-vs-larger comparisons p = 1, |d| ≤ 0.14.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card">
+          <h3>Per-Intent Failure Analysis (Exp 2)</h3>
+          <p>The 31.7% failure rate is not random — 7 intents account for most. Three root causes: slice-count mismatch, missing core VNFs, coverage threshold. Three deterministic fixes → projected +0.10–0.17 accuracy lift.</p>
+        </div>
+        <div class="card">
+          <h3>Per-VNF Resource Accuracy (Exp 2)</h3>
+          <table class="mt-sm" style="font-size:.85rem">
+            <tr><th>VNF</th><th class="num">Accuracy</th></tr>
+            <tr><td>NSSF / NRF (control plane)</td><td class="num best">0.89–0.92</td></tr>
+            <tr><td>UDR / AUSF / UDM / AMF / SMF</td><td class="num">0.70–0.80</td></tr>
+            <tr><td class="bad">UPF (data plane)</td><td class="num bad">0.63 ← hardest</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Alert Timeline (Exp 4)</h3>
+          <p>Cycle-by-cycle visualization confirms: baseline noise floor ~2 alerts, spike at injection, MAS settles in ~3 cycles post-action, B_static never settles. The most communicative figure in the thesis.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 12: KEY FINDINGS ─── -->
+  <div class="slide">
+    <h2>Key Findings — Summary</h2>
+    <div class="cols2">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card-accent">
+          <h3>Finding 1 — The MAS works end-to-end</h3>
+          <p>68.3% intent-to-deploy accuracy vs <strong class="rose">0%</strong> for all 4 baselines. The multi-agent decomposition is what makes the difference — no existing tool passes the joint condition (deploy + coverage + policy + critic).</p>
+        </div>
+        <div class="card-accent">
+          <h3>Finding 2 — 14B is the production target</h3>
+          <p>Qwen2.5 14B matches or beats the 120B model at <strong class="green">8.5× lower latency</strong>. Statistically confirmed with p_bonf &lt; 0.001. Practical for on-premises telco deployments.</p>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card-accent">
+          <h3>Finding 3 — The closed loop closes</h3>
+          <p><strong class="green">100% remediation success</strong> across all 3 fault types and all 15 runs. B_static recovers on 0/15. The planner-and-executor segment is the differentiator, not the detector alone.</p>
+        </div>
+        <div class="card-accent">
+          <h3>Finding 4 — Architecture, not LLM</h3>
+          <p>The MAS is heuristic-dominated (77.6% of plans). The LLM's value is <span class="amber">scenario-dependent</span>: marginal on simple faults, dominant on complex traffic surge. The architecture works even without a strong LLM.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card mt" style="background:#0f2010;border-color:#16a34a55">
+      <p style="text-align:center;font-size:1.05rem"><span class="green">Bottom line:</span> A multi-agent system with deterministic guard rails and a 14B LLM can autonomously handle the full 5G lifecycle — from a natural-language prompt to live fault recovery — with no human intervention.</p>
+    </div>
+  </div>
+
+  <!-- ─── SLIDE 13: STATUS & NEXT STEPS ─── -->
+  <div class="slide">
+    <h2>Current Status & What's Left</h2>
+    <div class="cols2">
+      <div class="card">
+        <h3 class="green">Completed ✓</h3>
+        <table class="mt-sm">
+          <tr><th>Component</th><th>Status</th></tr>
+          <tr><td>All 11 agents (5 pre + 6 post)</td><td class="green">Done</td></tr>
+          <tr><td>LangGraph orchestration + HITL</td><td class="green">Done</td></tr>
+          <tr><td>Remote K8s + Prometheus integration</td><td class="green">Done</td></tr>
+          <tr><td>Redis shared state</td><td class="green">Done</td></tr>
+          <tr><td>225 unit tests</td><td class="green">All passing</td></tr>
+          <tr><td>Experiment 1 — Intent accuracy</td><td class="green">Done</td></tr>
+          <tr><td>Experiment 2 — MAS vs 4 baselines</td><td class="green">Done</td></tr>
+          <tr><td>Experiment 3 — LLM size comparison</td><td class="green">Done</td></tr>
+          <tr><td>Experiment 4 — Closed-loop runtime</td><td class="green">Done</td></tr>
+          <tr><td>6 additional statistical analyses</td><td class="green">Done</td></tr>
+        </table>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div class="card">
+          <h3 class="amber">Remaining</h3>
+          <ul class="bullets mt-sm">
+            <li><strong>Thesis writing</strong> — all data and figures are ready, chapters need to be written</li>
+            <li>Chapter 5 (Experiments) — integrate the 6 new analyses and recommended figures</li>
+            <li>Chapter 6 (Discussion / Threats to Validity)</li>
+            <li>Abstract, Introduction, Conclusion polish</li>
+          </ul>
+        </div>
+        <div class="card-accent">
+          <h3>Questions for You</h3>
+          <ul class="bullets mt-sm">
+            <li>Are the 4 experiments sufficient, or do you want an additional ablation?</li>
+            <li>Should the no-UE-traffic limitation in Exp 4 be addressed with another run?</li>
+            <li>What is the submission deadline?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /deck -->
+
+<nav class="nav">
+  <button onclick="go(-1)" title="Previous (←)">&#8592;</button>
+  <span id="slide-counter">1 / 13</span>
+  <button onclick="go(1)" title="Next (→)">&#8594;</button>
+</nav>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total  = slides.length;
+  let cur = 0;
+
+  function go(delta) {
+    slides[cur].classList.remove('active');
+    cur = (cur + delta + total) % total;
+    slides[cur].classList.add('active');
+    document.getElementById('slide-counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('progress').style.width = `${(cur + 1) / total * 100}%`;
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(1);
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                   go(-1);
+  });
+
+  // Init progress
+  document.getElementById('progress').style.width = `${1 / total * 100}%`;
+</script>
+</body>
+</html>

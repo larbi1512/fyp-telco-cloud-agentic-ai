@@ -1,0 +1,1164 @@
+{
+  "run_id": "F3-MAS-rep4-5dfb7b",
+  "scenario": "F3",
+  "system": "MAS",
+  "rep": 4,
+  "fault": {
+    "scenario": "F3",
+    "fault_type": "traffic_surge",
+    "iperf_pod": "f3-iperf-807dc7",
+    "duration_s": 60,
+    "streams": 50,
+    "started_at": "2026-05-10T14:50:55.049628+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-10T14:50:55.101585+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-10T14:47:41.845117+00:00",
+      "finished_at": "2026-05-10T14:48:30.425213+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T14:47:46.913380-a39afd10",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "SMF CPU utilization spiked to 2.06\u202f% (z\u2011score\u202f4.6) while baseline is ~0.008\u202f%. Although the absolute value is low, it deviates sharply from the recent 15\u2011minute trend, indicating abnormal under\u2011utilisation of the SMF.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.06,
+              "baseline": 0.0078,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible traffic starvation to the SMF VNF \u2013 network_rx_mbps for SMF is 0\u202fMbps and upstream NRF/UDR show minimal traffic. This may be caused by a broken service\u2011mesh link, mis\u2011configured network policy, or a recent scaling event that left the SMF pod without sufficient request load.",
+          "suggested_actions": [
+            "Verify end\u2011to\u2011end connectivity from UDR/NRF to SMF (check service mesh routes, network policies, and firewall rules).",
+            "Inspect recent scaling or deployment events for the SMF pod; if a new replica was added, ensure traffic routing is updated.",
+            "Correlate with signaling metrics (e.g., NAS/NGAP request rates) to confirm traffic drop.",
+            "If traffic is expected to be higher, consider scaling out SMF replicas or increasing its CPU request/limit."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T14:55:12.834219-smf-001",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero, indicating that upstream NRF/UDR traffic is not reaching the SMF. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change.",
+        "confidence": 0.78,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_network_policy",
+            "params": {
+              "policy_name": "smf-allow-udr-nrf",
+              "desired_state": "present",
+              "ingress_from": [
+                "oai-udr",
+                "oai-nrf"
+              ],
+              "port": 80
+            },
+            "reason": "Ensure that the service\u2011mesh/network policy permits traffic from UDR/NRF to SMF, fixing the most likely cause of traffic starvation."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rolling_restart",
+            "params": {},
+            "reason": "Apply the corrected network policy and re\u2011register the SMF with the service mesh; a rolling restart clears stale state and forces new routing tables."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-smf",
+            "action": "scale_replicas",
+            "params": {
+              "replicas": 2
+            },
+            "reason": "If traffic remains low after the config fix, adding a second SMF replica forces the load\u2011balancer to re\u2011evaluate endpoints and can surface routing issues while providing capacity for future load."
+          }
+        ],
+        "expected_outcome": "Network receive metric for oai-smf rises above 0.1\u202fMbps, signaling metrics (NAS/NGAP request rates) return to normal levels, and CPU utilization settles back to its baseline (~0.01\u202f%). The SMF becomes reachable from UDR/NRF and service continuity is restored.",
+        "rollback_plan": "Revert the network policy to its previous version (using the stored ConfigMap backup), roll back the oai-smf Deployment to the prior Helm revision, and scale the replica count back to 1 if the additional replica causes instability.",
+        "validation_metric": "oai-smf.network_rx_mbps > 0.1 for 5 consecutive minutes AND oai-smf.cpu_utilization within 2\u03c3 of baseline (\u22480.01\u202f%)",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:48:15.332591"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:48:15.386484"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 1,
+        "execution_results": 2
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-10T14:48:45.440338+00:00",
+      "finished_at": "2026-05-10T14:49:39.362465+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T14:48:49.345124-dd41ce57",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "The reported memory_utilization for oai-udr is 1.82\u202f% which yields a z\u2011score of 17.1 against the 15\u2011minute baseline, triggering a critical alert. However, the baseline value (36\u202f540\u202f416) appears to be in raw bytes while the current value is expressed as a percentage, indicating a unit mismatch.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.82,
+              "baseline": 36540416.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Instrumentation or configuration error causing inconsistent units for the oai-udr memory utilization metric, leading to a false positive outlier detection.",
+          "suggested_actions": [
+            "Verify the metric definition for oai-udr memory utilization in the monitoring stack (Prometheus/collectd).",
+            "Ensure the collector reports the same unit (e.g., bytes or percentage) as the baseline used by the anomaly detector.",
+            "Check the pod's memory limits and actual usage via `kubectl top pod` or cAdvisor to confirm real memory consumption.",
+            "Adjust the alert threshold or baseline calculation to match the correct unit if needed.",
+            "Document the metric schema to prevent future mismatches."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T14:48:49.345124-6b2909d4",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr network_rx_mbps dropped to 0.001\u202fMbps (z=18.8) far below the 15\u2011minute baseline of 0.0082\u202fMbps. Critical impact on UDR data plane.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0082,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Upstream traffic starvation \u2013 likely a UPF forwarding issue, mis\u2011routed service chain, or network interface problem causing the UDR to receive virtually no packets.",
+          "suggested_actions": [
+            "Verify UPF to UDR routing tables and PFCP session bindings",
+            "Check UDR pod network interface status and link errors",
+            "Inspect UPF throughput and queue depth for congestion or drops",
+            "Review recent configuration changes to service mesh / network policies",
+            "Correlate with other VNFs (e.g., SMF, AMF) for similar Rx drops",
+            "Collect UDR logs for error messages or connection resets"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00.123456-smf-002",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero, indicating that upstream NRF/UDR traffic is not reaching the SMF. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change.",
+        "confidence": 0.86,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_network_policy",
+            "params": {
+              "policy_name": "allow-nrf-to-smf",
+              "namespace": "5g-core",
+              "ingress": [
+                {
+                  "from": [
+                    {
+                      "podSelector": {
+                        "matchLabels": {
+                          "app": "oai-nrf"
+                        }
+                      }
+                    },
+                    {
+                      "podSelector": {
+                        "matchLabels": {
+                          "app": "oai-udr"
+                        }
+                      }
+                    }
+                  ],
+                  "ports": [
+                    {
+                      "protocol": "TCP",
+                      "port": 80
+                    }
+                  ]
+                }
+              ]
+            },
+            "reason": "Fix broken network policy that is blocking traffic from NRF/UDR to SMF, which is the likely cause of the observed traffic starvation."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the corrected network policy and clear any stale state in the SMF pods."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-smf",
+            "action": "scale_replicas",
+            "params": {
+              "replicas": 3
+            },
+            "reason": "Provide additional SMF instances to handle any restored traffic and avoid future under\u2011utilisation after the network fix."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises to \u22650.008\u202fMbps (baseline) and CPU utilization returns to ~0.008\u202f% with stable signaling request rates. Traffic flow from NRF/UDR to SMF is restored, eliminating the under\u2011utilisation anomaly.",
+        "rollback_plan": "If the network policy change or scaling introduces instability, execute a rollback of the oai-smf Helm release to the previous revision (helm rollback oai-smf <previous_revision>) and revert the replica count to the original value. Then restart the SMF deployment.",
+        "validation_metric": "oai-smf.network_rx_mbps (target \u22650.008) and oai-smf.cpu_utilization (target \u2248 baseline 0.008\u202f%) within 5 minutes after actions complete.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:49:24.286467"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:49:24.323923"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 4
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-10T14:49:54.377596+00:00",
+      "finished_at": "2026-05-10T14:50:40.010471+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:30:00.000000-smf-001",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "apply_network_policy",
+            "params": {
+              "config_map": "smf-network-policy",
+              "policy_key": "allow-nrf-udr-to-smf",
+              "policy_value": "allow"
+            },
+            "reason": "Restore correct service\u2011mesh routing and network policy so upstream NRF/UDR traffic can reach the SMF pods."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Reload SMF pods to pick up the corrected configuration and re\u2011establish connections."
+          }
+        ],
+        "expected_outcome": "SMF receives upstream traffic; network_rx_mbps rises to \u22650.008\u202fMbps (baseline) and CPU utilization returns to ~0.01\u202f%. Downstream VNFs (AMF, UPF) resume normal signaling flow and SLA metrics improve.",
+        "rollback_plan": "If traffic does not resume after the restart, revert the ConfigMap to its previous version using `kubectl rollout undo deployment/oai-smf` or Helm rollback, then trigger another rollout restart to restore the prior state.",
+        "validation_metric": "SMF network_rx_mbps > 0.008\u202fMbps for 5 consecutive minutes and CPU utilization < 0.05\u202f% (matching baseline).",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-10T14:50:24.927724"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:50:24.970791"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 6
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-10T14:50:55.106183+00:00",
+      "finished_at": "2026-05-10T14:51:41.598702+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T14:50:59.655793-ce449d20",
+          "type": "point_outlier",
+          "confidence": 0.65,
+          "description": "CPU utilization of oai-smf reported 1.05\u202f% (z=64.8) while the 15\u2011minute baseline is 0.0078\u202f%. This is a statistical outlier relative to its recent low\u2011usage pattern.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 1.05,
+              "baseline": 0.0078,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Likely a metric collection artifact or a brief background task in the SMF causing a sudden spike from an otherwise idle state. The SMF\u2019s CPU usage is normally near\u2011zero, so any small absolute increase appears as a large deviation.",
+          "suggested_actions": [
+            "Inspect the SMF pod logs around the timestamp for any scheduled jobs or GC activity.",
+            "Validate the monitoring agent configuration for oai-smf to rule out sampling or reporting errors.",
+            "If the spike is legitimate, consider adjusting the baseline window or adding a low\u2011threshold alert to avoid false positives.",
+            "Optionally, increase the CPU request/limit if the SMF is expected to handle occasional bursts."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:45:00.000000-smf-002",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_configmap",
+            "params": {
+              "configmap": "smf-config",
+              "updates": {
+                "upstream_nrf_service": "nrf-service",
+                "upstream_udr_service": "udr-service",
+                "service_mesh_route": "smf-to-nrf-udr"
+              }
+            },
+            "reason": "Fix broken service\u2011mesh route / network policy that is blocking traffic from NRF/UDR to SMF."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the corrected configuration and clear any stale state."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-smf",
+            "action": "set_replicas",
+            "params": {
+              "replicas": 2
+            },
+            "reason": "If traffic remains starved after config fix, adding a second SMF replica ensures load distribution and provides redundancy while the root cause is investigated."
+          }
+        ],
+        "expected_outcome": "Network receive throughput for SMF (network_rx_mbps) rises above 0.01\u202fMbps, CPU utilization returns to the normal ultra\u2011low baseline (<0.1\u202f%), signaling request rates (NAS/NGAP) resume normal levels, and downstream SLA metrics (e2e latency, registration success) become compliant.",
+        "rollback_plan": "Revert the smf-config ConfigMap to its previous version, scale the oai-smf deployment back to its original replica count (1), and perform a rollout restart to apply the rollback. This restores the pre\u2011remediation state with minimal impact.",
+        "validation_metric": "oai-smf.network_rx_mbps > 0.01 && oai-smf.cpu_utilization < 0.1",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:51:26.523463"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:51:26.561013"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 4,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:51:56.613857+00:00",
+      "finished_at": "2026-05-10T14:52:54.816475+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T14:52:01.134831-e9ef7754",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "Memory utilization reported as 1.83% with an anomalously high baseline value, causing a statistical outlier detection. Current utilization is stable and within normal range.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.83,
+              "baseline": 36526080.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Baseline configuration error: baseline stored in absolute memory units (bytes) while the metric is reported as a percentage, leading to an inflated z\u2011score and false positive detection.",
+          "suggested_actions": [
+            "Validate and correct the baseline unit for the memory_utilization metric",
+            "Recalibrate the anomaly detection model for percentage\u2011based metrics",
+            "Monitor memory usage for any real increase over the next 30 minutes",
+            "Document the incident and close the alert if no further deviation is observed"
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T14:52:01.134831-69aa042c",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "The oai-nrf VNF reported a network_rx_mbps value of 0.008\u202fMbps, which is a statistical outlier (z=3.8) compared to its 15\u2011minute baseline of 0.0073\u202fMbps.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.008,
+              "baseline": 0.0073,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Transient traffic spike or signaling storm targeting the NRF (e.g., burst of UE registration requests) causing a brief increase in inbound network traffic. Could also be a measurement artifact due to a mis\u2011routed packet flow or temporary UPF congestion upstream of the NRF.",
+          "suggested_actions": [
+            "Examine NRF logs for a sudden increase in registration or discovery requests around the timestamp.",
+            "Correlate with UE activity and SMF/AMF logs to identify a possible registration storm.",
+            "Inspect UPF throughput and queue depth to verify if upstream congestion contributed to the spike.",
+            "Validate network routing / service mesh configuration for the NRF to rule out mis\u2011routed traffic.",
+            "If a storm is confirmed, apply rate\u2011limiting or back\u2011off mechanisms on the offending VNF(s)."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T14:52:01.134831-924b29f4",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "UDR network receive throughput dropped to 0.001\u202fMbps (z\u2011score\u202f33.5) while all other VNF metrics remain normal.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0082,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible upstream traffic starvation: UPF or SMF not forwarding user plane traffic to the UDR, or a network interface/route mis\u2011configuration causing the UDR to receive near\u2011zero packets.",
+          "suggested_actions": [
+            "Verify UPF \u2192 UDR routing tables and GTP-U tunnels are up.",
+            "Check UDR pod logs for errors or connection timeouts.",
+            "Inspect network interface status on the UDR pod (ifconfig / ip link).",
+            "Confirm that traffic generators or real UE sessions are active.",
+            "Review firewall / security policies that might block inbound traffic to the UDR."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:30:00.000000-smf-001",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_service_mesh_route",
+            "params": {
+              "config_map": "smf-network-config",
+              "key": "allowed_routes",
+              "value": "nrfs,udrs"
+            },
+            "reason": "Fix suspected broken service\u2011mesh route / network policy that is blocking traffic to SMF."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and clear any stale state."
+          },
+          {
+            "order": 3,
+            "type": "rollback",
+            "target": "oai-smf",
+            "action": "helm_release_rollback",
+            "params": {
+              "release_name": "oai-smf",
+              "revision": 2
+            },
+            "reason": "If connectivity is still absent after config change and restart, revert to the last known good Helm revision."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises above 0.01\u202fMbps and CPU utilization returns to its normal ultra\u2011low baseline (~0.008\u202f%). Traffic flow from NRF/UDR to SMF is restored.",
+        "rollback_plan": "Revert the SMF Helm release to revision 2, which contains the previous service\u2011mesh configuration. Restore the original ConfigMap (if it was overwritten) and perform a rollout restart. Verify that the rollback does not affect other VNFs.",
+        "validation_metric": "oai-smf.network_rx_mbps > 0.01 and oai-smf.cpu_utilization within 0\u20110.02\u202f% for two consecutive 5\u2011minute windows.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-10T14:52:39.606894"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:52:39.638826"
+        },
+        {
+          "action_type": "rollback",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "helm rollback failed for 'oai-smf': Command '['helm', 'rollback', 'oai-smf', '2', '-n', 'oai-5g']' returned non-zero exit status 1.",
+          "timestamp": "2026-05-10T14:52:39.776596"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 11
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:53:09.831621+00:00",
+      "finished_at": "2026-05-10T14:53:46.971261+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T14:53:14.556960-ef8fb3c8",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "CPU utilization of oai-udr reported at 12.12\u202f% (z\u2011score\u202f=\u202f3.3) which deviates sharply from the 15\u2011minute baseline of 0.18\u202f%. Other recent samples show a stable range of 10\u201112\u202f%, indicating the baseline may be outdated or mis\u2011computed.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 12.12,
+              "baseline": 0.1838,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier triggered by an outdated/incorrect baseline; possible recent increase in UDR request load or measurement drift rather than a true fault.",
+          "suggested_actions": [
+            "Re\u2011calculate the 15\u2011minute baseline using the latest data to verify if the outlier persists.",
+            "Correlate CPU usage with upstream traffic metrics (e.g., UE registration rate, API request count) to confirm workload increase.",
+            "If the elevated CPU level is sustained, consider scaling out oai\u2011udr replicas or increasing its CPU limit.",
+            "Monitor the metric for the next 10\u201115\u202fminutes to determine if this is a transient spike."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:45:00Z-smf-001",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_service_mesh_route",
+            "params": {
+              "configMap": "smf-mesh-config",
+              "key": "routes",
+              "value": "corrected"
+            },
+            "reason": "Fix broken service\u2011mesh routing / network policy that is starving the SMF of traffic, which caused the CPU utilization outlier."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rolling_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and clear any stale state after the routing fix."
+          },
+          {
+            "order": 3,
+            "type": "rollback",
+            "target": "oai-smf",
+            "action": "helm_rollback",
+            "params": {
+              "revision": 2
+            },
+            "reason": "Revert to the previous known\u2011good Helm release if the config change or restart does not restore traffic."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises above the baseline (>= 0.01\u202fMbps) and CPU utilization returns to its normal ultra\u2011low level (<\u202f0.1\u202f%). Service\u2011mesh connectivity is restored, eliminating traffic starvation.",
+        "rollback_plan": "If after the restart the SMF still shows zero inbound traffic, execute a Helm rollback to revision 2 and restore the previous ConfigMap version. Verify that the rollback completes without errors before proceeding.",
+        "validation_metric": "SMF network_rx_mbps > 0.01\u202fMbps and CPU utilization < 0.1\u202f% within 5 minutes of action completion",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:53:31.634942"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:53:31.717540"
+        },
+        {
+          "action_type": "rollback",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "helm rollback failed for 'oai-smf': Command '['helm', 'rollback', 'oai-smf', '2', '-n', 'oai-5g']' returned non-zero exit status 1.",
+          "timestamp": "2026-05-10T14:53:31.871216"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 14
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:54:01.986447+00:00",
+      "finished_at": "2026-05-10T14:54:30.271380+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:00:00Z-smf-002",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "patch_service_mesh_route",
+            "params": {
+              "virtual_service": "smf-vs",
+              "destination_host": "oai-smf",
+              "allowed_sources": [
+                "oai-nrf",
+                "oai-udr"
+              ]
+            },
+            "reason": "Restore correct service\u2011mesh routing / network policy so that NRF and UDR traffic can reach the SMF pod."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated mesh configuration and clear any stale state that may be preventing traffic flow."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises from 0\u202fMbps to a value consistent with upstream traffic (\u22650.01\u202fMbps) and CPU utilization returns to its baseline (~0.01\u202f%). End\u2011to\u2011end signaling metrics (NAS/NGAP request rates) resume normal levels.",
+        "rollback_plan": "If the SMF does not recover or new issues appear, revert the service\u2011mesh ConfigMap to its previous version using a helm rollback or kubectl apply of the saved backup, then restart the SMF deployment.",
+        "validation_metric": "oai-smf.network_rx_mbps > 0.01\u202fMbps for three consecutive 1\u2011minute intervals",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:54:15.194099"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:54:15.227506"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 16
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:54:45.286537+00:00",
+      "finished_at": "2026-05-10T14:55:17.124342+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-smf-003",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_config_map",
+            "params": {
+              "config_map": "smf-network-config",
+              "data": {
+                "service_mesh_route": "enabled",
+                "network_policy": "allow-nrf-udr"
+              }
+            },
+            "reason": "Restore the missing service\u2011mesh route / network policy that is blocking traffic from NRF/UDR to SMF."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the corrected ConfigMap and clear any stale state in the SMF pods."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-smf",
+            "action": "scale_replicas",
+            "params": {
+              "replicas": 2
+            },
+            "reason": "Add a second SMF replica to guarantee availability once traffic is restored and to avoid future starvation if load increases."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises above 0.1\u202fMbps, CPU utilization returns to ~0.01\u202f% (baseline), and signaling request rates (NAS/NGAP) resume normal levels. The SMF service becomes reachable from NRF/UDR.",
+        "rollback_plan": "If the ConfigMap update causes errors, revert the ConfigMap to its previous version (kubectl rollout undo configmap/smf-network-config). If the restart introduces instability, execute a Helm rollback to the last known good release of oai-smf (helm rollback oai-smf <previous_revision> -n oai-5g). Finally, if scaling creates resource pressure, scale the replica count back to 1.",
+        "validation_metric": "oai-smf network_rx_mbps > 0.1\u202fMbps AND oai-smf cpu_utilization < 0.05\u202f% within 5\u202fminutes of action completion.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-10T14:55:02.027966"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:55:02.086292"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 18
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:55:32.139503+00:00",
+      "finished_at": "2026-05-10T14:56:07.718857+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T14:55:36.560333-516f3528",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "The NRF network_rx_mbps metric spiked to 0.008\u202fMbps, yielding a z\u2011score of 5.3 against a very low 15\u2011minute baseline (0.0074\u202fMbps). All other VNF metrics (CPU, memory, pod restarts) are at or near zero, indicating the NRF is largely idle.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.008,
+              "baseline": 0.0074,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier caused by extremely low traffic volume and minimal variance in the NRF's inbound traffic. The high z\u2011score is likely an artifact of the baseline calculation rather than a genuine performance issue. Possible mis\u2011configuration of metric collection or a brief registration burst from a UE/AMF could also trigger the spike.",
+          "suggested_actions": [
+            "Verify the NRF traffic source: check recent registration or discovery requests from AMF/UDR.",
+            "Inspect UPF and SMF metrics for correlated traffic spikes that could explain the NRF inbound burst.",
+            "Review the baseline calculation window and variance thresholds for low\u2011traffic metrics; consider increasing the window or applying a minimum variance floor.",
+            "Confirm that the monitoring agent for oai-nrf is correctly reporting network_rx_mbps (no duplicate or stale samples).",
+            "If the spike persists, perform a packet capture on the NRF interface to validate actual inbound throughput."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:30:00Z-smf-004",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "The SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_service_mesh_route",
+            "params": {
+              "route_name": "smf-to-nrf",
+              "new_destination": "oai-smf-service",
+              "policy_name": "allow-nrf-to-smf"
+            },
+            "reason": "Fix the broken service\u2011mesh route / network policy that is blocking traffic from NRF/UDR to SMF."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the corrected configuration and clear any stale state in the SMF pods."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-smf",
+            "action": "increase_replicas",
+            "params": {
+              "replicas": 3
+            },
+            "reason": "Ensure the SMF deployment has enough replicas so that the service\u2011mesh controller updates routing tables for all pods; this also helps verify that traffic routing works after the config fix."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises above 0.01\u202fMbps, CPU utilization returns to its normal ultra\u2011low baseline (<0.1\u202f%), and signaling traffic (NAS/NGAP) resumes normal rates.",
+        "rollback_plan": "If any step causes instability, revert the ConfigMap to its previous version via a config_change rollback, then perform a rollout_restart of oai-smf. If the replica count increase leads to scheduling issues, scale the deployment back to its original replica count (e.g., 1) using a horizontal_scale action.",
+        "validation_metric": "oai-smf.network_rx_mbps > 0.01 && oai-smf.cpu_utilization < 0.1",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:55:52.642805"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:55:52.680423"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 9,
+        "execution_results": 20
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:56:22.734030+00:00",
+      "finished_at": "2026-05-10T14:56:53.518345+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:30:00Z-smf-001",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "The SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_network_policy",
+            "params": {
+              "policy_name": "smf-ingress",
+              "allow_from": [
+                "oai-nrf",
+                "oai-udr"
+              ],
+              "port": 80,
+              "protocol": "TCP"
+            },
+            "reason": "Restore correct ingress network policy / service\u2011mesh routing so NRF and UDR can forward traffic to SMF."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rolling_restart",
+            "params": {},
+            "reason": "Apply the updated network policy and clear any stale state in the SMF pods."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-smf",
+            "action": "set_replicas",
+            "params": {
+              "replicas": 3
+            },
+            "reason": "After traffic is restored, ensure sufficient SMF capacity and trigger the updated routing rules across all replicas."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises to normal levels (>0.01\u202fMbps) and CPU utilization falls back to its baseline (~0.01\u202f%). Upstream NRF/UDR traffic flows correctly through the service mesh, eliminating the starvation condition.",
+        "rollback_plan": "If any step fails, revert the ConfigMap/network policy to its previous version, execute a rollback of the oai-smf Helm release to the prior revision, and scale the deployment back to its original replica count (1).",
+        "validation_metric": "network_rx_mbps of oai-smf > 0.01 Mbps for 5 consecutive minutes",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:56:38.434479"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:56:38.468753"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 9,
+        "execution_results": 22
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:57:08.533508+00:00",
+      "finished_at": "2026-05-10T14:57:38.210029+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:30:00Z-smf-002",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "The SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_config_map",
+            "params": {
+              "config_map": "smf-mesh-config",
+              "data": {
+                "service_mesh_route": "allow nrf->smf",
+                "network_policy": "allow from namespace nrf"
+              }
+            },
+            "reason": "Restore correct service\u2011mesh routing and network policy so that upstream NRF/UDR traffic can reach the SMF pod."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and clear any stale state that might still block traffic."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises above the minimal operational threshold (>=0.01\u202fMbps), CPU utilization returns to its normal idle baseline (<0.1\u202f%), and downstream signaling metrics (NAS/NGAP request rates) resume normal levels.",
+        "rollback_plan": "If network_rx_mbps remains at zero after the restart, revert the ConfigMap 'smf-mesh-config' to its previous version and perform another rollout restart. If the issue persists, execute a Helm rollback of the oai-smf release to the prior revision and restart the deployment.",
+        "validation_metric": "oai-smf.network_rx_mbps > 0.01\u202fMbps and oai-smf.cpu_utilization < 0.1\u202f% within 5 minutes of action completion",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-10T14:57:23.105875"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:57:23.138483"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 9,
+        "execution_results": 24
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T14:57:53.225186+00:00",
+      "finished_at": "2026-05-10T14:58:24.610505+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:45:00Z-smf-001",
+        "triggered_by": "2026-05-10T14:47:46.913380-a39afd10",
+        "diagnosis": "The SMF VNF is experiencing traffic starvation. CPU utilization spiked relative to its ultra\u2011low baseline while network_rx_mbps is zero. The most probable root cause is a broken service\u2011mesh route or mis\u2011configured network policy introduced by a recent scaling/deployment change, preventing upstream NRF/UDR traffic from reaching the SMF.",
+        "confidence": 0.88,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-smf",
+            "action": "update_network_policy",
+            "params": {
+              "policy_name": "smf-allow-nrf-udr",
+              "namespace": "5g-core",
+              "ingress_rules": [
+                {
+                  "from": [
+                    {
+                      "pod_selector": {
+                        "matchLabels": {
+                          "app": "oai-nrf"
+                        }
+                      }
+                    },
+                    {
+                      "pod_selector": {
+                        "matchLabels": {
+                          "app": "oai-udr"
+                        }
+                      }
+                    }
+                  ],
+                  "ports": [
+                    {
+                      "protocol": "TCP",
+                      "port": 80
+                    },
+                    {
+                      "protocol": "TCP",
+                      "port": 443
+                    }
+                  ]
+                }
+              ]
+            },
+            "reason": "A missing or overly restrictive NetworkPolicy is likely blocking traffic from NRF/UDR to SMF, causing the observed starvation."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-smf",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the corrected network policy and clear any stale iptables state."
+          },
+          {
+            "order": 3,
+            "type": "horizontal_scale",
+            "target": "oai-smf",
+            "action": "scale_replicas",
+            "params": {
+              "replicas": 2
+            },
+            "reason": "If traffic load is expected to increase, adding a second SMF replica ensures capacity and reduces risk of future starvation after scaling events."
+          }
+        ],
+        "expected_outcome": "SMF network_rx_mbps rises above the idle threshold (\u22650.1\u202fMbps) and CPU utilization returns to its normal near\u2011zero baseline (<0.1\u202f%). Subsequent SMF replicas report healthy inbound traffic and the core\u2011network signalling path is restored.",
+        "rollback_plan": "Revert the NetworkPolicy change by restoring the previous ConfigMap version (helm rollback or kubectl apply -f previous\u2011policy.yaml) and perform another rollout restart of oai-smf to re\u2011apply the original policy.",
+        "validation_metric": "smf_network_rx_mbps > 0.1 Mbps && smf_cpu_utilization < 0.1% within 5 minutes after action execution",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-smf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T14:58:09.534762"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-smf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-smf",
+          "timestamp": "2026-05-10T14:58:09.571895"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 9,
+        "execution_results": 26
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 0,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 4
+  },
+  "trigger_fingerprint": "point_outlier|CPU|cpu_utilization",
+  "timing": {
+    "fault_started_at": "2026-05-10T14:50:55.049628+00:00",
+    "first_alert_at": "2026-05-10T14:50:55.106183+00:00",
+    "first_plan_at": "2026-05-10T14:50:55.106183+00:00",
+    "first_action_at": "2026-05-10T14:50:55.106183+00:00",
+    "recovered_at": "2026-05-10T14:54:45.286537+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 0.056555,
+    "plan_latency_s": 0.0,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 230.236909,
+    "remediation_success": true,
+    "false_positives_pre_fault": 2,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-upf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-10T14:58:24.695089+00:00"
+}

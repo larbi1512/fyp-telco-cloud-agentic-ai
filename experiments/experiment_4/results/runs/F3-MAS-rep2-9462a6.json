@@ -1,0 +1,745 @@
+{
+  "run_id": "F3-MAS-rep2-9462a6",
+  "scenario": "F3",
+  "system": "MAS",
+  "rep": 2,
+  "fault": {
+    "scenario": "F3",
+    "fault_type": "traffic_surge",
+    "iperf_pod": "f3-iperf-392ed4",
+    "duration_s": 60,
+    "streams": 50,
+    "started_at": "2026-05-06T21:00:08.562233+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-06T21:00:08.614518+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-06T20:58:34.219944+00:00",
+      "finished_at": "2026-05-06T20:58:52.518300+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:58:34.432382-e3afc1be",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nssf memory_utilization = 2.51 % (z=13.0 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.51,
+              "baseline": 3878912.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:58:34.432382-e3afc1be",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "The oai-nssf VNF is showing a critical point outlier in memory_utilization (2.51%) compared to its 15-minute baseline (3878912%), which is highly unusual and suggests either a misconfiguration, a false metric reporting, or an underlying system anomaly. The CPU utilization is normal at 2.86%, and there are no pod restarts, indicating no immediate crash or restart event. Given that similar past incidents have failed due to container naming mismatches in oai-smf, we must proceed cautiously.",
+        "confidence": 0.95,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-nssf",
+            "action": "verify_and_correct_memory_metrics_config",
+            "params": {
+              "configmap_key": "metrics.memory.enabled"
+            },
+            "reason": "The extreme deviation in memory_utilization suggests a possible misconfiguration in how metrics are being reported or collected. Verifying the config will help determine if this is a false positive."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-nssf",
+            "action": "roll_deployment_to_clear_stale_state",
+            "params": {},
+            "reason": "Restarting the deployment will clear any potential stale state or memory leaks that may be causing the anomalous reading without risking further configuration errors."
+          }
+        ],
+        "expected_outcome": "Memory utilization should normalize after verifying the metrics configuration and restarting the pod. If the issue persists, it may indicate a deeper problem requiring manual investigation.",
+        "rollback_plan": "If the restart causes instability, rollback the oai-nssf deployment to the previous Helm revision to restore known stable state.",
+        "validation_metric": "memory_utilization after restart and recheck of metrics config"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-06T20:58:37.441816"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-nssf",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-nssf",
+          "timestamp": "2026-05-06T20:58:37.480138"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 1,
+        "execution_results": 2
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T20:59:07.533425+00:00",
+      "finished_at": "2026-05-06T20:59:23.060572+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T20:59:07.573918-0306e4ef",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-gnb cpu_utilization = 6.91 % (z=13.9 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 6.91,
+              "baseline": 0.183,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:59:07.573918-5bd34862",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr cpu_utilization = 11.65 % (z=3.7 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 11.65,
+              "baseline": 0.0202,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:59:07.573918-5dbfa6a7",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nssf cpu_utilization = 2.52 % (z=13.8 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.52,
+              "baseline": 0.0047,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T20:59:07.573918-80d7b52e",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udm network_rx_mbps = 0.001 Mbps (z=6.3 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0053,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:59:07.793830-7178e52d",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T20:59:08.021726"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 5,
+        "execution_results": 3
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-06T20:59:38.075703+00:00",
+      "finished_at": "2026-05-06T20:59:53.522871+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T20:59:38.309879-735f737e",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T20:59:38.487078"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 5,
+        "execution_results": 4
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-06T21:00:08.619046+00:00",
+      "finished_at": "2026-05-06T21:00:24.153832+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T21:00:08.660257-31ad7022",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udm cpu_utilization = 8.73 % (z=4.1 vs 15m baseline), severity=medium",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 8.73,
+              "baseline": 0.2009,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T21:00:08.660257-be370df3",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr network_rx_mbps = 0.001 Mbps (z=7.3 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0006,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on network_rx_mbps relative to its 15-minute baseline",
+          "suggested_actions": [
+            "check_traffic_source",
+            "inspect_upf_throughput",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:00:08.872002-cdfaa8f9",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:00:09.115894"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 5
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:00:39.168980+00:00",
+      "finished_at": "2026-05-06T21:00:54.661029+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:00:39.398016-54c94e65",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:00:39.577992"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 6
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:01:09.676165+00:00",
+      "finished_at": "2026-05-06T21:01:25.175038+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T21:01:09.719657-b51e4d05",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udm memory_utilization = 2.64 % (z=8.9 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 2.64,
+              "baseline": 31326208.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on memory_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "increase_memory_limit",
+            "investigate_memory_leak",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:01:09.904478-22f0c077",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:01:10.137125"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 7
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:01:40.190182+00:00",
+      "finished_at": "2026-05-06T21:01:55.633992+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:01:40.415678-3d6d6f31",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:01:40.596213"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:02:10.649136+00:00",
+      "finished_at": "2026-05-06T21:02:26.162429+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-06T21:02:10.689404-443482a8",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-udr cpu_utilization = 11.44 % (z=7.1 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 11.44,
+              "baseline": 0.0202,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        },
+        {
+          "alert_id": "2026-05-06T21:02:10.689404-e4f60991",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nssf cpu_utilization = 0.84 % (z=38.9 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.84,
+              "baseline": 0.0047,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Statistical outlier on cpu_utilization relative to its 15-minute baseline",
+          "suggested_actions": [
+            "scale_out_replicas",
+            "increase_cpu_limit",
+            "page_oncall"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:02:10.891265-a5592fc9",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:02:11.123883"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 9
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:02:41.172362+00:00",
+      "finished_at": "2026-05-06T21:02:56.625104+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:02:41.376720-a4d6dacc",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:02:41.556672"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 10
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:03:11.640252+00:00",
+      "finished_at": "2026-05-06T21:03:27.041847+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:03:11.826531-18c6b166",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:03:12.004996"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 11
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-06T21:03:42.056992+00:00",
+      "finished_at": "2026-05-06T21:03:57.517198+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-06T21:03:42.240696-efc2a427",
+        "triggered_by": "2026-05-06T20:58:34.432382-e3afc1be",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-nssf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-nssf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-nssf' not found in Deployment 'oai-nssf' (available: ['nssf'])",
+          "timestamp": "2026-05-06T21:03:42.478955"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 12
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 0,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 2
+  },
+  "trigger_fingerprint": "point_outlier|oai-udm|cpu_utilization",
+  "timing": {
+    "fault_started_at": "2026-05-06T21:00:08.562233+00:00",
+    "first_alert_at": "2026-05-06T21:00:08.619046+00:00",
+    "first_plan_at": "2026-05-06T21:00:08.619046+00:00",
+    "first_action_at": "2026-05-06T21:00:08.619046+00:00",
+    "recovered_at": "2026-05-06T21:01:09.676165+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 0.056813,
+    "plan_latency_s": 0.0,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 61.113932,
+    "remediation_success": true,
+    "false_positives_pre_fault": 2,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-upf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-06T21:03:57.560168+00:00"
+}

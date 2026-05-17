@@ -1,0 +1,1036 @@
+{
+  "run_id": "F3-MAS-rep5-7104bd",
+  "scenario": "F3",
+  "system": "MAS",
+  "rep": 5,
+  "fault": {
+    "scenario": "F3",
+    "fault_type": "traffic_surge",
+    "iperf_pod": "f3-iperf-603b7d",
+    "duration_s": 60,
+    "streams": 50,
+    "started_at": "2026-05-10T15:01:58.583524+00:00",
+    "namespace": "oai-5g",
+    "finished_at": "2026-05-10T15:01:58.724079+00:00"
+  },
+  "baseline_cycles": [
+    {
+      "started_at": "2026-05-10T14:59:25.740881+00:00",
+      "finished_at": "2026-05-10T15:00:00.814926+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T14:59:30.120344-6a7adfe0",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-nrf memory_utilization reported as 0.0\u202f% while the 15\u2011minute baseline is ~5.7\u202fM\u202f% (statistical outlier). Other metrics for the NRF pod appear normal (CPU 0\u202f%, network Rx ~0.008\u202fMbps, no restarts).",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.0,
+              "baseline": 5701632.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Possible metrics collection failure or mis\u2011configuration of the NRF container memory limits causing the exporter to report zero usage. The pod may be idle, crashed, or the memory cgroup is not exposed correctly.",
+          "suggested_actions": [
+            "Check the oai-nrf pod logs for errors or OOM events.",
+            "Verify the memory limit and request settings in the deployment manifest.",
+            "Confirm that the Prometheus/metrics exporter sidecar is running and correctly scraping the process.",
+            "If the exporter is stuck, restart the oai-nrf pod to re\u2011initialize metric collection."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T14:59:36.080706-a7e1abae",
+        "triggered_by": "2026-05-10T14:59:30.120344-6a7adfe0",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-amf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-amf",
+          "status": "failed",
+          "details": "patch_deployment_resources failed: Container 'oai-amf' not found in Deployment 'oai-amf' (available: ['amf'])",
+          "timestamp": "2026-05-10T14:59:45.775463"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 1,
+        "execution_results": 1
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-10T15:00:15.830079+00:00",
+      "finished_at": "2026-05-10T15:00:51.382655+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T15:00:20.248814-000fe3c0",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "Memory utilization reported as 1.83\u202f% for oai\u2011udr, but the statistical model flagged it as a critical outlier (z\u2011score\u202f=\u202f17.7) due to an unrealistic baseline value (40402944.0\u202f%). This indicates a likely data\u2011collection or baseline\u2011calculation error rather than a genuine resource issue.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 1.83,
+              "baseline": 40402944.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Metric ingestion pipeline mis\u2011scaled the baseline (unit mismatch or overflow), causing an inflated z\u2011score. The actual memory usage is well within normal limits, so the alert is a false positive.",
+          "suggested_actions": [
+            "Validate the memory_utilization collector for oai\u2011udr (check units, scaling, and aggregation logic).",
+            "Re\u2011compute the 15\u2011minute baseline using correctly normalized data.",
+            "Temporarily suppress the alert until the collector is verified.",
+            "Review monitoring configuration for correct threshold definitions."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-udr-001",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f% and an inflated z\u2011score. Actual memory usage (~1.8\u202f%) is normal, so no resource scaling is required.",
+        "confidence": 0.94,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_memory_collector_config",
+            "params": {
+              "expected_unit": "%",
+              "scaling_factor": 1,
+              "baseline_window": "15m",
+              "collector_name": "memory_utilization_exporter"
+            },
+            "reason": "Correct the collector's unit handling and scaling logic to prevent future baseline inflation."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "restart_pod",
+            "params": {},
+            "reason": "Apply the corrected collector configuration by restarting the exporter pod."
+          }
+        ],
+        "expected_outcome": "Memory utilization for oai-udr will be reported with a correct baseline (~1\u20112\u202f%), the z\u2011score will drop below the alert threshold, and the false positive alert will be cleared.",
+        "rollback_plan": "If the fix causes unexpected side effects, revert the collector configuration to its previous version, restart the exporter pod to load the old config, restore the original baseline calculation method, and remove the temporary alert suppression.",
+        "validation_metric": "memory_utilization z\u2011score < 3 and alert status = normal",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T15:00:36.308085"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:00:36.344518"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 2,
+        "execution_results": 3
+      },
+      "phase": "baseline"
+    },
+    {
+      "started_at": "2026-05-10T15:01:06.397787+00:00",
+      "finished_at": "2026-05-10T15:01:43.543910+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T15:01:10.528833-98419469",
+          "type": "point_outlier",
+          "confidence": 0.85,
+          "description": "CPU utilization of oai-udr spiked to 10.23\u202f% (z=5.0) compared to a 15\u2011minute baseline of 0.19\u202f%, flagged as high severity.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 10.23,
+              "baseline": 0.1939,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "A sudden increase in request load on the UDR (e.g., a signaling storm or burst of subscription data queries) caused the CPU to spike. The low baseline indicates the UDR is normally idle, so any traffic surge appears as an outlier. Metric collection errors are less likely because other metrics (network Rx) remain stable.",
+          "suggested_actions": [
+            "Check UDR request logs for a recent surge in API calls or database queries.",
+            "Correlate with signaling metrics from AMF/SMF to see if a signaling storm coincides with the spike.",
+            "If load increase is legitimate, consider scaling out the UDR (add replica) or increasing its CPU limit.",
+            "Validate the CPU metric collector for potential mis\u2011reporting."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-udr-002",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal, so no resource scaling is required. The root cause is a collector/configuration issue.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_config_map",
+            "params": {
+              "config_map": "udr-metrics-config",
+              "data": {
+                "memory_utilization_scaling": "1",
+                "baseline_window": "15m",
+                "unit_normalization": "true"
+              }
+            },
+            "reason": "Correct the memory_utilization collector scaling and unit handling to prevent baseline overflow."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and ensure the metrics exporter reloads with the corrected configuration."
+          }
+        ],
+        "expected_outcome": "Memory utilization for oai-udr reports a realistic value (~1\u20112\u202f%) with a correct baseline (<100\u202f%). No further outlier alerts are generated for this metric, and the monitoring pipeline operates normally.",
+        "rollback_plan": "If any config_change causes instability, revert the 'udr-metrics-config' ConfigMap to its previous version and roll back the Prometheus baseline job configuration. If the restart leads to pod failures, execute a rollback to the prior Deployment revision of oai-udr. Remove the temporary alert suppression entry from Alertmanager.",
+        "validation_metric": "memory_utilization{oai-udr} should stay within 0\u20115\u202f% and the baseline should be recomputed to a value <100\u202f% without triggering a new point_outlier alert.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-10T15:01:28.471845"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:01:28.505685"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 5
+      },
+      "phase": "baseline"
+    }
+  ],
+  "recovery_cycles_detail": [
+    {
+      "started_at": "2026-05-10T15:01:58.728725+00:00",
+      "finished_at": "2026-05-10T15:02:42.770276+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-udr-003",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal, so no resource scaling is required. The root cause is a collector/configuration issue.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_configmap",
+            "params": {
+              "configmap_name": "oai-udr-metrics-config",
+              "updates": {
+                "memory_utilization_scaling_factor": 0.01,
+                "memory_utilization_unit": "%"
+              }
+            },
+            "reason": "Correct the collector scaling factor and unit definition so that the baseline is computed in proper percentage units."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap to the oai-udr pods and ensure the exporter reloads the corrected configuration."
+          },
+          {
+            "order": 3,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "recompute_baseline",
+            "params": {
+              "metric": "memory_utilization",
+              "window": "15m",
+              "method": "percentile",
+              "percentile": 95
+            },
+            "reason": "Force a recomputation of the 15\u2011minute baseline using the corrected collector data."
+          }
+        ],
+        "expected_outcome": "Memory utilization metric for oai-udr reports a realistic baseline (\u22481\u20112\u202f%) and the z\u2011score falls below the outlier threshold; the false\u2011positive alert is cleared and no scaling actions are required.",
+        "rollback_plan": "If the new ConfigMap causes unexpected behavior, execute a Helm rollback of the oai-udr release to the previous revision (helm rollback oai-udr <previous_revision>) and trigger a rollout restart. Re\u2011enable the original alert suppression settings if they were altered.",
+        "validation_metric": "memory_utilization z\u2011score < 3 after baseline recomputation (verified via Prometheus query over the last 5\u202fminutes).",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T15:02:27.637033"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:02:27.732327"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T15:02:27.732365"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 3,
+        "execution_results": 8
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:02:57.785443+00:00",
+      "finished_at": "2026-05-10T15:03:53.066253+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T15:03:01.724193-1312ac63",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "The oai-nrf network_rx_mbps dropped to 0.007\u202fMbps, which is a significant deviation (z=3.4) from its 15\u2011minute baseline of 0.0079\u202fMbps.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.007,
+              "baseline": 0.0079,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible loss of inbound registration or service discovery traffic to the NRF (e.g., AMF/SMF not sending registration requests), which may be caused by upstream connectivity issues, firewall rules, or a temporary pause in user activity.",
+          "suggested_actions": [
+            "Check AMF/SMF logs for registration attempts to the NRF and any error responses.",
+            "Verify network connectivity and firewall policies between AMF/SMF and NRF pods.",
+            "Inspect NRF logs for inbound request counts and possible parsing errors.",
+            "Correlate with user plane traffic metrics (e.g., UPF throughput) to see if overall traffic is low."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T15:03:01.724193-5680a9a9",
+          "type": "point_outlier",
+          "confidence": 0.7,
+          "description": "oai-udr network_rx_mbps dropped to 0.001\u202fMbps (z=3.1) while the 15\u2011minute baseline is 0.0091\u202fMbps. All other VNFs show near\u2011zero traffic as well, but the drop is statistically significant for the UDR.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.001,
+              "baseline": 0.0091,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Possible upstream traffic starvation or mis\u2011routing to the UDR. The UDR may not be receiving packets from the UPF or the traffic source, leading to an abrupt drop in received bandwidth while CPU and memory remain idle.",
+          "suggested_actions": [
+            "Verify that the UDR pod network interface is up and has correct IP configuration.",
+            "Check UPF flow rules and PFCP sessions to ensure traffic is being forwarded to the UDR.",
+            "Inspect logs of oai-udr and upstream VNFs (e.g., SMF, UPF) for error messages or dropped packets.",
+            "Confirm that the traffic generator or user equipment is active and sending requests to the UDR.",
+            "Run a packet capture (e.g., tcpdump) on the UDR interface to see if any packets arrive."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-udr-004",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal, so no resource scaling is required. The root cause is a collector/configuration issue.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_collector_config",
+            "params": {
+              "config_map": "oai-udr-metrics-config",
+              "key": "memory_utilization.scale_factor",
+              "value": 1
+            },
+            "reason": "Correct the scaling factor in the memory_utilization collector to eliminate the unit\u2011mismatch that produced the inflated baseline."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated collector configuration and clear any stale state in the exporter."
+          },
+          {
+            "order": 3,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "trigger_baseline_recalc",
+            "params": {
+              "job": "baseline_recompute",
+              "metric": "memory_utilization",
+              "window": "15m"
+            },
+            "reason": "Re\u2011compute the 15\u2011minute baseline using the corrected metric data so future outlier detection is accurate."
+          }
+        ],
+        "expected_outcome": "Memory utilization metric for oai-udr reports a realistic value (~1\u20112\u202f%) with a correct baseline (<\u202f100\u202f%). The false\u2011positive alert is cleared and no further scaling actions are required.",
+        "rollback_plan": "If the updated ConfigMap causes issues, revert the ConfigMap to its previous version (stored as a backup) and re\u2011apply it. If the rollout restart leads to instability, execute a rollback to the prior Helm release revision of oai-udr. Suppression can be lifted manually if the alert re\u2011appears.",
+        "validation_metric": "memory_utilization (oai-udr) \u2013 value should be ~1\u20112\u202f% and baseline recomputed to <\u202f100\u202f%; alert status should transition to 'resolved'.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-10T15:03:37.918465"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:03:38.026033"
+        },
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T15:03:38.026077"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 5,
+        "execution_results": 11
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:04:08.081435+00:00",
+      "finished_at": "2026-05-10T15:05:00.064352+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T15:04:12.024509-1848bc3d",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "CPU utilization of oai-udr spiked to 2.94\u202f% (z=23.9) while baseline for the last 15\u202fmin is 0.19\u202f%. Other VNFs show normal CPU levels and the UDR reports zero network traffic and memory usage, suggesting the spike is not driven by actual workload.",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 2.94,
+              "baseline": 0.1927,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Likely a metric collection artifact (e.g., cgroup accounting glitch or mis\u2011configured exporter) or a brief processing burst in the UDR that did not generate network traffic. The absence of concurrent increase in memory or network I/O points to a measurement anomaly rather than genuine load.",
+          "suggested_actions": [
+            "Inspect the Prometheus/OTel exporter configuration for oai-udr and verify that the correct cgroup path is used.",
+            "Check oai-udr pod logs and request counters for the last few minutes to confirm whether any request surge occurred.",
+            "If the exporter is mis\u2011reporting, restart the metrics side\u2011car or the pod to reset accounting.",
+            "Correlate with NRF/AMF logs to see if any signaling storm targeted the UDR.",
+            "If a genuine load increase is confirmed, consider scaling out the UDR deployment or raising its CPU limits."
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T15:04:12.024509-21ede103",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nrf memory_utilization reported as 0.0\u202f% while the 15\u2011minute baseline is ~5.7\u202fM\u202f% (z\u2011score 12.4). All other metrics for the NRF pod are near zero but within normal thresholds.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.0,
+              "baseline": 5699584.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Likely a monitoring/metric collection failure for the NRF pod (e.g., cAdvisor or Prometheus scrape error) or the NRF container is in a paused/hung state, causing memory usage to be reported as zero.",
+          "suggested_actions": [
+            "Verify the pod status (kubectl get pod oai-nrf) and ensure it is Running.",
+            "Inspect NRF container logs for crashes or hangs.",
+            "Check the metrics exporter (cAdvisor/Node Exporter) for errors or missed scrapes.",
+            "Restart the oai-nrf pod to re\u2011initialize metric collection.",
+            "If the issue persists, redeploy the NRF with updated resource limits and verify the monitoring pipeline."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-udr-001",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal, so no resource scaling is required. The root cause is a collector/configuration issue.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_config_map",
+            "params": {
+              "config_map": "udr-metrics-collector-config",
+              "updates": {
+                "memory_utilization_scaling_factor": 1,
+                "unit_normalization": "percentage"
+              }
+            },
+            "reason": "Correct the collector's scaling and unit handling so that the baseline is computed in proper percentage units."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and reset the exporter\u2019s internal state to ensure correct metric reporting."
+          }
+        ],
+        "expected_outcome": "Memory utilization for oai-udr will be reported correctly (\u22481.8\u202f%) and the baseline will be a realistic percentage (<\u202f100\u202f%). The false\u2011positive alert will no longer fire.",
+        "rollback_plan": "If the updated ConfigMap causes unexpected behavior, revert the ConfigMap to its previous revision (kubectl rollout undo deployment/oai-udr --to-revision=<previous>) and perform another rollout restart to restore the original collector settings.",
+        "validation_metric": "memory_utilization (oai-udr) \u2013 value should be ~1.8\u202f% and baseline <\u202f100\u202f% for the next two 15\u2011minute windows.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_configmap failed for 'udr-metrics-collector-config': (404)\nReason: Not Found\nHTTP response headers: HTTPHeaderDict({'Audit-Id': '15296e9f-1e8d-4fce-91f2-a743a4bbede3', 'Cache-Control': 'no-cache, private', 'Content-Type': 'application/json', 'X-Kubernetes-Pf-Flowschema-Uid': '90ebb995-424c-4504-8bef-b2b6c9b6bc3f', 'X-Kubernetes-Pf-Prioritylevel-Uid': 'a18d93c7-90c9-4c21-87fe-2a8fe5a751e2', 'Date': 'Sun, 10 May 2026 15:04:44 GMT', 'Content-Length': '236'})\nHTTP response body: {\"kind\":\"Status\",\"apiVersion\":\"v1\",\"metadata\":{},\"status\":\"Failure\",\"message\":\"configmaps \\\"udr-metrics-collector-config\\\" not found\",\"reason\":\"NotFound\",\"details\":{\"name\":\"udr-metrics-collector-config\",\"kind\":\"configmaps\"},\"code\":404}\n\n",
+          "timestamp": "2026-05-10T15:04:44.991278"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:04:45.026715"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 13
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:05:15.079511+00:00",
+      "finished_at": "2026-05-10T15:05:56.419099+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-udr-002",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal. The root cause is a collector/configuration issue, not a resource shortage.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_configmap",
+            "params": {
+              "configmap_name": "udr-metrics-collector-config",
+              "data": {
+                "baseline_scaling_factor": "1.0",
+                "unit": "percent",
+                "scrape_interval": "15s"
+              }
+            },
+            "reason": "Fix the metrics collector configuration that caused the baseline to be inflated; correct scaling factor and unit definitions."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap to the UDR pod and reset any stale exporter state."
+          }
+        ],
+        "expected_outcome": "The memory_utilization collector for oai-udr reports correct values, the baseline is recomputed to a realistic percentage, the outlier disappears, and no scaling or fault actions are required.",
+        "rollback_plan": "If the new ConfigMap causes issues, revert to the previous version using `kubectl rollout undo deployment/oai-udr` or restore the prior ConfigMap from backup, then restart the oai-udr deployment to apply the rollback.",
+        "validation_metric": "memory_utilization (oai-udr) \u2013 z\u2011score < 3 and value consistent with actual pod memory usage (~1\u20112\u202f%).",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T15:05:41.340737"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:05:41.378840"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 7,
+        "execution_results": 15
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:06:11.434249+00:00",
+      "finished_at": "2026-05-10T15:07:00.393384+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T15:06:16.913976-a13fb894",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "The NRF instance (oai-nrf) reports a network receive rate of 0.005\u202fMbps, far below its 15\u2011minute baseline (\u22480.008\u202fMbps) with a z\u2011score of 9.3. All other VNFs show similarly low traffic, and CPU/memory utilization is near zero, indicating a possible loss of inbound traffic to the NRF.",
+          "affected_metrics": [
+            {
+              "name": "network_rx_mbps",
+              "current": 0.005,
+              "baseline": 0.008,
+              "unit": "Mbps"
+            }
+          ],
+          "suggested_cause": "Upstream traffic to the NRF (and consequently to other core VNFs) has stopped, likely due to a connectivity issue between the UPF and NRF, a mis\u2011routed service discovery entry, or a firewall/NAT rule blocking the NRF's inbound traffic.",
+          "suggested_actions": [
+            "Verify the network interface and link status of the oai-nrf pod (e.g., `kubectl exec` to check `ifconfig`/`ip link`)",
+            "Check UPF egress configuration and routing tables for the NRF service IP/port",
+            "Inspect service discovery (Kubernetes Service, DNS) entries for oai-nrf to ensure correct endpoints",
+            "Review firewall, security group, or network policy rules that could block traffic to the NRF",
+            "Correlate with upstream traffic metrics (e.g., UPF network_tx_mbps) to confirm upstream drop",
+            "If needed, restart the oai-nrf pod to re\u2011establish connections"
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:10:00Z-udr-003",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal. The root cause is a collector/configuration issue, not a resource shortage.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_configmap",
+            "params": {
+              "configmap_name": "udr-metrics-collector-config",
+              "data": {
+                "baseline_scaling_factor": "1"
+              }
+            },
+            "reason": "Create or correct the ConfigMap used by the UDR metrics collector so that the baseline is calculated with the proper scaling factor, eliminating the unrealistic 40,402,944\u202f% baseline."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Restart the oai-udr deployment to load the corrected collector configuration and reset cgroup accounting."
+          }
+        ],
+        "expected_outcome": "Memory utilization for oai-udr is reported correctly (~1.8\u202f%) and the baseline is recomputed to a realistic value. The outlier alert is cleared and suppressed.",
+        "rollback_plan": "If the new ConfigMap causes any regression, revert to the previous ConfigMap version (kubectl rollout undo deployment/oai-udr --to-revision=<previous>) or delete the newly created ConfigMap and restart the pod to restore the original collector behavior.",
+        "validation_metric": "memory_utilization_zscore_oai-udr < 3",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T15:06:45.283511"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:06:45.340243"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 8,
+        "execution_results": 17
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:07:15.408572+00:00",
+      "finished_at": "2026-05-10T15:08:13.084206+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [
+        {
+          "alert_id": "2026-05-10T15:07:19.745171-dda14c75",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "oai-nrf cpu_utilization = 0.0 % (z=8.3 vs 15m baseline), severity=critical",
+          "affected_metrics": [
+            {
+              "name": "cpu_utilization",
+              "current": 0.0,
+              "baseline": 0.0226,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "The NRF pod is likely idle or its process has stopped, resulting in a zero\u2011CPU reading. This can be caused by a crash or hang of the NRF container, a mis\u2011configured liveness/readiness probe that prevents the process from running, or a monitoring scrape failure that reports a default 0 value. Because the NRF is a core network function, its inactivity can quickly impact registration and service discovery.",
+          "suggested_actions": [
+            "kubectl get pod -n <namespace> oai-nrf -o wide to verify pod phase, container state and restart count",
+            "Inspect recent events (kubectl describe pod oai-nrf) for CrashLoopBackOff, OOMKilled, or ImagePullBackOff",
+            "Check NRF logs (kubectl logs oai-nrf) for fatal errors or stack traces",
+            "If the container is stopped or unresponsive, restart the pod (kubectl rollout restart deployment/oai-nrf) or delete it to trigger a fresh start",
+            "Validate Prometheus/metrics exporter configuration for the NRF (ensure /metrics endpoint is reachable and scrape interval is correct)",
+            "If the issue persists, consider scaling out the NRF (increase replica count) or redeploying with higher CPU limits"
+          ]
+        },
+        {
+          "alert_id": "2026-05-10T15:07:19.745171-ca8010d6",
+          "type": "point_outlier",
+          "confidence": 0.95,
+          "description": "OAI-NRF reports memory utilization of 0.0\u202f% while the 15\u2011minute baseline expects ~5.7\u202fM\u202f% (z\u2011score 43.8). CPU and network metrics are also near zero, but no pod restarts are recorded.",
+          "affected_metrics": [
+            {
+              "name": "memory_utilization",
+              "current": 0.0,
+              "baseline": 5699584.0,
+              "unit": "%"
+            }
+          ],
+          "suggested_cause": "Likely a monitoring/collection failure or the OAI\u2011NRF instance is hung/crashed, causing it to stop reporting resource usage. The simultaneous drop in CPU and network traffic supports a process\u2011level outage rather than a true zero\u2011memory condition.",
+          "suggested_actions": [
+            "Check the OAI\u2011NRF pod status (kubectl get pod, describe) for Ready/Running state.",
+            "Inspect OAI\u2011NRF container logs for crashes, OOM kills, or fatal errors.",
+            "Verify the metrics exporter side\u2011car or Prometheus scrape configuration for this pod.",
+            "If the pod is unresponsive, perform a graceful restart (kubectl rollout restart) and monitor for metric recovery.",
+            "Confirm memory limits/requests are correctly set and not causing the container to be throttled or evicted."
+          ]
+        }
+      ],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:12:00Z-udr-004",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal. The root cause is a collector/configuration issue, not a resource shortage.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_config_map",
+            "params": {
+              "config_map": "udr-metrics-config",
+              "data": {
+                "baseline_scale_factor": "1",
+                "unit": "%"
+              }
+            },
+            "reason": "Correct the metric collector configuration that mis\u2011scaled the memory utilization baseline, eliminating the false positive."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and reset the metrics side\u2011car to ensure proper accounting."
+          }
+        ],
+        "expected_outcome": "Memory utilization for oai-udr reports a realistic value (~1.8\u202f%) and the outlier alert is no longer generated; monitoring pipeline resumes normal operation.",
+        "rollback_plan": "If the config change causes unexpected side effects, revert the ConfigMap to its previous version (kubectl rollout undo deployment/oai-udr) or perform a Helm rollback to the prior release revision.",
+        "validation_metric": "oai-udr.memory_utilization",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing or invalid 'updates' dict in action params",
+          "timestamp": "2026-05-10T15:07:57.905618"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:07:58.048794"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 19
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:08:28.099375+00:00",
+      "finished_at": "2026-05-10T15:09:13.390325+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:20:00Z-udr-001",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal. The root cause is a collector/configuration issue, not a resource shortage.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_collector_config",
+            "params": {
+              "config_map": "udr-metrics-config",
+              "updates": {
+                "memory_utilization_baseline_factor": "1",
+                "memory_utilization_unit": "percent"
+              }
+            },
+            "reason": "Correct the collector configuration that mis\u2011scaled the memory utilization baseline, eliminating the false positive."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and reset any stale exporter state."
+          }
+        ],
+        "expected_outcome": "Memory utilization for oai-udr returns to its true value (~1.8\u202f%) and the outlier alert is cleared; no further false\u2011positive memory alerts are generated.",
+        "rollback_plan": "If the updated ConfigMap causes metric collection failures, revert the ConfigMap to its previous version (kubectl rollout undo deployment/oai-udr) and restart the pod.",
+        "validation_metric": "oai-udr_memory_utilization_percent",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "patch_configmap failed for 'udr-metrics-config': (404)\nReason: Not Found\nHTTP response headers: HTTPHeaderDict({'Audit-Id': '6abdbf9c-9510-4f1f-b76d-93dce42e9e85', 'Cache-Control': 'no-cache, private', 'Content-Type': 'application/json', 'X-Kubernetes-Pf-Flowschema-Uid': '90ebb995-424c-4504-8bef-b2b6c9b6bc3f', 'X-Kubernetes-Pf-Prioritylevel-Uid': 'a18d93c7-90c9-4c21-87fe-2a8fe5a751e2', 'Date': 'Sun, 10 May 2026 15:08:58 GMT', 'Content-Length': '216'})\nHTTP response body: {\"kind\":\"Status\",\"apiVersion\":\"v1\",\"metadata\":{},\"status\":\"Failure\",\"message\":\"configmaps \\\"udr-metrics-config\\\" not found\",\"reason\":\"NotFound\",\"details\":{\"name\":\"udr-metrics-config\",\"kind\":\"configmaps\"},\"code\":404}\n\n",
+          "timestamp": "2026-05-10T15:08:58.281011"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:08:58.315356"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 21
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:09:28.405489+00:00",
+      "finished_at": "2026-05-10T15:10:14.388668+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:09:44.620483-9a3d3621",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "Auto-generated plan for anomaly trigger (point_outlier)",
+        "confidence": 0.55,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "vertical_scale",
+            "target": "oai-amf",
+            "action": "increase_memory_limit",
+            "params": {
+              "factor": 1.5
+            },
+            "reason": "Memory pressure on a stateful path \u2014 vertical scaling avoids fragmentation"
+          }
+        ],
+        "expected_outcome": "Trigger condition resolves; KPI Monitor returns the affected metric to the normal band within 2 cycles.",
+        "rollback_plan": "Revert the action (scale back / roll-forward) if no improvement is observed.",
+        "validation_metric": "memory_utilization",
+        "source": "heuristic"
+      },
+      "execution_results": [
+        {
+          "action_type": "vertical_scale",
+          "target": "oai-amf",
+          "status": "success",
+          "details": "Vertically scaled oai-amf/amf by factor 1.50",
+          "timestamp": "2026-05-10T15:09:59.350051"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 22
+      },
+      "phase": "recovery"
+    },
+    {
+      "started_at": "2026-05-10T15:10:29.399876+00:00",
+      "finished_at": "2026-05-10T15:11:26.169216+00:00",
+      "error": null,
+      "current_agent": "fault_recovery",
+      "anomaly_alerts": [],
+      "remediation_plan": {
+        "plan_id": "plan-2026-05-10T15:12:34.567890-udr-metric-fix",
+        "triggered_by": "2026-05-10T15:00:20.248814-000fe3c0",
+        "diagnosis": "The memory_utilization outlier for oai-udr is a false positive caused by a metric ingestion pipeline error: the baseline was mis\u2011scaled (unit mismatch or overflow) resulting in an unrealistic baseline of 40,402,944\u202f%. Actual memory usage (~1.8\u202f%) is normal. The root cause is a collector/configuration issue, not a resource shortage.",
+        "confidence": 0.96,
+        "recommended_actions": [
+          {
+            "order": 1,
+            "type": "config_change",
+            "target": "oai-udr",
+            "action": "update_configmap",
+            "params": {
+              "configmap": "udr-metrics-config",
+              "key": "collector_settings",
+              "value": {
+                "baseline_scaling_factor": 1,
+                "unit": "%",
+                "aggregation": "average"
+              }
+            },
+            "reason": "Correct the metrics collector configuration that caused the baseline to be inflated, ensuring memory_utilization values are normalized correctly."
+          },
+          {
+            "order": 2,
+            "type": "restart",
+            "target": "oai-udr",
+            "action": "rollout_restart",
+            "params": {},
+            "reason": "Apply the updated ConfigMap and reset the exporter side\u2011car so that the corrected collector settings take effect."
+          }
+        ],
+        "expected_outcome": "Memory utilization metric for oai-udr returns realistic values (baseline ~1\u20112\u202f%), z\u2011score falls below the alert threshold, and the false\u2011positive alert is suppressed.",
+        "rollback_plan": "If the new ConfigMap causes unexpected behavior, revert to the previous version of 'udr-metrics-config' (kubectl rollout undo deployment/oai-udr) and restart the pod to restore the original collector settings.",
+        "validation_metric": "memory_utilization z\u2011score < 3 and baseline value within 0\u20115\u202f% range for the next 15\u202fminutes.",
+        "source": "llm"
+      },
+      "execution_results": [
+        {
+          "action_type": "config_change",
+          "target": "oai-udr",
+          "status": "failed",
+          "details": "Missing 'config_map' in action params",
+          "timestamp": "2026-05-10T15:11:11.055959"
+        },
+        {
+          "action_type": "restart",
+          "target": "oai-udr",
+          "status": "success",
+          "details": "Rollout restart triggered for oai-udr",
+          "timestamp": "2026-05-10T15:11:11.129252"
+        }
+      ],
+      "intervention_log": [],
+      "_cumulative_counts": {
+        "anomaly_alerts": 10,
+        "execution_results": 24
+      },
+      "phase": "recovery"
+    }
+  ],
+  "indices": {
+    "first_alert": 1,
+    "first_plan": 0,
+    "first_action": 0,
+    "recovered": 3
+  },
+  "trigger_fingerprint": "point_outlier|The|network_rx_mbps",
+  "timing": {
+    "fault_started_at": "2026-05-10T15:01:58.583524+00:00",
+    "first_alert_at": "2026-05-10T15:02:57.785443+00:00",
+    "first_plan_at": "2026-05-10T15:01:58.728725+00:00",
+    "first_action_at": "2026-05-10T15:01:58.728725+00:00",
+    "recovered_at": "2026-05-10T15:05:15.079511+00:00"
+  },
+  "metrics": {
+    "detection_latency_s": 59.201919,
+    "plan_latency_s": -59.056718,
+    "action_latency_s": 0.0,
+    "recovery_time_s": 196.495987,
+    "remediation_success": true,
+    "false_positives_pre_fault": 3,
+    "human_interventions": 0
+  },
+  "config": {
+    "baseline_cycles": 3,
+    "recovery_cycles": 12,
+    "cycle_interval_s": 15,
+    "fault_duration_s": 60,
+    "namespace": "oai-5g",
+    "target": "oai-upf",
+    "streams": 50,
+    "loop": 1
+  },
+  "completed_at": "2026-05-10T15:11:26.212557+00:00"
+}
