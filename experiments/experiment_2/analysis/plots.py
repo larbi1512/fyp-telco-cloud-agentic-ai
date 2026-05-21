@@ -37,14 +37,13 @@ METRICS: list[tuple[str, str, str]] = [
     ("policy_violation_rate",    "Policy violation rate",       "lower"),
 ]
 
-SYSTEMS = ["mas", "b1", "b2", "b3", "b4", "b4r"]
+SYSTEMS = ["mas", "b1", "b2", "b3", "b4"]
 SYSTEM_LABELS = {
     "mas": "MAS\n(LangGraph)",
     "b1": "B1\nManual",
     "b2": "B2\nOSM stub",
     "b3": "B3\nStatic+HPA",
     "b4": "B4\nSingle-LLM",
-    "b4r": "B4r\nSingle-LLM\n+ repair",
 }
 SYSTEM_COLORS = {
     "mas": "#2c3e9f",
@@ -52,7 +51,6 @@ SYSTEM_COLORS = {
     "b2": "#6b0f1a",
     "b3": "#1e6e3e",
     "b4": "#9b4f12",
-    "b4r": "#c97a2d",
 }
 
 
@@ -128,13 +126,16 @@ def bar_plot(
         labels.append(lbl)
     ax.set_xticklabels(labels, fontsize=9)
     ax.set_ylabel(metric_label)
-    arrow = " ↓ lower is better" if direction == "lower" else " ↑ higher is better"
-    ax.set_title(f"{metric_label}{arrow}", fontsize=11)
+    ax.set_title(metric_label, fontsize=11)
     ax.grid(axis="y", linestyle=":", alpha=0.4)
-    for bar, m in zip(bars, means):
+    # Headroom so value labels (placed above the upper CI whisker) don't clip.
+    top = max((m + h) for m, h in zip(means, hi)) if means else 1.0
+    ax.set_ylim(top=top * 1.15 if top > 0 else 1.0)
+    for bar, m, h in zip(bars, means, hi):
         ax.text(
-            bar.get_x() + bar.get_width() / 2, bar.get_height(),
-            f"{m:.3f}", ha="center", va="bottom", fontsize=8,
+            bar.get_x() + bar.get_width() / 2,
+            bar.get_height() + h,
+            f"{m:.3f}", ha="center", va="bottom", fontsize=9,
         )
     # Footnote for deploy-gated metrics
     if deploy_gated:
@@ -172,8 +173,7 @@ def box_plot(
         patch.set_facecolor(SYSTEM_COLORS[s])
         patch.set_alpha(0.5)
     ax.set_ylabel(metric_label)
-    arrow = " ↓ lower is better" if direction == "lower" else " ↑ higher is better"
-    ax.set_title(f"{metric_label} — distribution across 180 runs/system{arrow}",
+    ax.set_title(f"{metric_label} — distribution across 180 runs/system",
                  fontsize=11)
     ax.grid(axis="y", linestyle=":", alpha=0.4)
     fig.tight_layout()

@@ -114,6 +114,8 @@ class TestKpiMonitorAgent:
         mock_prom.get_pod_restart_count.return_value = [
             {"pod": "oai-amf-xxx", "restarts": 0},
         ]
+        mock_prom.get_amf_registration_rate.return_value = []
+        mock_prom.get_upf_session_count.return_value = []
         mock_prom_cls.return_value = mock_prom
 
         mock_llm = MagicMock()
@@ -174,6 +176,8 @@ class TestKpiMonitorAgent:
         ]
         mock_prom.get_network_receive_bytes.return_value = []
         mock_prom.get_pod_restart_count.return_value = []
+        mock_prom.get_amf_registration_rate.return_value = []
+        mock_prom.get_upf_session_count.return_value = []
         mock_prom_cls.return_value = mock_prom
 
         mock_llm_cls.return_value.invoke.side_effect = Exception("LLM skipped")
@@ -213,6 +217,8 @@ class TestKpiMonitorAgent:
         mock_prom.get_memory_usage.return_value = []
         mock_prom.get_network_receive_bytes.return_value = []
         mock_prom.get_pod_restart_count.return_value = []
+        mock_prom.get_amf_registration_rate.return_value = []
+        mock_prom.get_upf_session_count.return_value = []
         mock_prom_cls.return_value = mock_prom
 
         mock_llm_cls.return_value.invoke.side_effect = RuntimeError("LLM down")
@@ -224,3 +230,69 @@ class TestKpiMonitorAgent:
         assert update["current_metrics"][0]["metric_name"] == "cpu_utilization"
         # Deterministic summary still produced
         assert "KPI Monitor" in update["messages"][0]["content"]
+
+    @patch("agents.kpi_monitor.LLMCore")
+    @patch("agents.kpi_monitor.PrometheusClient")
+    def test_application_layer_metrics_emitted(self, mock_prom_cls, mock_llm_cls):
+        """AMF registration rate and UPF session count are surfaced as MetricEvents."""
+        mock_prom = MagicMock()
+        mock_prom.ping.return_value = True
+        mock_prom.url = "http://mock:9090"
+        mock_prom.get_cpu_usage.return_value = []
+        mock_prom.get_memory_usage.return_value = []
+        mock_prom.get_network_receive_bytes.return_value = []
+        mock_prom.get_pod_restart_count.return_value = []
+        mock_prom.get_amf_registration_rate.return_value = [
+            {"vnf": "oai-amf", "registrations_per_sec": 12.5},
+        ]
+        mock_prom.get_upf_session_count.return_value = [
+            {"vnf": "oai-upf", "sessions": 47},
+        ]
+        mock_prom_cls.return_value = mock_prom
+
+        mock_llm_cls.return_value.invoke.side_effect = Exception("LLM skipped")
+
+        update = kpi_monitor_agent(_base_state())
+
+        assert "error" not in update
+        metrics = update["current_metrics"]
+
+        amf = next(m for m in metrics if m["metric_name"] == "amf_registration_rate")
+        assert amf["vnf_name"] == "oai-amf"
+        assert amf["value"] == pytest.approx(12.5)
+        assert amf["unit"] == "reg/sec"
+        assert amf["threshold_status"] == "normal"
+
+        upf = next(m for m in metrics if m["metric_name"] == "upf_session_count")
+        assert upf["vnf_name"] == "oai-upf"
+        assert upf["value"] == 47.0
+        assert upf["unit"] == "count"
+
+    @patch("agents.kpi_monitor.LLMCore")
+    @patch("agents.kpi_monitor.PrometheusClient")
+    def test_application_layer_absent_is_graceful(self, mock_prom_cls, mock_llm_cls):
+        """No OAI exporters → no application-layer events, no errors, no missing infra events."""
+        mock_prom = MagicMock()
+        mock_prom.ping.return_value = True
+        mock_prom.url = "http://mock:9090"
+        mock_prom.get_cpu_usage.return_value = [
+            {"pod": "oai-amf-xxx", "container": "amf", "cpu_cores": 0.1},
+        ]
+        mock_prom.get_memory_usage.return_value = []
+        mock_prom.get_network_receive_bytes.return_value = []
+        mock_prom.get_pod_restart_count.return_value = []
+        # Exporters absent — methods raise, agent must continue.
+        mock_prom.get_amf_registration_rate.side_effect = RuntimeError("metric not found")
+        mock_prom.get_upf_session_count.side_effect = RuntimeError("metric not found")
+        mock_prom_cls.return_value = mock_prom
+
+        mock_llm_cls.return_value.invoke.side_effect = Exception("LLM skipped")
+
+        update = kpi_monitor_agent(_base_state())
+
+        assert "error" not in update
+        # Infra metric still emitted; application-layer events absent.
+        names = {m["metric_name"] for m in update["current_metrics"]}
+        assert "cpu_utilization" in names
+        assert "amf_registration_rate" not in names
+        assert "upf_session_count" not in names

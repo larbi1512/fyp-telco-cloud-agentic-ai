@@ -121,11 +121,11 @@ def quality_bar_plot(rows: list[dict[str, Any]], out_path: Path) -> None:
             color=SYSTEM_COLORS[sys],
             edgecolor="black", linewidth=0.5, alpha=0.85,
         )
-        for bar, m in zip(bars, means):
+        for bar, m, he in zip(bars, means, hi_errs):
             if not math.isnan(m):
                 ax.text(bar.get_x() + bar.get_width() / 2,
-                        bar.get_height() + 0.01,
-                        f"{m:.3f}", ha="center", va="bottom", fontsize=7.5)
+                        bar.get_height() + he + 0.015,
+                        f"{m:.3f}", ha="center", va="bottom", fontsize=8)
 
     ax.set_xticks(xs)
     ax.set_xticklabels([CAT_LABELS[c] for c in CATEGORIES], fontsize=9)
@@ -169,15 +169,15 @@ def resource_accuracy_bar_plot(rows: list[dict[str, Any]], out_path: Path) -> No
             color=SYSTEM_COLORS[sys],
             edgecolor="black", linewidth=0.5, alpha=0.85,
         )
-        for bar, m in zip(bars, means):
+        for bar, m, he in zip(bars, means, hi_errs):
             if not math.isnan(m):
                 ax.text(bar.get_x() + bar.get_width() / 2,
-                        bar.get_height() + 0.01,
-                        f"{m:.3f}", ha="center", va="bottom", fontsize=7.5)
+                        bar.get_height() + he + 0.015,
+                        f"{m:.3f}", ha="center", va="bottom", fontsize=8)
 
     ax.set_xticks(xs)
     ax.set_xticklabels([CAT_LABELS[c] for c in CATEGORIES], fontsize=9)
-    ax.set_ylabel("Resource accuracy (mean ± 95% CI)  ↑ higher is better")
+    ax.set_ylabel("Resource accuracy (mean ± 95% CI)")
     ax.set_title("Resource Sizing Accuracy under Ambiguity — MAS vs B4r",
                  fontsize=11)
     ax.set_ylim(0, 1.15)

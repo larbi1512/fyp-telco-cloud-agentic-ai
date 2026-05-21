@@ -175,3 +175,66 @@ class PrometheusClient:
                 }
             )
         return results
+
+    # ------------------------------------------------------------------ #
+    #  Application-layer metrics (OAI exporters)                          #
+    # ------------------------------------------------------------------ #
+
+    def get_amf_registration_rate(
+        self,
+        namespace: str = "free5gc",
+        duration: str = "5m",
+    ) -> list[dict[str, Any]]:
+        """
+        Per-second AMF registration rate aggregated across all AMF replicas.
+
+        Requires the OAI AMF Prometheus exporter to expose
+        ``amf_registration_total``. Returns an empty list when no samples
+        are available (e.g. exporter not deployed).
+
+        Returns a list of ``{vnf, registrations_per_sec}`` dicts (typically
+        one element since the query sums across replicas).
+        """
+        query = (
+            f'sum(rate(amf_registration_total'
+            f'{{namespace="{namespace}"}}[{duration}]))'
+        )
+        raw = self.instant_query(query)
+        results = []
+        for item in raw:
+            value = item.get("value", [None, "0"])
+            try:
+                rate = float(value[1])
+            except (TypeError, ValueError):
+                continue
+            results.append({"vnf": "oai-amf", "registrations_per_sec": rate})
+        return results
+
+    def get_upf_session_count(
+        self,
+        namespace: str = "free5gc",
+    ) -> list[dict[str, Any]]:
+        """
+        Current number of active N4 sessions on the UPF.
+
+        Requires the OAI UPF Prometheus exporter to expose
+        ``upf_n4_sessions``. Returns an empty list when no samples are
+        available (e.g. exporter not deployed).
+
+        Returns a list of ``{vnf, sessions}`` dicts (typically one element
+        since the query sums across replicas).
+        """
+        query = (
+            f'sum(upf_n4_sessions'
+            f'{{namespace="{namespace}"}})'
+        )
+        raw = self.instant_query(query)
+        results = []
+        for item in raw:
+            value = item.get("value", [None, "0"])
+            try:
+                count = int(float(value[1]))
+            except (TypeError, ValueError):
+                continue
+            results.append({"vnf": "oai-upf", "sessions": count})
+        return results

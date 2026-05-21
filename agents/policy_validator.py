@@ -5,8 +5,24 @@ from typing import Any
 
 from core.llm_core import LLMCore
 from core.state import OrchestratorState, ValidationReport
+from infra.opa_client import OPAClient, OPABinaryNotFound, OPAEvalError
+from infra.k8s_dry_run import K8sDryRunner
 
 logger = logging.getLogger(__name__)
+
+
+# Rules that originate in the Rego bundle (infra/opa/policies/). Used to seed
+# the policy_checks dict so a clean OPA run still reports every check, not
+# only the ones that produced a violation.
+OPA_RULES: tuple[str, ...] = (
+    "resource_limits",
+    "mandatory_fields",
+    "image_tags",
+    "root_containers",
+    "health_probes",
+    "scaling_policy",
+    "network_policy",
+)
 
 
 # Static Policy Checks 
@@ -204,8 +220,8 @@ def _check_probes(configs: list[dict[str, Any]]) -> dict[str, Any]:
 # Static check aggregation 
 
 
-def run_static_policies(configs: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
-    """Run all static policy checks and return a policy_checks dict."""
+def _python_fallback(configs: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Deterministic Python checks — used when the OPA binary is unavailable."""
     return {
         "resource_limits": _check_resource_limits(configs),
         "root_containers": _check_root_containers(configs),
@@ -215,19 +231,84 @@ def run_static_policies(configs: list[dict[str, Any]]) -> dict[str, dict[str, An
     }
 
 
+def _opa_violations_to_check_dict(
+    violations: list[dict[str, Any]],
+    checked: int,
+) -> dict[str, dict[str, Any]]:
+    """Bucket OPA violations by `rule` field into the legacy policy_checks shape."""
+    buckets: dict[str, dict[str, Any]] = {
+        rule: {"status": "PASS", "checked": checked, "violations": 0, "details": ""}
+        for rule in OPA_RULES
+    }
+    severity_to_status = {"FAIL": "FAIL", "WARNING": "WARNING", "INFO": "WARNING"}
+    messages: dict[str, list[str]] = {rule: [] for rule in OPA_RULES}
+    statuses: dict[str, set[str]] = {rule: set() for rule in OPA_RULES}
+
+    for v in violations:
+        rule = v.get("rule", "unknown")
+        severity = v.get("severity", "WARNING").upper()
+        status = severity_to_status.get(severity, "WARNING")
+
+        # New rule that wasn't pre-seeded — accept it.
+        if rule not in buckets:
+            buckets[rule] = {"status": "PASS", "checked": checked, "violations": 0, "details": ""}
+            messages[rule] = []
+            statuses[rule] = set()
+
+        msg = v.get("message", "")
+        if msg:
+            messages[rule].append(msg)
+        statuses[rule].add(status)
+        buckets[rule]["violations"] += 1
+
+    for rule, bucket in buckets.items():
+        if "FAIL" in statuses[rule]:
+            bucket["status"] = "FAIL"
+        elif "WARNING" in statuses[rule]:
+            bucket["status"] = "WARNING"
+        if messages[rule]:
+            bucket["details"] = "; ".join(messages[rule])
+        elif bucket["status"] == "PASS":
+            bucket["details"] = f"All {checked} VNFs passed"
+
+    return buckets
+
+
+def run_static_policies(configs: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Evaluate the OPA Rego bundle, falling back to Python checks on failure."""
+    try:
+        client = OPAClient()
+        violations = client.violations({"config_artifacts": configs})
+        logger.info(
+            "OPA evaluated %d artifacts via %s → %d violation(s)",
+            len(configs),
+            client.binary,
+            len(violations),
+        )
+        return _opa_violations_to_check_dict(violations, checked=len(configs))
+    except OPABinaryNotFound as exc:
+        logger.warning("OPA unavailable, using Python fallback: %s", exc)
+    except OPAEvalError as exc:
+        logger.warning("OPA evaluation failed, using Python fallback: %s", exc)
+    return _python_fallback(configs)
+
+
 # Decision logic 
 
 
 def determine_decision(
     policy_checks: dict[str, dict[str, Any]],
     llm_conflicts: list[str] | None = None,
+    dry_run: dict[str, Any] | None = None,
 ) -> tuple[str, list[str]]:
     """
     Compute the final GO / NO_GO decision.
 
     Rules:
     - Any static check with status FAIL → NO_GO
+    - K8s dry-run with status FAILED → NO_GO
     - LLM-reported critical conflicts → NO_GO
+    - Dry-run SKIPPED → noted but doesn't block (cluster unreachable)
     - Warnings are noted but don't block
     """
     reasons: list[str] = []
@@ -241,7 +322,20 @@ def determine_decision(
         elif status == "WARNING":
             reasons.append(f"WARNING: {check_name} — {result.get('details', '')}")
 
-    # LLM-reported conflicts
+    if dry_run:
+        dr_status = dry_run.get("status", "SKIPPED")
+        if dr_status == "FAILED":
+            has_fail = True
+            err_msgs = [e.get("message", "") for e in dry_run.get("errors", [])[:3]]
+            reasons.append(
+                f"FAIL: k8s_dry_run — {len(dry_run.get('errors', []))} error(s): "
+                + "; ".join(m for m in err_msgs if m)
+            )
+        elif dr_status == "SKIPPED":
+            reasons.append(
+                f"NOTE: k8s_dry_run SKIPPED — {dry_run.get('reason', 'unreachable')}"
+            )
+
     if llm_conflicts:
         for conflict in llm_conflicts:
             conflict_lower = conflict.lower()
@@ -284,15 +378,24 @@ def policy_validator_agent(state: OrchestratorState) -> dict[str, Any]:
     resource_alloc = state.get("resource_allocation", {}) or {}
     topology_id = resource_alloc.get("topology_id", topology.get("topology_id", "unknown"))
 
-    # ── Phase 1: Static policy checks (deterministic) ──────
-    logger.info("Running static policy checks on %d config artifacts", len(config_artifacts))
+    # ── Phase 1: Static policy checks via OPA (deterministic) ──
+    logger.info("Running OPA Rego checks on %d config artifacts", len(config_artifacts))
     policy_checks = run_static_policies(config_artifacts)
 
     for check_name, result in policy_checks.items():
         logger.info("  %s: %s (%d violations)", check_name, result["status"], result.get("violations", 0))
 
-    # ── Phase 2: LLM compliance analysis (optional) ────────
-    llm_dry_run = {"status": "SKIPPED", "errors": []}
+    # ── Phase 2: Real Kubernetes server-side dry-run ───────────
+    logger.info("Running Kubernetes server-side dry-run for %d artifacts", len(config_artifacts))
+    dry_run_result = K8sDryRunner(config_artifacts).run()
+    logger.info(
+        "Dry-run: status=%s, validated=%d, errors=%d",
+        dry_run_result.get("status"),
+        dry_run_result.get("validated", 0),
+        len(dry_run_result.get("errors", [])),
+    )
+
+    # ── Phase 3: LLM semantic analysis (cross-VNF / 5G) ────────
     llm_conflicts: list[str] = []
     llm_notes: list[str] = []
 
@@ -322,18 +425,11 @@ def policy_validator_agent(state: OrchestratorState) -> dict[str, Any]:
                 core_config = cm["core_network"]
                 break
 
-        # Build a simple policy rules summary for the LLM
+        # Summary of OPA results so the LLM can focus on cross-VNF semantics.
         policy_rules_summary = {
-            "static_check_results": {
-                k: v["status"] for k, v in policy_checks.items()
-            },
-            "rules_checked": [
-                "resource_limits: All VNFs must have CPU/memory limits",
-                "root_containers: Containers should not run as root (WARNING level)",
-                "mandatory_fields: nfimage, exposedPorts, start must be present",
-                "image_tags: Should use pinned versions, not 'latest' or 'develop'",
-                "health_probes: readinessProbe or livenessProbe should be set",
-            ],
+            "opa_results": {k: v["status"] for k, v in policy_checks.items()},
+            "dry_run_status": dry_run_result.get("status"),
+            "rules_checked": list(OPA_RULES),
         }
 
         llm_result = llm.invoke(
@@ -351,22 +447,22 @@ def policy_validator_agent(state: OrchestratorState) -> dict[str, Any]:
         )
 
         if isinstance(llm_result, dict):
-            llm_dry_run = llm_result.get("dry_run", {"status": "SUCCESS", "errors": []})
-            llm_conflicts = llm_result.get("conflicts", [])
-            llm_notes = llm_result.get("reasons", [])
+            llm_conflicts = llm_result.get("conflicts", []) or []
+            llm_notes = llm_result.get("reasons", []) or []
             if llm_result.get("validation_notes"):
                 llm_notes.extend(llm_result["validation_notes"])
-            logger.info("LLM analysis: dry_run=%s, conflicts=%d",
-                        llm_dry_run.get("status"), len(llm_conflicts))
+            logger.info("LLM semantic analysis: conflicts=%d, notes=%d",
+                        len(llm_conflicts), len(llm_notes))
         else:
             logger.warning("LLM returned non-JSON response (non-critical)")
 
     except Exception as e:
         logger.warning("LLM compliance analysis failed (non-critical): %s", e)
-        llm_dry_run = {"status": "SKIPPED", "errors": [str(e)]}
 
-    # Phase 3: Final decision 
-    decision, reasons = determine_decision(policy_checks, llm_conflicts)
+    # Phase 4: Final decision
+    decision, reasons = determine_decision(
+        policy_checks, llm_conflicts, dry_run_result
+    )
     logger.info("Policy Validator decision: %s", decision)
 
     # Aggregate violation counts across all checks (consumed by the experiment
@@ -378,7 +474,7 @@ def policy_validator_agent(state: OrchestratorState) -> dict[str, Any]:
     validation_report: ValidationReport = {
         "topology_id": topology_id,
         "policy_checks": policy_checks,
-        "dry_run": llm_dry_run,
+        "dry_run": dry_run_result,
         "conflicts": llm_conflicts,
         "decision": decision,
         "reasons": reasons,
@@ -399,7 +495,16 @@ def policy_validator_agent(state: OrchestratorState) -> dict[str, Any]:
             f"   | {check_name} | {status_icon} {result['status']} | {result.get('violations', 0)} | {result.get('details', '')[:80]} |"
         )
 
-    summary_lines.append(f"\n   Dry-run: {llm_dry_run.get('status', 'N/A')}")
+    dr_status = dry_run_result.get("status", "N/A")
+    dr_extra = (
+        f" — {dry_run_result.get('reason', '')}"
+        if dr_status in ("SKIPPED", "FAILED") and dry_run_result.get("reason")
+        else ""
+    )
+    summary_lines.append(
+        f"\n   K8s dry-run: {dr_status} "
+        f"(validated {dry_run_result.get('validated', 0)} manifests){dr_extra}"
+    )
 
     if llm_conflicts:
         summary_lines.append(f"   Conflicts: {'; '.join(llm_conflicts[:3])}")

@@ -1,23 +1,14 @@
 """
 Phase 2.4 — Policy Validator Agent Tests.
 
-Tests:
-  1. Resource limits check (valid)
-  2. Resource limits check (invalid — define=False)
-  3. Root container check (flags root)
-  4. Mandatory fields check (valid)
-  5. Mandatory fields check (missing nfimage)
-  6. Image tags check (warns on 'latest')
-  7. Health probes check
-  8. Full static policy aggregation
-  9. GO/NO_GO decision — all pass
-  10. GO/NO_GO decision — with FAIL
-  11. Agent error when no config_artifacts
-  12. Full agent invocation with Ollama (integration)
+Covers the deterministic Python checks (used as a fallback), the OPA Rego
+bundle, the real Kubernetes server-side dry-run, the GO/NO_GO decision
+logic, and the LangGraph agent function.
 
 Run:  cd ~/fyp && python tests/test_policy_validator.py
 """
 
+import os
 import sys
 import json
 from pathlib import Path
@@ -30,10 +21,15 @@ from agents.policy_validator import (
     _check_mandatory_fields,
     _check_image_tags,
     _check_probes,
+    _python_fallback,
+    _opa_violations_to_check_dict,
     run_static_policies,
     determine_decision,
     policy_validator_agent,
+    OPA_RULES,
 )
+from infra.opa_client import OPAClient, OPABinaryNotFound
+from infra.k8s_dry_run import K8sDryRunner
 
 
 # ── Sample data ───────────────────────────────────────────────
@@ -168,14 +164,127 @@ def test_probes_pass():
 
 
 def test_static_policies_aggregation():
-    """All static checks run and return a dict."""
+    """run_static_policies returns the full OPA_RULES check dict."""
     checks = run_static_policies(VALID_CONFIGS)
-    assert "resource_limits" in checks
-    assert "root_containers" in checks
-    assert "mandatory_fields" in checks
-    assert "image_tags" in checks
-    assert "health_probes" in checks
+    for rule in OPA_RULES:
+        assert rule in checks, f"Missing rule: {rule}"
     print(f"  [OK] Static policies: {len(checks)} checks executed")
+
+
+# ── OPA tests (skip if binary missing) ────────────────────────
+
+def test_opa_client_evaluate():
+    """OPA returns FAIL violations for a deliberately broken config."""
+    try:
+        client = OPAClient()
+    except OPABinaryNotFound:
+        print("  [SKIP] OPA binary not installed")
+        return
+
+    bad = [{
+        "vnf_name": "bad",
+        "helm_values": {
+            "nfimage": {"version": "latest"},
+            "resources": {"define": False},
+            "readinessProbe": False,
+            "livenessProbe": False,
+        },
+    }]
+    violations = client.violations({"config_artifacts": bad})
+    rules = {v["rule"] for v in violations}
+    assert "resource_limits" in rules, f"Expected resource_limits FAIL, got {rules}"
+    assert "image_tags" in rules, f"Expected image_tags WARNING, got {rules}"
+    print(f"  [OK] OPA evaluated bad config → {len(violations)} violations across {len(rules)} rule(s)")
+
+
+def test_opa_violations_to_check_dict():
+    """OPA violations bucket correctly into the legacy policy_checks shape."""
+    violations = [
+        {"rule": "resource_limits", "severity": "FAIL", "vnf": "bad",
+         "message": "bad: resources.define is False"},
+        {"rule": "image_tags", "severity": "WARNING", "vnf": "bad",
+         "message": "bad: using non-pinned image tag 'latest'"},
+    ]
+    checks = _opa_violations_to_check_dict(violations, checked=1)
+    assert checks["resource_limits"]["status"] == "FAIL"
+    assert checks["resource_limits"]["violations"] == 1
+    assert checks["image_tags"]["status"] == "WARNING"
+    assert checks["mandatory_fields"]["status"] == "PASS"
+    print("  [OK] OPA violations bucketed into policy_checks dict")
+
+
+def test_opa_fallback_when_binary_missing(monkeypatch_env=True):
+    """Pointing OPA_BINARY to a nonexistent path falls back to Python checks."""
+    old_env = os.environ.get("OPA_BINARY")
+    old_repo_bin = Path(__file__).resolve().parent.parent / "bin" / "opa"
+    moved = False
+    os.environ["OPA_BINARY"] = "/nonexistent/opa"
+    if old_repo_bin.exists():
+        old_repo_bin.rename(old_repo_bin.with_suffix(".bak"))
+        moved = True
+    try:
+        checks = run_static_policies(VALID_CONFIGS)
+        # Python fallback only knows these five rules
+        for rule in ("resource_limits", "root_containers", "mandatory_fields",
+                     "image_tags", "health_probes"):
+            assert rule in checks, f"Missing fallback rule: {rule}"
+        print("  [OK] OPA missing → Python fallback produced policy_checks")
+    finally:
+        if old_env is None:
+            os.environ.pop("OPA_BINARY", None)
+        else:
+            os.environ["OPA_BINARY"] = old_env
+        if moved:
+            old_repo_bin.with_suffix(".bak").rename(old_repo_bin)
+
+
+# ── K8s dry-run tests ─────────────────────────────────────────
+
+def test_k8s_dry_runner_skips_when_unreachable():
+    """With an empty KUBECONFIG path, the runner returns SKIPPED."""
+    old_kc = os.environ.get("KUBECONFIG")
+    old_kcp = os.environ.get("KUBECONFIG_PATH")
+    os.environ["KUBECONFIG"] = "/nonexistent/kubeconfig"
+    os.environ["KUBECONFIG_PATH"] = "/nonexistent/kubeconfig"
+    try:
+        runner = K8sDryRunner(VALID_CONFIGS)
+        result = runner.run()
+        assert result["status"] == "SKIPPED", f"Expected SKIPPED, got {result['status']}"
+        assert result["reason"], "Expected a non-empty reason"
+        print(f"  [OK] K8s dry-run skipped gracefully: {result['reason']}")
+    finally:
+        if old_kc is None:
+            os.environ.pop("KUBECONFIG", None)
+        else:
+            os.environ["KUBECONFIG"] = old_kc
+        if old_kcp is None:
+            os.environ.pop("KUBECONFIG_PATH", None)
+        else:
+            os.environ["KUBECONFIG_PATH"] = old_kcp
+
+
+def test_determine_decision_with_dry_run_failed():
+    """Dry-run FAILED causes NO_GO."""
+    checks = {"resource_limits": {"status": "PASS"}}
+    dry_run = {
+        "status": "FAILED",
+        "reason": "1 manifest error(s)",
+        "errors": [{"message": "Service/foo: Invalid value"}],
+    }
+    decision, reasons = determine_decision(checks, None, dry_run)
+    assert decision == "NO_GO"
+    assert any("k8s_dry_run" in r for r in reasons)
+    print("  [OK] Decision: dry-run FAILED → NO_GO")
+
+
+def test_determine_decision_with_dry_run_skipped():
+    """Dry-run SKIPPED noted but doesn't block."""
+    checks = {"resource_limits": {"status": "PASS"}}
+    dry_run = {"status": "SKIPPED", "reason": "cluster unreachable", "errors": []}
+    decision, reasons = determine_decision(checks, None, dry_run)
+    assert decision == "GO"
+    assert any("SKIPPED" in r for r in reasons)
+    print("  [OK] Decision: dry-run SKIPPED → GO (with NOTE)")
 
 
 def test_decision_go():
@@ -257,25 +366,32 @@ def test_agent_full_invocation():
               f"{str(result_data.get('details', ''))[:30]}")
     print("  " + "-" * 70)
 
-    print(f"\n  Dry-run: {report['dry_run']}")
+    dry_run = report["dry_run"]
+    print(f"\n  Dry-run: status={dry_run.get('status')} "
+          f"validated={dry_run.get('validated', 0)} "
+          f"errors={len(dry_run.get('errors', []))}")
     print(f"  Conflicts: {report['conflicts']}")
     print(f"  Reasons ({len(report['reasons'])}):")
     for r in report["reasons"]:
         print(f"    - {r}")
 
-    # Decision should be GO (valid configs, only WARNINGs)
-    assert report["decision"] == "GO", f"Expected GO, got {report['decision']}"
+    # Sanity-check structure rather than exact GO/NO_GO outcome: real dry-run
+    # results depend on whether the cluster already has these VNFs deployed.
+    assert dry_run.get("status") in ("SUCCESS", "FAILED", "SKIPPED"), \
+        f"Unexpected dry_run status: {dry_run.get('status')}"
+    assert report["decision"] in ("GO", "NO_GO"), \
+        f"Unexpected decision: {report['decision']}"
 
     # Print agent message
     print(f"\n  Agent message:\n{result['messages'][0]['content']}")
 
-    print("\n  [OK] Policy Validator agent produced valid report with GO decision")
+    print(f"\n  [OK] Policy Validator agent produced valid report (decision={report['decision']})")
 
 
 if __name__ == "__main__":
     print("\n=== Phase 2.4 — Policy Validator Agent Tests ===\n")
 
-    print("--- Unit Tests (no LLM) ---")
+    print("--- Python fallback unit tests ---")
     test_resource_limits_pass()
     test_resource_limits_fail()
     test_root_containers()
@@ -289,7 +405,17 @@ if __name__ == "__main__":
     test_decision_no_go()
     test_agent_no_configs()
 
-    print("\n--- Integration Test (Ollama) ---")
+    print("\n--- OPA tests ---")
+    test_opa_client_evaluate()
+    test_opa_violations_to_check_dict()
+    test_opa_fallback_when_binary_missing()
+
+    print("\n--- K8s dry-run tests ---")
+    test_k8s_dry_runner_skips_when_unreachable()
+    test_determine_decision_with_dry_run_failed()
+    test_determine_decision_with_dry_run_skipped()
+
+    print("\n--- Integration Test (real cluster + Ollama) ---")
     test_agent_full_invocation()
 
     print("\n=== All Policy Validator tests passed! ===")

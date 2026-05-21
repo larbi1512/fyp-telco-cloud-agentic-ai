@@ -160,6 +160,8 @@ def _build_events(
     restart_samples: list[dict[str, Any]],
     vnf_limits: dict[str, dict[str, float]],
     thresholds: dict[str, dict[str, float]],
+    amf_reg_samples: list[dict[str, Any]] | None = None,
+    upf_session_samples: list[dict[str, Any]] | None = None,
 ) -> list[MetricEvent]:
     now = datetime.utcnow().isoformat()
     known_vnfs = list(vnf_limits.keys())
@@ -247,6 +249,30 @@ def _build_events(
                 "threshold_status": _threshold_status(
                     restarts, restart_th["warning"], restart_th["critical"]
                 ),
+            }
+        )
+
+    for s in amf_reg_samples or []:
+        events.append(
+            {
+                "timestamp": now,
+                "vnf_name": s.get("vnf", "oai-amf"),
+                "metric_name": "amf_registration_rate",
+                "value": round(float(s.get("registrations_per_sec", 0.0)), 3),
+                "unit": "reg/sec",
+                "threshold_status": "normal",
+            }
+        )
+
+    for s in upf_session_samples or []:
+        events.append(
+            {
+                "timestamp": now,
+                "vnf_name": s.get("vnf", "oai-upf"),
+                "metric_name": "upf_session_count",
+                "value": float(s.get("sessions", 0)),
+                "unit": "count",
+                "threshold_status": "normal",
             }
         )
 
@@ -355,9 +381,23 @@ def kpi_monitor_agent(state: OrchestratorState) -> dict[str, Any]:
             ],
         }
 
+    # Application-layer metrics (best-effort: empty if OAI exporters absent)
+    try:
+        amf_reg_samples = prom.get_amf_registration_rate(namespace=ns)
+    except Exception as exc:
+        logger.debug("AMF registration rate query failed (non-critical): %s", exc)
+        amf_reg_samples = []
+    try:
+        upf_session_samples = prom.get_upf_session_count(namespace=ns)
+    except Exception as exc:
+        logger.debug("UPF session count query failed (non-critical): %s", exc)
+        upf_session_samples = []
+
     events = _build_events(
         cpu_samples, mem_samples, net_samples, restart_samples,
         vnf_limits, thresholds,
+        amf_reg_samples=amf_reg_samples,
+        upf_session_samples=upf_session_samples,
     )
     logger.info("KPI Monitor: collected %d metric events", len(events))
 
