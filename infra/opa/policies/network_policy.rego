@@ -19,15 +19,15 @@ violations contains v if {
 	}
 }
 
-# Multus enabled but defaultGateway empty — packets will drop.
+# Multus enabled but defaultGateway missing or empty — packets will drop.
 violations contains v if {
 	some cfg in input.config_artifacts
 	cfg.helm_values.multus
-	cfg.helm_values.multus.defaultGateway == ""
+	object.get(cfg.helm_values.multus, "defaultGateway", "") == ""
 	v := {
 		"rule": "network_policy",
 		"severity": "WARNING",
 		"vnf": cfg.vnf_name,
-		"message": sprintf("%s: multus enabled but defaultGateway is empty", [cfg.vnf_name]),
+		"message": sprintf("%s: multus enabled but defaultGateway is missing or empty", [cfg.vnf_name]),
 	}
 }
