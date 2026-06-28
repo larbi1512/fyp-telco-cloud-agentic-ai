@@ -1,0 +1,9 @@
+system,intent_id,rep,complexity,ue_band,scenario,category,deployment_time_s,config_error_rate,resource_accuracy,interventions,intent_to_deploy_accuracy,policy_violation_rate,error
+confucius,S01,0,simple,50,steady,,167.503,0.0,0.9944,0,1,0.0,
+confucius,C03,0,complex,200,fault-HA,,820.809,0.0,0.9992,0,0,0.1429,
+ossgpt,S01,0,simple,50,steady,,116.814,0.0,0.9956,0,1,0.0,
+ossgpt,C03,0,complex,200,fault-HA,,132.353,0.1111,0.9955,0,1,0.0,
+lin,S01,0,simple,50,steady,,705.003,0.0,0.9944,0,0,0.0,
+lin,C03,0,complex,200,fault-HA,,115.789,0.0,0.7498,0,1,0.0,
+mas,S01,0,simple,50,steady,,115.911,0.0,0.9154,0,1,0.2857,
+mas,C03,0,complex,200,fault-HA,,127.926,0.0,0.5977,0,1,0.2857,

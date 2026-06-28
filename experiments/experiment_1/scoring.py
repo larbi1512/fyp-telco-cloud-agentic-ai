@@ -142,7 +142,14 @@ def resource_validity_score(vnfs: list[dict[str, Any]]) -> float:
 
 def policy_pass_rate(validation_report: dict[str, Any]) -> float:
     """
-    Compute the ratio of PASS policy checks.
+    Compute the ratio of non-violating policy checks.
+
+    Only deployment-blocking violations (status == "FAIL") count against the
+    score. Non-blocking WARNINGs (best-practice notes like runAsUser=0 or multus
+    with an empty defaultGateway) are treated as passing, consistent with the
+    deployer's GO/NO_GO decision (which only blocks on FAIL). This avoids
+    penalising systems that emit *more complete* config and merely trip
+    best-practice warnings that sparser configs never reach.
 
     Returns a float in [0.0, 1.0].
     """
@@ -151,8 +158,8 @@ def policy_pass_rate(validation_report: dict[str, Any]) -> float:
         return 0.0
 
     total = len(checks)
-    passed = sum(1 for c in checks.values() if c.get("status") == "PASS")
-    return passed / total
+    non_failing = sum(1 for c in checks.values() if c.get("status") != "FAIL")
+    return non_failing / total
 
 
 def deployment_success_rate(deployment_results: list[dict[str, Any]]) -> float:
