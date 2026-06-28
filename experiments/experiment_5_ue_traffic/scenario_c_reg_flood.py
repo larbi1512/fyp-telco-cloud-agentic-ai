@@ -25,9 +25,9 @@ def test_registration_flood_triggers_amf_scaling(prom, ue_registered, baseline_a
     # Allow re-registration to ramp and Prometheus to scrape.
     time.sleep(120)
 
-    samples = prom.get_ue_registration_metrics(namespace=NAMESPACE)
+    samples = prom.get_amf_registration_rate(namespace=NAMESPACE)
     assert samples, "no AMF registration series; exporter healthy?"
-    attempts = samples[0].get("attempts_per_sec", 0.0)
+    attempts = samples[0].get("registrations_per_sec", 0.0)
     assert attempts > 0, "expected non-zero registration attempt rate"
 
     action = wait_for_action(baseline_actions, timeout=360)
