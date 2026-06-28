@@ -1,0 +1,163 @@
+system,intent_id,rep,complexity,ue_band,scenario,category,deployment_time_s,config_error_rate,resource_accuracy,interventions,intent_to_deploy_accuracy,policy_violation_rate,error
+confucius,S01,0,simple,50,steady,,122.938,0.0,0.0,0,1,0.0,
+confucius,C03,0,complex,200,fault-HA,,128.235,0.0,0.0702,0,1,0.0,
+ossgpt,S01,0,simple,50,steady,,85.36,0.0,0.0,0,1,0.0,
+ossgpt,C03,0,complex,200,fault-HA,,12.181,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+lin,S01,0,simple,50,steady,,83.658,0.0,0.0,0,1,0.0,
+lin,C03,0,complex,200,fault-HA,,85.943,0.0,0.0,1,0,0.0,
+mas,S01,0,simple,50,steady,,80.334,0.0,0.9154,0,1,0.0,
+mas,C03,0,complex,200,fault-HA,,81.996,0.0,0.8818,0,1,0.0,
+mas,S02,0,simple,200,steady,,81.573,0.0,0.9916,0,1,0.0,
+mas,S03,0,simple,50,steady,,92.26,0.0,0.8452,0,0,0.0,
+mas,S04,0,simple,50,steady,,91.912,0.0,0.9154,0,0,0.0,
+mas,S05,0,simple,200,steady,,91.987,0.0,0.9129,0,1,0.0,
+mas,S06,0,simple,50,steady,,91.87,0.0,0.8533,0,0,0.0,
+mas,N01,0,simple,500,steady,,92.316,0.0,0.7761,0,1,0.0,
+mas,M01,0,medium,500,steady,,87.588,0.0,0.9916,0,1,0.0,
+mas,M02,0,medium,200,steady,,99.723,0.0,0.9686,0,1,0.0,
+mas,M03,0,medium,500,fault-HA,,92.163,0.0,0.9916,0,1,0.0,
+mas,M04,0,medium,500,steady,,88.157,0.0,0.5165,0,1,0.0,
+mas,M05,0,medium,500,steady,,86.836,0.0,0.4334,0,1,0.0,
+mas,M06,0,medium,200,fault-HA,,87.24,0.0,0.9448,0,1,0.0,
+mas,M07,0,medium,200,steady,,93.65,0.0,0.9443,0,1,0.0,
+mas,M08,0,medium,500,bursty-headroom,,91.005,0.0,0.3144,0,1,0.0,
+mas,M09,0,medium,200,steady,,87.284,0.0,0.9399,0,1,0.0,
+mas,M10,0,medium,200,steady,,95.634,0.0,0.872,0,1,0.0,
+mas,N02,0,medium,50,steady,,87.113,0.0,0.8856,0,1,0.0,
+mas,N03,0,medium,200,bursty-headroom,,92.713,0.0,0.9129,0,1,0.0,
+mas,N04,0,medium,500,sinusoidal-autoscale,,92.135,0.0,0.7761,0,1,0.0,
+mas,N05,0,medium,200,sinusoidal-autoscale,,91.604,0.0,0.9399,0,1,0.0,
+mas,N06,0,medium,50,fault-HA,,92.123,0.0,0.9004,0,1,0.0,
+mas,N07,0,medium,500,bursty-headroom,,101.23,0.0,0.8036,0,1,0.0,
+mas,N08,0,medium,200,fault-HA,,90.603,0.0,0.8949,0,1,0.0,
+mas,C01,0,complex,500,fault-HA,,101.639,0.0,0.7912,0,1,0.0,
+mas,C02,0,complex,500,steady,,98.796,0.0,0.4533,0,1,0.0,
+mas,C04,0,complex,200,steady,,103.882,0.0,0.9447,0,1,0.0,
+mas,C05,0,complex,500,bursty-headroom,,101.002,0.0,0.3671,0,1,0.0,
+mas,C06,0,complex,500,steady,,102.144,0.0,0.6427,0,1,0.0,
+mas,C07,0,complex,200,fault-HA,,105.223,0.0,0.9284,0,1,0.0,
+mas,C08,0,complex,500,steady,,100.458,0.0,0.7261,0,1,0.0,
+mas,C09,0,complex,50,steady,,99.784,0.0,0.8452,0,0,0.0,
+mas,N09,0,complex,200,bursty-headroom,,104.741,0.0,0.8875,0,1,0.0,
+mas,N10,0,complex,200,sinusoidal-autoscale,,97.834,0.0,0.9234,0,1,0.0,
+mas,N11,0,complex,500,sinusoidal-autoscale,,100.018,0.0,0.7949,0,1,0.0,
+confucius,S02,0,simple,200,steady,,185.086,0.0,0.0,0,1,0.0,
+confucius,S03,0,simple,50,steady,,184.512,0.0,0.0317,0,0,0.0,
+confucius,S04,0,simple,50,steady,,183.888,0.0,0.0,0,0,0.0,
+confucius,S05,0,simple,200,steady,,201.802,0.2,0.0324,0,0,0.0,
+confucius,S06,0,simple,50,steady,,148.985,0.0,0.0,0,0,0.0,
+confucius,N01,0,simple,500,steady,,179.955,0.0,0.1333,0,1,0.0,
+confucius,M01,0,medium,500,steady,,180.136,0.0,0.2344,0,1,0.0,
+confucius,M02,0,medium,200,steady,,194.84,0.0,0.0,0,1,0.0,
+confucius,M03,0,medium,500,fault-HA,,189.602,0.1111,0.5965,0,0,0.0,
+confucius,M04,0,medium,500,steady,,104.365,0.1111,0.9327,3,0,0.2857,Cannot deploy — policy validation returned NO_GO
+confucius,M05,0,medium,500,steady,,180.524,0.0,0.418,0,1,0.0,
+confucius,M06,0,medium,200,fault-HA,,39.078,0.0,0.0,1,0,0.0,"LLM returned non-JSON output (first 200 chars): ```json
+{
+  ""topology_id"": ""warehouse-robotics"",
+  ""connectivity"": {
+    ""plmn"": {""mcc"": ""001"", ""mnc"": ""01""},
+    ""slices"": [{""sst"": 2, ""sd"": ""000002"", ""description"": ""URLLC warehouse robotics""}],
+   "
+confucius,M07,0,medium,200,steady,,,,,,,,invalid literal for int() with base 10: '164.8'
+confucius,M08,0,medium,500,bursty-headroom,,796.363,0.1111,0.2966,0,1,0.0,
+confucius,M09,0,medium,200,steady,,185.811,0.0,0.0,0,1,0.0,
+confucius,M10,0,medium,200,steady,,198.431,0.0,0.0,0,1,0.0,
+confucius,N02,0,medium,50,steady,,,,,,,,invalid literal for int() with base 10: '169.6'
+confucius,N03,0,medium,200,bursty-headroom,,,,,,,,invalid literal for int() with base 10: '150.4'
+confucius,N04,0,medium,500,sinusoidal-autoscale,,183.474,0.0,0.0607,1,0,0.0,
+confucius,N05,0,medium,200,sinusoidal-autoscale,,184.357,0.0,0.0,1,0,0.0,
+confucius,N06,0,medium,50,fault-HA,,199.526,0.0,0.0,0,1,0.0,
+confucius,N07,0,medium,500,bursty-headroom,,202.013,0.1111,0.0,0,1,0.0,
+confucius,N08,0,medium,200,fault-HA,,205.605,0.1111,0.3769,1,0,0.0,
+confucius,C01,0,complex,500,fault-HA,,41.96,0.0,0.0,1,0,0.0,"LLM returned non-JSON output (first 200 chars): ```json
+{
+  ""topology_id"": ""smart-hospital-5g-core"",
+  ""connectivity"": {
+    ""plmn"": {""mcc"": ""001"", ""mnc"": ""01""},
+    ""slices"": [
+      {""sst"": 1, ""sd"": ""000001"", ""description"": ""eMBB medical imaging"""
+confucius,C02,0,complex,500,steady,,804.219,0.0,0.0339,0,1,0.0,
+confucius,C04,0,complex,200,steady,,199.618,0.0,0.0,0,1,0.0,
+confucius,C05,0,complex,500,bursty-headroom,,198.225,0.0,0.2796,0,1,0.0,
+confucius,C06,0,complex,500,steady,,197.99,0.0,0.0,0,1,0.0,
+confucius,C07,0,complex,200,fault-HA,,41.007,0.0,0.0,1,0,0.0,"LLM returned non-JSON output (first 200 chars): ```json
+{
+  ""topology_id"": ""autonomous_vehicle_test_network"",
+  ""connectivity"": {
+    ""plmn"": {""mcc"": ""001"", ""mnc"": ""01""},
+    ""slices"": [
+      {""sst"": 1, ""sd"": ""000001"", ""description"": ""eMBB for V2X"
+confucius,C08,0,complex,500,steady,,202.769,0.0,0.0,0,1,0.0,
+confucius,C09,0,complex,50,steady,,191.409,0.1111,0.2111,0,0,0.0,
+confucius,N09,0,complex,200,bursty-headroom,,792.447,0.0,0.0,0,1,0.0,
+confucius,N10,0,complex,200,sinusoidal-autoscale,,192.228,0.0,0.0,1,0,0.0,
+confucius,N11,0,complex,500,sinusoidal-autoscale,,797.93,0.0,0.0,1,0,0.0,
+ossgpt,S02,0,simple,200,steady,,30.775,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,S03,0,simple,50,steady,,105.574,0.0,0.9309,0,0,0.0,
+ossgpt,S04,0,simple,50,steady,,30.536,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,S05,0,simple,200,steady,,31.457,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,S06,0,simple,50,steady,,76.92,0.0,0.4203,1,0,0.0,
+ossgpt,N01,0,simple,500,steady,,96.623,0.0,0.4533,0,1,0.0,
+ossgpt,M01,0,medium,500,steady,,34.511,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M02,0,medium,200,steady,,164.595,0.0,0.5932,1,0,0.0,
+ossgpt,M03,0,medium,500,fault-HA,,30.164,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M04,0,medium,500,steady,,25.755,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M05,0,medium,500,steady,,34.033,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M06,0,medium,200,fault-HA,,32.72,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M07,0,medium,200,steady,,30.784,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M08,0,medium,500,bursty-headroom,,30.13,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M09,0,medium,200,steady,,32.824,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,M10,0,medium,200,steady,,93.479,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N02,0,medium,50,steady,,28.866,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N03,0,medium,200,bursty-headroom,,31.969,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N04,0,medium,500,sinusoidal-autoscale,,30.662,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N05,0,medium,200,sinusoidal-autoscale,,29.606,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N06,0,medium,50,fault-HA,,115.021,0.0,0.4486,1,0,0.0,
+ossgpt,N07,0,medium,500,bursty-headroom,,31.95,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N08,0,medium,200,fault-HA,,30.151,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C01,0,complex,500,fault-HA,,28.032,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C02,0,complex,500,steady,,17.15,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C04,0,complex,200,steady,,18.022,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C05,0,complex,500,bursty-headroom,,16.285,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C06,0,complex,500,steady,,16.633,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C07,0,complex,200,fault-HA,,16.717,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C08,0,complex,500,steady,,15.819,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,C09,0,complex,50,steady,,14.24,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N09,0,complex,200,bursty-headroom,,46.439,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+ossgpt,N10,0,complex,200,sinusoidal-autoscale,,690.837,0.0,0.5032,1,0,0.0,
+ossgpt,N11,0,complex,500,sinusoidal-autoscale,,14.582,0.0,0.0,1,0,0.0,No config artifacts to deploy — run the pre-deployment pipeline first
+lin,S02,0,simple,200,steady,,83.472,0.0,0.0864,0,1,0.0,
+lin,S03,0,simple,50,steady,,84.076,0.0,0.0,0,0,0.0,
+lin,S04,0,simple,50,steady,,83.568,0.0,0.0,0,0,0.0,
+lin,S05,0,simple,200,steady,,82.834,0.0,0.066,0,1,0.0,
+lin,S06,0,simple,50,steady,,69.291,0.0,0.8037,1,0,0.0,
+lin,N01,0,simple,500,steady,,83.015,0.0,0.1678,0,1,0.0,
+lin,M01,0,medium,500,steady,,82.921,0.0,0.1698,0,1,0.0,
+lin,M02,0,medium,200,steady,,84.575,0.0,0.0,0,1,0.0,
+lin,M03,0,medium,500,fault-HA,,83.121,0.0,0.6245,0,1,0.0,
+lin,M04,0,medium,500,steady,,83.141,0.0,0.4602,0,1,0.0,
+lin,M05,0,medium,500,steady,,78.133,0.1667,0.5646,0,0,0.0,
+lin,M06,0,medium,200,fault-HA,,102.492,0.0,0.2357,1,0,0.0,
+lin,M07,0,medium,200,steady,,84.226,0.0,0.0712,0,1,0.0,
+lin,M08,0,medium,500,bursty-headroom,,83.006,0.0,0.4783,0,1,0.0,
+lin,M09,0,medium,200,steady,,83.221,0.0,0.1239,0,1,0.0,
+lin,M10,0,medium,200,steady,,687.463,0.0,0.0,0,1,0.0,
+lin,N02,0,medium,50,steady,,85.289,0.0,0.0,0,1,0.0,
+lin,N03,0,medium,200,bursty-headroom,,83.015,0.0,0.0269,0,1,0.0,
+lin,N04,0,medium,500,sinusoidal-autoscale,,83.095,0.0,0.0349,1,0,0.0,
+lin,N05,0,medium,200,sinusoidal-autoscale,,82.974,0.0,0.0526,1,0,0.0,
+lin,N06,0,medium,50,fault-HA,,85.551,0.0,0.0,0,1,0.0,
+lin,N07,0,medium,500,bursty-headroom,,84.189,0.0,0.0,0,1,0.0,
+lin,N08,0,medium,200,fault-HA,,82.814,0.0,0.2311,0,1,0.0,
+lin,C01,0,complex,500,fault-HA,,44.932,0.0,0.0,1,0,0.0,Action generation returned non-JSON (first 200): None
+lin,C02,0,complex,500,steady,,687.315,0.0,0.1587,0,1,0.0,
+lin,C04,0,complex,200,steady,,87.722,0.0,0.0,0,1,0.0,
+lin,C05,0,complex,500,bursty-headroom,,686.836,0.0,0.4214,0,1,0.0,
+lin,C06,0,complex,500,steady,,87.627,0.0,0.0,0,1,0.0,
+lin,C07,0,complex,200,fault-HA,,42.7,0.0,0.0,1,0,0.0,Action generation returned non-JSON (first 200): None
+lin,C08,0,complex,500,steady,,85.678,0.0,0.0,0,1,0.0,
+lin,C09,0,complex,50,steady,,82.648,0.0,0.0,0,0,0.0,
+lin,N09,0,complex,200,bursty-headroom,,84.367,0.0,0.0,0,1,0.0,
+lin,N10,0,complex,200,sinusoidal-autoscale,,84.571,0.0,0.0,1,0,0.0,
+lin,N11,0,complex,500,sinusoidal-autoscale,,85.315,0.0,0.0461,1,0,0.0,

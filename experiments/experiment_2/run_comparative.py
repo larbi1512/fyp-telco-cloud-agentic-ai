@@ -52,7 +52,7 @@ console = Console()
 
 # Systems that perform real cluster work when deploy=True. B1/B2/B4 do not
 # deploy — their wall-clock and artifacts come from the emulators / LLM only.
-DEPLOYING_SYSTEMS = {"mas", "b3", "b4r"}
+DEPLOYING_SYSTEMS = {"mas", "b3", "b4r", "confucius", "ossgpt", "lin"}
 
 DEFAULT_DATASET = (
     Path(__file__).resolve().parents[1] / "datasets" / "intents_v2.json"

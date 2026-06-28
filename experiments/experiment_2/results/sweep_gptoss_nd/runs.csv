@@ -1,0 +1,221 @@
+system,intent_id,rep,complexity,ue_band,scenario,category,deployment_time_s,config_error_rate,resource_accuracy,interventions,intent_to_deploy_accuracy,policy_violation_rate,error
+mas,S01,0,simple,50,steady,,43.517,0.0,0.9154,0,0,0.0,
+mas,S02,0,simple,200,steady,,48.215,0.0,0.9916,0,0,0.0,
+mas,S03,0,simple,50,steady,,44.336,0.0,0.8452,0,0,0.0,
+mas,S04,0,simple,50,steady,,60.13,0.0,0.9154,0,0,0.0,
+mas,S05,0,simple,200,steady,,37.221,0.0,0.9129,0,0,0.0,
+mas,S06,0,simple,50,steady,,54.171,0.0,0.8533,0,0,0.0,
+mas,N01,0,simple,500,steady,,41.396,0.0,0.7761,0,0,0.0,
+mas,M01,0,medium,500,steady,,57.9,0.0,0.9916,0,0,0.0,
+mas,M02,0,medium,200,steady,,42.155,0.0,0.9686,0,0,0.0,
+mas,M03,0,medium,500,fault-HA,,62.827,0.0,0.9916,0,0,0.0,
+mas,M04,0,medium,500,steady,,42.162,0.0,0.5165,0,0,0.0,
+mas,M05,0,medium,500,steady,,53.395,0.0,0.4334,0,0,0.0,
+mas,M06,0,medium,200,fault-HA,,37.283,0.0,0.9448,0,0,0.0,
+mas,M07,0,medium,200,steady,,64.122,0.0,0.9443,0,0,0.0,
+mas,M08,0,medium,500,bursty-headroom,,42.687,0.0,0.3916,0,0,0.0,
+mas,M09,0,medium,200,steady,,56.144,0.0,0.9399,0,0,0.0,
+mas,M10,0,medium,200,steady,,50.562,0.0,0.872,0,0,0.0,
+mas,N02,0,medium,50,steady,,41.107,0.0,0.8856,0,0,0.0,
+mas,N03,0,medium,200,bursty-headroom,,44.521,0.0,0.9129,0,0,0.0,
+mas,N04,0,medium,500,sinusoidal-autoscale,,49.186,0.0,0.7761,0,0,0.0,
+mas,N05,0,medium,200,sinusoidal-autoscale,,50.926,0.0,0.9399,0,0,0.0,
+mas,N06,0,medium,50,fault-HA,,45.041,0.0,0.9004,0,0,0.0,
+mas,N07,0,medium,500,bursty-headroom,,56.854,0.0,0.8036,0,0,0.0,
+mas,N08,0,medium,200,fault-HA,,49.083,0.0,0.8949,0,0,0.0,
+mas,C01,0,complex,500,fault-HA,,62.706,0.0,0.7912,0,0,0.0,
+mas,C02,0,complex,500,steady,,63.395,0.0,0.4533,0,0,0.0,
+mas,C03,0,complex,200,fault-HA,,40.849,0.0,0.8818,0,0,0.0,
+mas,C04,0,complex,200,steady,,62.281,0.0,0.9447,0,0,0.0,
+mas,C05,0,complex,500,bursty-headroom,,46.125,0.0,0.3671,0,0,0.0,
+mas,C06,0,complex,500,steady,,55.79,0.0,0.6427,0,0,0.0,
+mas,C07,0,complex,200,fault-HA,,56.811,0.0,0.9208,0,0,0.0,
+mas,C08,0,complex,500,steady,,48.549,0.0,0.7261,0,0,0.0,
+mas,C09,0,complex,50,steady,,45.286,0.0,0.8452,0,0,0.0,
+mas,N09,0,complex,200,bursty-headroom,,59.69,0.0,0.8875,0,0,0.0,
+mas,N10,0,complex,200,sinusoidal-autoscale,,62.373,0.0,0.9234,0,0,0.0,
+mas,N11,0,complex,500,sinusoidal-autoscale,,35.526,0.0,0.7949,0,0,0.0,
+confucius,S01,0,simple,50,steady,,103.033,0.0,0.9956,0,0,0.0,
+confucius,S02,0,simple,200,steady,,149.688,0.0,0.9759,0,0,0.0,
+confucius,S03,0,simple,50,steady,,143.343,0.0,0.9961,0,0,0.0,
+confucius,S04,0,simple,50,steady,,144.306,0.0,0.9966,0,0,0.0,
+confucius,S05,0,simple,200,steady,,149.423,0.0,0.9972,0,0,0.0,
+confucius,S06,0,simple,50,steady,,136.608,0.0,0.9239,0,0,0.0,
+confucius,N01,0,simple,500,steady,,147.315,0.0,0.948,0,0,0.0,
+confucius,M01,0,medium,500,steady,,138.374,0.0,0.9948,0,0,0.0,
+confucius,M02,0,medium,200,steady,,173.687,0.0,1.0,0,0,0.0,
+confucius,M03,0,medium,500,fault-HA,,138.828,0.0,0.9066,0,0,0.0,
+confucius,M04,0,medium,500,steady,,181.475,0.0,0.8749,0,0,0.0,
+confucius,M05,0,medium,500,steady,,177.917,0.0,0.9772,0,0,0.0,
+confucius,M06,0,medium,200,fault-HA,,196.12,0.0,0.9678,2,0,0.1429,
+confucius,M07,0,medium,200,steady,,209.578,0.0,1.0,2,0,0.1429,
+confucius,M08,0,medium,500,bursty-headroom,,160.562,0.0,0.9747,0,0,0.0,
+confucius,M09,0,medium,200,steady,,177.039,0.0,0.9956,0,0,0.0,
+confucius,M10,0,medium,200,steady,,215.284,0.0,1.0,0,0,0.0,
+confucius,N02,0,medium,50,steady,,174.737,0.0,0.9956,0,0,0.0,
+confucius,N03,0,medium,200,bursty-headroom,,185.146,0.0,0.9956,0,0,0.0,
+confucius,N04,0,medium,500,sinusoidal-autoscale,,222.04,0.0,0.9956,1,0,0.0,
+confucius,N05,0,medium,200,sinusoidal-autoscale,,156.216,0.0,0.9956,1,0,0.0,
+confucius,N06,0,medium,50,fault-HA,,256.456,0.0,0.9996,0,0,0.0,
+confucius,N07,0,medium,500,bursty-headroom,,122.292,0.0,1.0,2,0,0.1429,
+confucius,N08,0,medium,200,fault-HA,,119.708,0.0,0.9964,0,0,0.0,
+confucius,C01,0,complex,500,fault-HA,,54.715,0.0,0.0,1,0,0.0,"LLM returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""hospital-5g-001"",
+  ""connectivity"": {
+    ""plmn"": {
+      ""mcc"": ""001"",
+      ""mnc"": ""01""
+    },
+    ""slices"": [
+      {
+        ""sst"": 1,
+        ""sd"": ""000001"",
+        ""descript"
+confucius,C02,0,complex,500,steady,,122.625,0.0,0.9491,0,0,0.0,
+confucius,C03,0,complex,200,fault-HA,,54.566,0.0,0.0,1,0,0.0,"LLM returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""topology-001"",
+  ""connectivity"": {
+    ""plmn"": {
+      ""mcc"": ""001"",
+      ""mnc"": ""01""
+    },
+    ""slices"": [
+      {
+        ""sst"": 1,
+        ""sd"": ""000001"",
+        ""description"
+confucius,C04,0,complex,200,steady,,128.381,0.0,1.0,0,0,0.0,
+confucius,C05,0,complex,500,bursty-headroom,,193.227,0.0,0.9643,0,0,0.0,
+confucius,C06,0,complex,500,steady,,193.508,0.0,0.9834,0,0,0.0,
+confucius,C07,0,complex,200,fault-HA,,223.11,0.0,1.0,0,0,0.0,
+confucius,C08,0,complex,500,steady,,230.974,0.0,0.9856,0,0,0.0,
+confucius,C09,0,complex,50,steady,,163.28,0.0,0.9961,0,0,0.0,
+confucius,N09,0,complex,200,bursty-headroom,,212.411,0.0,0.998,0,0,0.0,
+confucius,N10,0,complex,200,sinusoidal-autoscale,,209.16,0.0,1.0,1,0,0.0,
+confucius,N11,0,complex,500,sinusoidal-autoscale,,207.765,0.0,1.0,1,0,0.0,
+ossgpt,S01,0,simple,50,steady,,108.702,0.0,0.9961,0,0,0.0,
+ossgpt,S02,0,simple,200,steady,,79.768,0.2222,0.9096,0,0,0.0,
+ossgpt,S03,0,simple,50,steady,,125.207,0.0,0.9966,0,0,0.0,
+ossgpt,S04,0,simple,50,steady,,71.061,0.2222,0.0676,0,0,0.0,
+ossgpt,S05,0,simple,200,steady,,60.503,0.0,0.0,0,0,0.0,
+ossgpt,S06,0,simple,50,steady,,43.786,0.0,0.9954,0,0,0.0,
+ossgpt,N01,0,simple,500,steady,,56.007,0.0,0.9506,0,0,0.0,
+ossgpt,M01,0,medium,500,steady,,50.959,0.125,1.0,0,0,0.0,
+ossgpt,M02,0,medium,200,steady,,58.098,0.0,1.0,0,0,0.0,
+ossgpt,M03,0,medium,500,fault-HA,,87.722,0.0,0.0,1,0,0.0,"Executor returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""topo-001"",
+  ""connectivity"": {
+    ""plmn"": { ""mcc"": ""001"", ""mnc"": ""01"" },
+    ""slices"": [
+      { ""sst"": 1, ""sd"": ""000001"", ""description"": ""eMBB"" }
+    ],
+    ""dnns"": [ ""internet"" "
+ossgpt,M04,0,medium,500,steady,,59.589,0.125,1.0,0,0,0.0,
+ossgpt,M05,0,medium,500,steady,,43.992,0.0,0.9675,0,0,0.0,
+ossgpt,M06,0,medium,200,fault-HA,,56.271,0.125,1.0,0,0,0.0,
+ossgpt,M07,0,medium,200,steady,,70.087,0.2,0.9931,0,0,0.0,
+ossgpt,M08,0,medium,500,bursty-headroom,,124.981,0.0,0.9966,0,0,0.0,
+ossgpt,M09,0,medium,200,steady,,80.38,0.2222,0.9961,0,0,0.0,
+ossgpt,M10,0,medium,200,steady,,137.747,0.0,0.0,1,0,0.0,"Executor returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""topo-123e4567-e89b-12d3-a456-426614174000"",
+  ""connectivity"": {
+    ""plmn"": {
+      ""mcc"": ""001"",
+      ""mnc"": ""01""
+    },
+    ""slices"": [
+      {
+        ""sst"": 1,
+        ""sd"": """
+ossgpt,N02,0,medium,50,steady,,61.9,0.2222,0.0,0,0,0.0,
+ossgpt,N03,0,medium,200,bursty-headroom,,102.761,0.0,0.2929,0,0,0.0,
+ossgpt,N04,0,medium,500,sinusoidal-autoscale,,78.053,0.0,0.9956,0,0,0.0,
+ossgpt,N05,0,medium,200,sinusoidal-autoscale,,71.41,0.0,0.9956,1,0,0.0,
+ossgpt,N06,0,medium,50,fault-HA,,155.991,0.0,0.0,1,0,0.0,"Executor returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""clinic-5g-001"",
+  ""connectivity"": {
+    ""plmn"": {
+      ""mcc"": ""001"",
+      ""mnc"": ""01""
+    },
+    ""slices"": [
+      {
+        ""sst"": 1,
+        ""sd"": ""000001"",
+        ""descriptio"
+ossgpt,N07,0,medium,500,bursty-headroom,,73.383,0.0,1.0,0,0,0.0,
+ossgpt,N08,0,medium,200,fault-HA,,133.575,0.0,0.7316,0,0,0.0,
+ossgpt,C01,0,complex,500,fault-HA,,111.213,0.0,0.0,1,0,0.0,"Executor returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""topology-001"",
+  ""name"": ""Medical Edge Core Network"",
+  ""description"": ""Core network supporting medical imaging (eMBB), surgical robot control (URLLC) and IoT devices (mMTC)."",
+  """
+ossgpt,C02,0,complex,500,steady,,102.194,0.0,0.9996,0,0,0.0,
+ossgpt,C03,0,complex,200,fault-HA,,68.862,0.0,0.0,1,0,0.0,"Executor returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""factory-digital-twin-001"",
+  ""connectivity"": {
+    ""plmn"": {
+      ""mcc"": ""001"",
+      ""mnc"": ""01""
+    },
+    ""slices"": [
+      {
+        ""sst"": 1,
+        ""sd"": ""000001"",
+        "
+ossgpt,C04,0,complex,200,steady,,70.12,0.0,0.9996,0,0,0.0,
+ossgpt,C05,0,complex,500,bursty-headroom,,60.846,0.0,0.9554,0,0,0.0,
+ossgpt,C06,0,complex,500,steady,,62.639,0.0,1.0,0,0,0.0,
+ossgpt,C07,0,complex,200,fault-HA,,70.256,0.0,0.9074,0,0,0.0,
+ossgpt,C08,0,complex,500,steady,,68.818,0.0,0.0,1,0,0.0,"Executor returned non-JSON output (first 200 chars): {
+  ""topology_id"": ""topo-001"",
+  ""connectivity"": {
+    ""plmn"": {
+      ""mcc"": ""001"",
+      ""mnc"": ""01""
+    },
+    ""slices"": [
+      {
+        ""sst"": 1,
+        ""sd"": ""000001"",
+        ""description"": """
+ossgpt,C09,0,complex,50,steady,,70.074,0.0,0.9969,0,0,0.0,
+ossgpt,N09,0,complex,200,bursty-headroom,,57.562,0.0,1.0,0,0,0.0,
+ossgpt,N10,0,complex,200,sinusoidal-autoscale,,22.893,0.0,0.0,1,0,0.0,"Executor returned non-JSON output (first 200 chars): I’m sorry, but I can’t fulfill that request. The plan you provided includes VNFs (such as **gnb** and **nr‑ue**) that are not part of the allowed VNF types for the 5G core topology, and it also violat"
+ossgpt,N11,0,complex,500,sinusoidal-autoscale,,72.637,0.1111,0.9966,0,0,0.0,
+lin,S01,0,simple,50,steady,,78.269,0.0,0.9956,0,0,0.0,
+lin,S02,0,simple,200,steady,,67.064,0.0,0.9956,0,0,0.0,
+lin,S03,0,simple,50,steady,,42.161,0.0,0.9956,0,0,0.0,
+lin,S04,0,simple,50,steady,,84.987,0.0,0.9956,0,0,0.0,
+lin,S05,0,simple,200,steady,,64.415,0.0,0.9956,0,0,0.0,
+lin,S06,0,simple,50,steady,,34.931,0.0,0.9956,0,0,0.0,
+lin,N01,0,simple,500,steady,,39.835,0.0,0.9956,0,0,0.0,
+lin,M01,0,medium,500,steady,,48.568,0.0,0.9956,0,0,0.0,
+lin,M02,0,medium,200,steady,,42.418,0.0,1.0,0,0,0.0,
+lin,M03,0,medium,500,fault-HA,,54.618,0.0,0.9787,0,0,0.0,
+lin,M04,0,medium,500,steady,,39.789,0.0,0.8839,0,0,0.0,
+lin,M05,0,medium,500,steady,,48.794,0.125,0.9675,0,0,0.0,
+lin,M06,0,medium,200,fault-HA,,39.721,0.0,0.7644,0,0,0.0,
+lin,M07,0,medium,200,steady,,44.551,0.0,0.9966,0,0,0.0,
+lin,M08,0,medium,500,bursty-headroom,,49.052,0.0,0.9956,0,0,0.0,
+lin,M09,0,medium,200,steady,,40.164,0.0,0.9956,0,0,0.0,
+lin,M10,0,medium,200,steady,,46.668,0.0,1.0,0,0,0.0,
+lin,N02,0,medium,50,steady,,42.635,0.0,0.9944,0,0,0.0,
+lin,N03,0,medium,200,bursty-headroom,,36.103,0.0,0.9956,0,0,0.0,
+lin,N04,0,medium,500,sinusoidal-autoscale,,41.279,0.0,0.9956,1,0,0.0,
+lin,N05,0,medium,200,sinusoidal-autoscale,,78.893,0.0,0.74,1,0,0.0,
+lin,N06,0,medium,50,fault-HA,,50.661,0.0,0.9996,0,0,0.0,
+lin,N07,0,medium,500,bursty-headroom,,89.197,0.0,1.0,0,0,0.0,
+lin,N08,0,medium,200,fault-HA,,44.0,0.0,0.9957,0,0,0.0,
+lin,C01,0,complex,500,fault-HA,,75.658,0.0,0.997,0,0,0.0,
+lin,C02,0,complex,500,steady,,56.714,0.0,0.9491,0,0,0.0,
+lin,C03,0,complex,200,fault-HA,,109.293,0.0,0.7498,0,0,0.0,
+lin,C04,0,complex,200,steady,,49.136,0.0,1.0,0,0,0.0,
+lin,C05,0,complex,500,bursty-headroom,,72.238,0.0,1.0,0,0,0.0,
+lin,C06,0,complex,500,steady,,91.209,0.0,1.0,0,0,0.0,
+lin,C07,0,complex,200,fault-HA,,100.761,0.0,1.0,0,0,0.0,
+lin,C08,0,complex,500,steady,,105.779,0.0,1.0,0,0,0.0,
+lin,C09,0,complex,50,steady,,77.28,0.0,0.9956,0,0,0.0,
+lin,N09,0,complex,200,bursty-headroom,,78.937,0.0,1.0,0,0,0.0,
+lin,N10,0,complex,200,sinusoidal-autoscale,,50.013,0.0,1.0,1,0,0.0,
+lin,N11,0,complex,500,sinusoidal-autoscale,,95.695,0.0,1.0,1,0,0.0,
